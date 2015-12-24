@@ -19,6 +19,16 @@ class OrganisationController extends Controller
     {
         $result                     = new \App\Models\Organisation;
 
+        if(Input::has('id'))
+        {
+            $search                 = Input::get('id');
+            $result                 = $result->id($search);
+        }
+        if(Input::has('code'))
+        {
+            $search                 = Input::get('code');
+            $result                 = $result->code($search)->with(['branches']);
+        }
         if(Input::has('absencetoday'))
         {
             $search                 = Input::get('absencetoday');
