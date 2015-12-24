@@ -14,3 +14,15 @@
 $app->get('/', function () use ($app) {
     return $app->welcome();
 });
+
+// ------------------------------------------------------------------------------------
+// ORGANISATIONS
+// ------------------------------------------------------------------------------------
+
+//Product it self
+$app->post('/organisations',
+	[
+		// 'middleware'		=> 'oauth',
+		'uses'				=> 'OrganisationController@index'
+	]
+);
