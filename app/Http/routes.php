@@ -19,10 +19,22 @@ $app->get('/', function () use ($app) {
 // ORGANISATIONS
 // ------------------------------------------------------------------------------------
 
-//Product it self
+//all organisation it self
 $app->post('/organisations',
 	[
 		// 'middleware'		=> 'oauth',
 		'uses'				=> 'OrganisationController@index'
+	]
+);
+
+// ------------------------------------------------------------------------------------
+// ME
+// ------------------------------------------------------------------------------------
+
+//all organisation it self
+$app->post('/authorized/me',
+	[
+		// 'middleware'		=> 'oauth',
+		'uses'				=> 'MeController@index'
 	]
 );

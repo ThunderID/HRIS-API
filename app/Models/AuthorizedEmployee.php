@@ -7,16 +7,14 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasEmployeeTrait;
+use App\Models\Traits\HasAuthorizedEmployeeTrait;
 
-// use App\Models\Observers\EmployeeObserver;
+// use App\Models\Observers\AuthorizedEmployeeObserver;
 
-class Employee extends Person
+class AuthorizedEmployee extends Person
 {
-	use \App\Models\Traits\hasMany\HasProcessLogsTrait;
-	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP TRAITS ---------------------------------------------------------------------*/
-	use HasEmployeeTrait;
+	use HasAuthorizedEmployeeTrait;
 
 	/**
 	 * The attributes that are mass assignable.
@@ -49,7 +47,7 @@ class Employee extends Person
 	{
         parent::boot();
  
-        // Employee::observe(new EmployeeObserver());
+        // AuthorizedEmployee::observe(new AuthorizedEmployeeObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

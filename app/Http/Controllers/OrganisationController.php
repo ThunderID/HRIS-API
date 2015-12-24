@@ -27,7 +27,9 @@ class OrganisationController extends Controller
                 case 'absencetoday':
                         $result     = $result->with(['absencetoday']);
                     break;
-                
+                case 'authorizedemployee':
+                        $result     = $result->with(['authorizedemployee' => function($q)use($search){$q->id($search);}]);
+                    break;
                 default:
                     # code...
                     break;

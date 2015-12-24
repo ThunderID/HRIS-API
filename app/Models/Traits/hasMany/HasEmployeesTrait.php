@@ -21,6 +21,11 @@ trait HasEmployeesTrait {
 		return $this->hasMany('App\Models\Employee');
 	}
 
+	public function AuthorizedEmployee()
+	{
+		return $this->hasOne('App\Models\AuthorizedEmployee');
+	}
+
 	public function AbsenceToday()
 	{
 		return $this->hasMany('App\Models\Employee')->wheredoesnthave('processlogtoday', function($q){$q;});
