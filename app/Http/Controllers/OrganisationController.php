@@ -19,21 +19,15 @@ class OrganisationController extends Controller
     {
         $result                     = new \App\Models\Organisation;
 
-        if(Input::has('search'))
+        if(Input::has('absencetoday'))
         {
-            $search                 = Input::get('search');
-            switch ($search) 
-            {
-                case 'absencetoday':
-                        $result     = $result->with(['absencetoday']);
-                    break;
-                case 'authorizedemployee':
-                        $result     = $result->with(['authorizedemployee' => function($q)use($search){$q->id($search);}]);
-                    break;
-                default:
-                    # code...
-                    break;
-            }
+            $search                 = Input::get('absencetoday');
+            $result                 = $result->id($search)->with(['absencetoday']);
+        }
+        if(Input::has('authorizedemployee'))
+        {
+            $search                 = Input::get('authorizedemployee');
+            $result                 = $result->with(['authorizedemployee' => function($q)use($search){$q->id($search);}]);
         }
         
         $result                     = $result->get()->toArray();
