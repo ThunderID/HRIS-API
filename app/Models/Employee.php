@@ -13,9 +13,10 @@ use App\Models\Traits\HasEmployeeTrait;
 
 class Employee extends Person
 {
-	use \App\Models\Traits\hasMany\HasProcessLogsTrait;
-	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP TRAITS ---------------------------------------------------------------------*/
+	use \App\Models\Traits\hasMany\HasProcessLogsTrait;
+	use \App\Models\Traits\hasMany\HasPersonWorkleavesTrait;
+	
 	use HasEmployeeTrait;
 
 	/**

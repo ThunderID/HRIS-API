@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\OrganisationObserver;
+// use App\Models\Observers\PersonDocumentObserver;
 
-class Organisation extends BaseModel
+class PersonDocument extends BaseModel
 {
-	use \App\Models\Traits\hasMany\HasEmployeesTrait;
-	use \App\Models\Traits\hasMany\HasBranchesTrait;
-
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'organisations';
+	protected $table				= 'person_documents';
 
 	// protected $timestamps			= true;
 
@@ -53,13 +50,8 @@ class Organisation extends BaseModel
 	{
         parent::boot();
  
-        // Organisation::observe(new OrganisationObserver());
+        // PersonDocument::observe(new PersonDocumentObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
-
-	public function scopeCode($query, $variable)
-	{
-		return 	$query->where('code', $variable);
-	}
 }

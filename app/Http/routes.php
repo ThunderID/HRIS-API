@@ -38,3 +38,16 @@ $app->post('/authorized/me',
 		'uses'				=> 'MeController@index'
 	]
 );
+
+// ------------------------------------------------------------------------------------
+// EMPLOYEES
+// ------------------------------------------------------------------------------------
+
+//all employee it self
+$app->post('/employees',
+	[
+		// 'middleware'		=> 'oauth',
+		'uses'				=> 'EmployeeController@index'
+	]
+);
+

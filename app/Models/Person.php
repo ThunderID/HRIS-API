@@ -5,6 +5,8 @@ namespace App\Models;
 class Person extends BaseModel
 {
 	/* ---------------------------------------------------------------------------- RELATIONSHIP TRAITS ---------------------------------------------------------------------*/
+	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
+	use \App\Models\Traits\hasMany\HasPersonDocumentsTrait;
 	
 	/* ---------------------------------------------------------------------------- GLOBAL SCOPE TRAITS ---------------------------------------------------------------------*/
 
