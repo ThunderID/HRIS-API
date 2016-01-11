@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\BranchObserver;
+// use App\Models\Observers\ChartObserver;
 
 /**
- * Used for Branch Models
+ * Used for Chart Models
  * 
  * @author cmooy
  */
-class Branch extends BaseModel
+class Chart extends BaseModel
 {
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table					= 'branches';
+	protected $table				= 'charts';
 
 	/**
 	 * Timestamp field
@@ -30,21 +30,21 @@ class Branch extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
 	 */
-	protected $appends					=	[];
+	protected $appends				=	[];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden 					= [];
+	protected $hidden 				= [];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -52,8 +52,16 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'branch_id'						,
+											'chart_id'						,
 											'name'							,
-											'organisation_id'				,
+											'path'							,
+											'grade'							,
+											'tag'							,
+											'min_employee'					,
+											'ideal_employee'				,
+											'max_employee'					,
+											'current_employee'				,
 										];
 										
 	/**
@@ -62,8 +70,16 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:50',
-											'organisation_id'				=> 'required|exists:organisations,id',
+											'branch_id'						=> 'required|exists:branches,id',
+											// 'chart_id'						=> 'required|max:255',
+											'name'							=> 'required|max:255',
+											'path'							=> 'required|max:255',
+											'grade'							=> 'numeric',
+											'tag'							=> 'required|max:255',
+											'min_employee'					=> 'numeric',
+											'ideal_employee'				=> 'numeric',
+											'max_employee'					=> 'numeric',
+											'current_employee'				=> 'numeric',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -75,7 +91,7 @@ class Branch extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-	
+
 	/**
 	 * boot
 	 * observing model
@@ -85,8 +101,18 @@ class Branch extends BaseModel
 	{
         parent::boot();
  
-        // Branch::observe(new BranchObserver());
+        // Chart::observe(new ChartObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+	
+	/**
+	 * scope to find code of Chart
+	 *
+	 * @param string of code
+	 */
+	public function scopeCode($query, $variable)
+	{
+		return 	$query->where('code', $variable);
+	}
 }

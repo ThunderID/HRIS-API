@@ -1,21 +1,27 @@
 <?php namespace App\Models\Traits\hasMany;
 
-trait HasBranchesTrait {
+/**
+ * Trait for models has many Branches.
+ *
+ * @author cmooy
+ */
 
+trait HasBranchesTrait 
+{
 	/**
 	 * boot
 	 *
 	 * @return void
-	 * @author 
 	 **/
-
 	function HasBranchesTraitConstructor()
 	{
 		//
 	}
 
-	/* ------------------------------------------------------------------- RELATIONSHIP IN Branche PACKAGE -------------------------------------------------------------------*/
-
+	/**
+	 * call has many relationship
+	 *
+	 **/
 	public function Branches()
 	{
 		return $this->hasMany('App\Models\Branch');

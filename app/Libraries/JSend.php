@@ -42,11 +42,34 @@ class JSend
 			{
 				throw new InvalidJSendException('Errors must contain a message.');
 			}
-			$this->errorMessage = $errorMessage;
+
+			//send error message as an array 2 D
+			$array_of_error_message	= json_encode($errorMessage);
+			$array_of_error_message	= json_decode($array_of_error_message, true);
+			$this->parsingErrorMessage($array_of_error_message);
+
+			$this->errorMessage 	= $this->errorMessage;
+			//end of send error message as an array 2 D
+
 			$this->errorCode = $errorCode;
 		}
 
 		$this->data = $data;
+	}
+
+	public function parsingErrorMessage($array_of_error_message)
+	{
+		if(is_array($array_of_error_message))
+		{
+			foreach ($array_of_error_message as $key => $value) 
+			{
+				$error[] = $this->parsingErrorMessage($value);
+			}
+		}
+		else
+		{
+			$this->errorMessage[]	= $array_of_error_message;
+		}
 	}
 
 	public function getStatus()
@@ -127,7 +150,14 @@ class JSend
 
 		if ($this->isError()) 
 		{
-			$theArray['message'] = (string) $this->errorMessage;
+			if(is_array($this->errorMessage))
+			{
+				$theArray['message'] = (array) $this->errorMessage;
+			}
+			else
+			{
+				$theArray['message'] = (string) $this->errorMessage;
+			}
 
 			if (! empty($this->errorCode)) 
 			{

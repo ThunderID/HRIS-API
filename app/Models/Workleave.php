@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\BranchObserver;
+// use App\Models\Observers\WorkleaveObserver;
 
 /**
- * Used for Branch Models
+ * Used for Workleave Models
  * 
  * @author cmooy
  */
-class Branch extends BaseModel
+class Workleave extends BaseModel
 {
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table					= 'branches';
+	protected $table				= 'tmp_workleaves';
 
 	/**
 	 * Timestamp field
@@ -30,21 +30,21 @@ class Branch extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
 	 */
-	protected $appends					=	[];
+	protected $appends				=	[];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden 					= [];
+	protected $hidden 				= [];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -52,8 +52,11 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'name'							,
 											'organisation_id'				,
+											'name'							,
+											'quota'							,
+											'status'						,
+											'is_active'						,
 										];
 										
 	/**
@@ -62,8 +65,11 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:50',
 											'organisation_id'				=> 'required|exists:organisations,id',
+											'name'							=> 'required|max:255',
+											'quota'							=> 'required|numeric',
+											'status'						=> 'required|in:CB,CI,CN',
+											'is_active'						=> 'boolean',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -75,7 +81,7 @@ class Branch extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-	
+
 	/**
 	 * boot
 	 * observing model
@@ -85,7 +91,7 @@ class Branch extends BaseModel
 	{
         parent::boot();
  
-        // Branch::observe(new BranchObserver());
+        // Workleave::observe(new WorkleaveObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

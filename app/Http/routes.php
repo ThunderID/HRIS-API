@@ -18,12 +18,27 @@ $app->get('/', function () use ($app) {
 // ------------------------------------------------------------------------------------
 // ORGANISATIONS
 // ------------------------------------------------------------------------------------
-
-//all organisation it self
-$app->post('/organisations',
+$app->get('/organisations',
 	[
-		// 'middleware'		=> 'oauth',
 		'uses'				=> 'OrganisationController@index'
+	]
+);
+
+$app->get('/organisation/{id}',
+	[
+		'uses'				=> 'OrganisationController@detail'
+	]
+);
+
+$app->post('/organisation/store',
+	[
+		'uses'				=> 'OrganisationController@store'
+	]
+);
+
+$app->get('/organisation/delete/{id}',
+	[
+		'uses'				=> 'OrganisationController@delete'
 	]
 );
 

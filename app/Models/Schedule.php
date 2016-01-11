@@ -2,21 +2,27 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\BranchObserver;
+// use App\Models\Observers\ScheduleObserver;
 
 /**
- * Used for Branch Models
+ * Used for Schedule Models
  * 
  * @author cmooy
  */
-class Branch extends BaseModel
+class Schedule extends BaseModel
 {
+	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\hasMany\HasSchedulesTrait;
+
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table					= 'branches';
+	protected $table				= 'tmp_schedules';
 
 	/**
 	 * Timestamp field
@@ -30,21 +36,21 @@ class Branch extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates				=	['created_at', 'updated_at', 'deleted_at', 'on'];
 
 	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
 	 */
-	protected $appends					=	[];
+	protected $appends				=	[];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden 					= [];
+	protected $hidden 				= [];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -53,7 +59,10 @@ class Branch extends BaseModel
 	 */
 	protected $fillable				=	[
 											'name'							,
-											'organisation_id'				,
+											'status'						,
+											'on'							,
+											'start'							,
+											'end'							,
 										];
 										
 	/**
@@ -62,8 +71,11 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:50',
-											'organisation_id'				=> 'required|exists:organisations,id',
+											'name'							=> 'required|max:255',
+											'status'						=> 'required|in:DN,SS,SL,CN,CB,CI,UL,HB,L',
+											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
+											'start'							=> 'required',
+											'end'							=> 'required',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -75,7 +87,7 @@ class Branch extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-	
+
 	/**
 	 * boot
 	 * observing model
@@ -85,7 +97,7 @@ class Branch extends BaseModel
 	{
         parent::boot();
  
-        // Branch::observe(new BranchObserver());
+        // Schedule::observe(new ScheduleObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

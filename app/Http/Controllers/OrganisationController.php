@@ -8,64 +8,89 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Handle Protected Resource of organisation
+ * 
+ * @author cmooy
+ */
 class OrganisationController extends Controller
 {
     /**
      * Display all Organisations
      *
-     * @return Response
+     * @param search, skip, take
+     * @return JSend Response
      */
     public function index()
     {
         $result                     = new \App\Models\Organisation;
 
-        if(Input::has('id'))
+        if(Input::has('search'))
         {
-            $search                 = Input::get('id');
-            $result                 = $result->id($search);
-        }
-        if(Input::has('code'))
-        {
-            $search                 = Input::get('code');
-            $result                 = $result->code($search)->with(['branches']);
-        }
-        if(Input::has('absencetoday'))
-        {
-            $search                 = Input::get('absencetoday');
-            $result                 = $result->id($search)->with(['absencetoday']);
-        }
-        if(Input::has('authorizedemployee'))
-        {
-            $search                 = Input::get('authorizedemployee');
-            $result                 = $result->with(['authorizedemployee' => function($q)use($search){$q->id($search);}]);
-        }
-        
-        $result                     = $result->get()->toArray();
+            $search                 = Input::get('search');
 
-        return new JSend('success', (array)$result);
+            foreach ($search as $key => $value) 
+            {
+                switch (strtolower($key)) 
+                {
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+
+        $count                      = $result->count();
+
+        if(Input::has('skip'))
+        {
+            $skip                   = Input::get('skip');
+            $result                 = $result->skip($skip);
+        }
+
+        if(Input::has('take'))
+        {
+            $take                   = Input::get('take');
+            $result                 = $result->take($take);
+        }
+
+        $result                     = $result->with(['branches'])->get()->toArray();
+
+        return new JSend('success', (array)['count' => $count, 'data' => $result]);
     }
 
     /**
-     * Display a Organisation
+     * Display an Organisation
      *
+     * @param id
      * @return Response
      */
     public function detail($id = null)
     {
         //
-        $result                     = \App\Models\Organisation::id($id)->with(['varians', 'categories', 'tags', 'labels', 'images', 'prices'])->first()->toArray();
+        $result                     = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves'])->first();
 
-        return new JSend('success', (array)$result);
+        if($result)
+        {
+            return new JSend('success', (array)$result->toArray());
+        }
+        
+        return new JSend('error', (array)Input::all(), 'ID Tidak Valid.');
     }
 
     /**
-     * Store a Organisation
+     * Store an organisation
+     * 1. store organisation
+     * 2. store branch
+     * 3. store calendar
+     * 4. store workleave
      *
+     * @param organisation
      * @return Response
      */
     public function store()
     {
-        if(!Input::has('Organisation'))
+        if(!Input::has('organisation'))
         {
             return new JSend('error', (array)Input::all(), 'Tidak ada data Organisation.');
         }
@@ -75,9 +100,9 @@ class OrganisationController extends Controller
         DB::beginTransaction();
 
         //1. Validate Organisation Parameter
+        $organisation                    = Input::get('organisation');
 
-        // $Organisation                    = Input::get('Organisation');
-        if(is_null($Organisation['id']))
+        if(is_null($organisation['id']))
         {
             $is_new                 = true;
         }
@@ -86,21 +111,16 @@ class OrganisationController extends Controller
             $is_new                 = false;
         }
 
-        $Organisation['description']     = json_decode($Organisation['description'], true);
-
-        $Organisation_rules              =   [
+        $organisation_rules         =   [
                                             'name'                      => 'required|max:255',
-                                            'upc'                       => 'required|max:255|unique:Organisations,upc,'.(!is_null($Organisation['id']) ? $Organisation['id'] : ''),
-                                            'slug'                      => 'required|max:255|unique:Organisations,slug,'.(!is_null($Organisation['id']) ? $Organisation['id'] : ''),
-                                            'description.description'   => 'required|max:512',
-                                            'description.fit'           => 'required|max:512',
+                                            'code'                      => 'required|max:255|unique:organisations,upc,'.(!is_null($organisation['id']) ? $organisation['id'] : ''),
                                         ];
 
         //1a. Get original data
-        $Organisation_data               = \App\Models\Organisation::findornew($Organisation['id']);
+        $organisation_data          = \App\Models\Organisation::findornew($organisation['id']);
 
         //1b. Validate Basic Organisation Parameter
-        $validator                  = Validator::make($Organisation, $Organisation_rules);
+        $validator                  = Validator::make($organisation, $organisation_rules);
 
         if (!$validator->passes())
         {
@@ -109,547 +129,362 @@ class OrganisationController extends Controller
         else
         {
             //if validator passed, save Organisation
-            $Organisation['description'] = json_encode($Organisation['description']);
+            $organisation_data           = $organisation_data->fill($organisation);
 
-            $Organisation_data           = $Organisation_data->fill($Organisation);
-
-            if(!$Organisation_data->save())
+            if(!$organisation_data->save())
             {
-                $errors->add('Organisation', $Organisation_data->getError());
+                $errors->add('Organisation', $organisation_data->getError());
             }
         }
         //End of validate Organisation
 
-        //2. Validate Organisation Varian Parameter
-        if(!$errors->count())
+        //2. Validate Organisation branch Parameter
+        if(!$errors->count() && isset($product['branches']) && is_array($product['branches']))
         {
-            $varian_current_ids         = [];
-            foreach ($Organisation['varians'] as $key => $value) 
+            $branch_current_ids         = [];
+            foreach ($organisation['branches'] as $key => $value) 
             {
                 if(!$errors->count())
                 {
-                    $varian_data        = \App\Models\Varian::find($value['id']);
+                    $branch_data        = \App\Models\Branch::find($value['id']);
 
-                    if($varian_data)
+                    if($branch_data)
                     {
-                        $varian_rules   =   [
-                                                'Organisation_id'                => 'required|numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'sku'                       => 'required|max:255|in:'.$varian_data['sku'].'unique:varians,sku,'.(!is_null($varian_data['id']) ? $varian_data['id'] : ''),
-                                                'size'                      => 'required|max:255|in:'.$varian_data['size'],
+                        $branch_rules   =   [
+                                                'organisation_id'           => 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'name'                      => 'required|max:255',
                                             ];
 
-                        $validator      = Validator::make($varian_data['attributes'], $varian_rules);
+                        $validator      = Validator::make($branch_data['attributes'], $branch_rules);
                     }
                     else
                     {
-                        $varian_rules   =   [
-                                                'Organisation_id'                => 'numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'sku'                       => 'required|max:255|unique:varians,sku,'.(!is_null($value['id']) ? $value['id'] : ''),
-                                                'size'                      => 'required|max:255|',
+                        $branch_rules   =   [
+                                                'organisation_id'           => 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'name'                      => 'required|max:255',
                                             ];
 
-                        $validator      = Validator::make($value, $varian_rules);
+                        $validator      = Validator::make($value, $branch_rules);
                     }
 
-                    //if there was varian and validator false
-                    if ($varian_data && !$validator->passes())
+                    //if there was branch and validator false
+                    if ($branch_data && !$validator->passes())
                     {
-                        if($value['Organisation_id']!=$Organisation['id'])
+                        if($value['organisation_id']!=$organisation['id'])
                         {
-                            $errors->add('Varian', 'Produk dari Varian Tidak Valid.');
+                            $errors->add('branch', 'Organisasi dari branch Tidak Valid.');
                         }
                         elseif($is_new)
                         {
-                            $errors->add('Varian', 'Produk Varian Tidak Valid.');
+                            $errors->add('branch', 'Organisasi branch Tidak Valid.');
                         }
                         else
                         {
-                            $varian_data                = $varian_data->fill($value);
+                            $branch_data                = $branch_data->fill($value);
 
-                            if(!$varian_data->save())
+                            if(!$branch_data->save())
                             {
-                                $errors->add('Varian', $varian_data->getError());
+                                $errors->add('branch', $branch_data->getError());
                             }
                             else
                             {
-                                $varian_current_ids[]   = $varian_data['id'];
+                                $branch_current_ids[]   = $branch_data['id'];
                             }
                         }
                     }
-                    //if there was varian and validator false
-                    elseif (!$varian_data && !$validator->passes())
+                    //if there was branch and validator false
+                    elseif (!$branch_data && !$validator->passes())
                     {
-                        $errors->add('Varian', $validator->errors());
+                        $errors->add('branch', $validator->errors());
                     }
-                    elseif($varian_data && $validator->passes())
+                    elseif($branch_data && $validator->passes())
                     {
-                        $varian_current_ids[]           = $varian_data['id'];
+                        $branch_current_ids[]           = $branch_data['id'];
                     }
                     else
                     {
-                        $value['Organisation_id']            = $Organisation_data['id'];
+                        $value['organisation_id']            = $organisation_data['id'];
 
-                        $varian_data                    = new \App\Models\Varian;
+                        $branch_data                    = new \App\Models\Branch;
 
-                        $varian_data                    = $varian_data->fill($value);
+                        $branch_data                    = $branch_data->fill($value);
 
-                        if(!$varian_data->save())
+                        if(!$branch_data->save())
                         {
-                            $errors->add('Varian', $varian_data->getError());
+                            $errors->add('branch', $branch_data->getError());
                         }
                         else
                         {
-                            $varian_current_ids[]       = $varian_data['id'];
+                            $branch_current_ids[]       = $branch_data['id'];
                         }
                     }
                 }
-
-                //if there was no error, check if there were things need to be delete
-                if(!$errors->count())
+            }
+            //if there was no error, check if there were things need to be delete
+            if(!$errors->count())
+            {
+                $branches                            = \App\Models\Branch::Organisationid($organisation['id'])->get()->toArray();
+                
+                $branch_should_be_ids               = [];
+                foreach ($branches as $key => $value) 
                 {
-                    $varians                            = \App\Models\Varian::Organisationid($Organisation['id'])->get()->toArray();
-                    
-                    $varian_should_be_ids               = [];
-                    foreach ($varians as $key => $value) 
-                    {
-                        $varian_should_be_ids[]         = $value['id'];
-                    }
+                    $branch_should_be_ids[]         = $value['id'];
+                }
 
-                    $difference_varian_ids              = array_diff($varian_should_be_ids, $varian_current_ids);
+                $difference_branch_ids              = array_diff($branch_should_be_ids, $branch_current_ids);
 
-                    if($difference_varian_ids)
+                if($difference_branch_ids)
+                {
+                    foreach ($difference_branch_ids as $key => $value) 
                     {
-                        foreach ($difference_varian_ids as $key => $value) 
+                        $branch_data                = \App\Models\Branch::find($value);
+
+                        if(!$branch_data->delete())
                         {
-                            $varian_data                = \App\Models\Varian::find($value);
-
-                            if(!$varian_data->delete())
-                            {
-                                $errors->add('Varian', $varian_data->getError());
-                            }
+                            $errors->add('branch', $branch_data->getError());
                         }
                     }
                 }
             }
         }
 
-        //End of validate Organisation varian
+        //End of validate Organisation branch
 
-        //3. Validate Organisation Price Parameter
-        if(!$errors->count())
+        //3. Validate Organisation calendar Parameter
+        if(!$errors->count() && isset($product['calendars']) && is_array($product['calendars']))
         {
-            $price_current_ids         = [];
-            foreach ($Organisation['prices'] as $key => $value) 
+            $calendar_current_ids         = [];
+            foreach ($organisation['calendars'] as $key => $value) 
             {
                 if(!$errors->count())
                 {
-                    $price_data        = \App\Models\Price::find($value['id']);
+                    $calendar_data        = \App\Models\Calendar::find($value['id']);
 
-                    if($price_data)
+                    if($calendar_data)
                     {
-                        $price_rules   =   [
-                                                'Organisation_id'                => 'required|numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'price'                     => 'required|numeric|in:'.$price_data['price'],
-                                                'promo_price'               => 'required|numeric|in:'.$price_data['promo_price'],
-                                                'started_at'                => 'required|date_format:"Y-m-d H:i:s"',
+                        $calendar_rules   =   [
+                                                'organisation_id'               => 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'import_from_id'                => 'required',
+                                                'name'                          => 'required|max:255',
+                                                'workdays'                      => 'required',
+                                                'start'                         => 'required',
+                                                'end'                           => 'required',
                                             ];
 
-                        $validator      = Validator::make($price_data['attributes'], $price_rules);
+                        $validator      = Validator::make($calendar_data['attributes'], $calendar_rules);
                     }
                     else
                     {
-                        $price_rules   =   [
-                                                'Organisation_id'                => 'numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'price'                     => 'required|numeric',
-                                                'promo_price'               => 'required|numeric',
-                                                'started_at'                => 'required|date_format:"Y-m-d H:i:s"',
+                        $calendar_rules   =   [
+                                                'organisation_id'               => 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'import_from_id'                => 'required',
+                                                'name'                          => 'required|max:255',
+                                                'workdays'                      => 'required',
+                                                'start'                         => 'required',
+                                                'end'                           => 'required',
                                             ];
 
-                        $validator      = Validator::make($value, $price_rules);
+                        $validator      = Validator::make($value, $calendar_rules);
                     }
 
-                    //if there was price and validator false
-                    if ($price_data && !$validator->passes())
+                    //if there was calendar and validator false
+                    if ($calendar_data && !$validator->passes())
                     {
-                        if($value['Organisation_id']!=$Organisation['id'])
+                        if($value['organisation_id']!=$organisation['id'])
                         {
-                            $errors->add('Price', 'Produk dari Price Tidak Valid.');
+                            $errors->add('calendar', 'Organisasi dari calendar Tidak Valid.');
                         }
                         elseif($is_new)
                         {
-                            $errors->add('Price', 'Produk Price Tidak Valid.');
+                            $errors->add('calendar', 'Organisasi calendar Tidak Valid.');
                         }
                         else
                         {
-                            $price_data                = $price_data->fill($value);
+                            $calendar_data                = $calendar_data->fill($value);
 
-                            if(!$price_data->save())
+                            if(!$calendar_data->save())
                             {
-                                $errors->add('Price', $price_data->getError());
+                                $errors->add('calendar', $calendar_data->getError());
                             }
                             else
                             {
-                                $price_current_ids[]   = $price_data['id'];
+                                $calendar_current_ids[]   = $calendar_data['id'];
                             }
                         }
                     }
-                    //if there was price and validator false
-                    elseif (!$price_data && !$validator->passes())
+                    //if there was calendar and validator false
+                    elseif (!$calendar_data && !$validator->passes())
                     {
-                        $errors->add('Price', $validator->errors());
+                        $errors->add('calendar', $validator->errors());
                     }
-                    elseif($price_data && $validator->passes())
+                    elseif($calendar_data && $validator->passes())
                     {
-                        $price_current_ids[]           = $price_data['id'];
+                        $calendar_current_ids[]           = $calendar_data['id'];
                     }
                     else
                     {
-                        $value['Organisation_id']           = $Organisation_data['id'];
+                        $value['organisation_id']           = $organisation_data['id'];
 
-                        $price_data                    = new \App\Models\Price;
+                        $calendar_data                    = new \App\Models\Calendar;
 
-                        $price_data                    = $price_data->fill($value);
+                        $calendar_data                    = $calendar_data->fill($value);
 
-                        if(!$price_data->save())
+                        if(!$calendar_data->save())
                         {
-                            $errors->add('Price', $price_data->getError());
+                            $errors->add('calendar', $calendar_data->getError());
                         }
                         else
                         {
-                            $price_current_ids[]       = $price_data['id'];
+                            $calendar_current_ids[]       = $calendar_data['id'];
                         }
                     }
                 }
-
-                //if there was no error, check if there were things need to be delete
-                if(!$errors->count())
+            }
+            //if there was no error, check if there were things need to be delete
+            if(!$errors->count())
+            {
+                $calendars                            = \App\Models\Calendar::Organisationid($organisation['id'])->get()->toArray();
+                
+                $calendar_should_be_ids               = [];
+                foreach ($calendars as $key => $value) 
                 {
-                    $prices                            = \App\Models\Price::Organisationid($Organisation['id'])->get()->toArray();
-                    
-                    $price_should_be_ids               = [];
-                    foreach ($prices as $key => $value) 
-                    {
-                        $price_should_be_ids[]         = $value['id'];
-                    }
+                    $calendar_should_be_ids[]         = $value['id'];
+                }
 
-                    $difference_price_ids              = array_diff($price_should_be_ids, $price_current_ids);
+                $difference_calendar_ids              = array_diff($calendar_should_be_ids, $calendar_current_ids);
 
-                    if($difference_price_ids)
+                if($difference_calendar_ids)
+                {
+                    foreach ($difference_calendar_ids as $key => $value) 
                     {
-                        foreach ($difference_price_ids as $key => $value) 
+                        $calendar_data                = \App\Models\Calendar::find($value);
+
+                        if(!$calendar_data->delete())
                         {
-                            $price_data                = \App\Models\Price::find($value);
-
-                            if(!$price_data->delete())
-                            {
-                                $errors->add('Price', $price_data->getError());
-                            }
+                            $errors->add('calendar', $calendar_data->getError());
                         }
                     }
                 }
             }
         }
-        //End of validate Organisation price
+        //End of validate Organisation calendar
 
-        //4. Validate Organisation Category Parameter
+        //4. Validate Organisation workleave Parameter
         if(!$errors->count())
         {
-            $category_current_ids               = [];
-
-            foreach ($Organisation['categories'] as $key => $value) 
-            {
-                $category                       = \App\Models\Category::find($value['id']);
-
-                if($category)
-                {
-                    $category_current_ids[]     = $value['id'];
-                }
-                else
-                {
-                    $errors->add('Category', 'Kategori tidak valid.');
-                }
-            }
-
-            if($errors->count())
-            {
-                if(!$Organisation_data->categories()->sync($category_current_ids))
-                {
-                    $errors->add('Category', 'Kategori produk tidak tersimpan.');
-                }
-            }
-        }
-        //End of validate Organisation category
-
-        //5. Validate Organisation Tag Parameter
-        if(!$errors->count())
-        {
-            $tag_current_ids                = [];
-
-            foreach ($Organisation['tags'] as $key => $value) 
-            {
-                $tag                        = \App\Models\Tag::find($value['id']);
-
-                if($tag)
-                {
-                    $tag_current_ids[]      = $value['id'];
-                }
-                else
-                {
-                    $errors->add('Tag', 'Tag tidak valid.');
-                }
-            }
-
-            if($errors->count())
-            {
-                if(!$Organisation_data->categories()->sync($tag_current_ids))
-                {
-                    $errors->add('Tag', 'Tag produk tidak tersimpan.');
-                }
-            }
-        }
-        //End of validate Organisation category
-
-        //6. Validate Organisation Label Parameter
-        if(!$errors->count())
-        {
-            $label_current_ids         = [];
-            foreach ($Organisation['labels'] as $key => $value) 
+            $workleave_current_ids         = [];
+            foreach ($organisation['workleaves'] as $key => $value) 
             {
                 if(!$errors->count())
                 {
-                    $label_data        = \App\Models\OrganisationLabel::find($value['id']);
+                    $workleave_data        = \App\Models\Workleave::find($value['id']);
 
-                    if($label_data)
+                    if($workleave_data)
                     {
-                        $label_rules   =   [
-                                                'Organisation_id'                => 'required|numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'lable'                     => 'required|max:255|in:'.$label_data['lable'],
-                                                'value'                     => 'required|in:'.$label_data['value'],
-                                                'started_at'                => 'required|date_format:"Y-m-d H:i:s"in:'.$label_data['started_at'],
-                                                'ended_at'                  => 'date_format:"Y-m-d H:i:s"|in:'.$label_data['ended_at'],
+                        $workleave_rules   = [
+                                                'organisation_id'           => 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'name'                      => 'required|max:255',
+                                                'quota'                     => 'required|numeric',
+                                                'status'                    => 'required|in:CN,CB,CI',
+                                                'is_active'                 => 'boolean',
                                             ];
 
-                        $validator      = Validator::make($label_data['attributes'], $label_rules);
+                        $validator      = Validator::make($workleave_data['attributes'], $workleave_rules);
                     }
                     else
                     {
-                        $label_rules   =   [
-                                                'Organisation_id'                => 'numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'lable'                     => 'required|max:255',
-                                                'value'                     => 'required',
-                                                'started_at'                => 'required|date_format:"Y-m-d H:i:s"',
-                                                'ended_at'                  => 'date_format:"Y-m-d H:i:s"',
+                        $workleave_rules   =   [
+                                                'organisation_id'           => 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'name'                      => 'required|max:255',
+                                                'quota'                     => 'required|numeric',
+                                                'status'                    => 'required|in:CN,CB,CI',
+                                                'is_active'                 => 'boolean',
                                             ];
 
-                        $validator      = Validator::make($value, $label_rules);
+                        $validator      = Validator::make($value, $workleave_rules);
                     }
 
-                    //if there was label and validator false
-                    if ($label_data && !$validator->passes())
+                    //if there was workleave and validator false
+                    if ($workleave_data && !$validator->passes())
                     {
-                        if($value['Organisation_id']!=$Organisation['id'])
+                        if($value['organisation_id']!=$organisation['id'])
                         {
-                            $errors->add('OrganisationLabel', 'Produk dari OrganisationLabel Tidak Valid.');
+                            $errors->add('Workleave', 'Organisasi dari Workleave Tidak Valid.');
                         }
                         elseif($is_new)
                         {
-                            $errors->add('OrganisationLabel', 'Produk OrganisationLabel Tidak Valid.');
+                            $errors->add('Workleave', 'Organisasi Workleave Tidak Valid.');
                         }
                         else
                         {
-                            $label_data                = $label_data->fill($value);
+                            $workleave_data                = $workleave_data->fill($value);
 
-                            if(!$label_data->save())
+                            if(!$workleave_data->save())
                             {
-                                $errors->add('OrganisationLabel', $label_data->getError());
+                                $errors->add('Workleave', $workleave_data->getError());
                             }
                             else
                             {
-                                $label_current_ids[]   = $label_data['id'];
+                                $workleave_current_ids[]   = $workleave_data['id'];
                             }
                         }
                     }
-                    //if there was label and validator false
-                    elseif (!$label_data && !$validator->passes())
+                    //if there was workleave and validator false
+                    elseif (!$workleave_data && !$validator->passes())
                     {
-                        $errors->add('OrganisationLabel', $validator->errors());
+                        $errors->add('Workleave', $validator->errors());
                     }
-                    elseif($label_data && $validator->passes())
+                    elseif($workleave_data && $validator->passes())
                     {
-                        $label_current_ids[]           = $label_data['id'];
+                        $workleave_current_ids[]           = $workleave_data['id'];
                     }
                     else
                     {
-                        $value['Organisation_id']            = $Organisation_data['id'];
+                        $value['organisation_id']            = $organisation_data['id'];
 
-                        $label_data                    = new \App\Models\OrganisationLabel;
+                        $workleave_data                    = new \App\Models\Workleave;
 
-                        $label_data                    = $label_data->fill($value);
+                        $workleave_data                    = $workleave_data->fill($value);
 
-                        if(!$label_data->save())
+                        if(!$workleave_data->save())
                         {
-                            $errors->add('OrganisationLabel', $label_data->getError());
+                            $errors->add('Workleave', $workleave_data->getError());
                         }
                         else
                         {
-                            $label_current_ids[]       = $label_data['id'];
-                        }
-                    }
-                }
-
-                //if there was no error, check if there were things need to be delete
-                if(!$errors->count())
-                {
-                    $labels                            = \App\Models\OrganisationLabel::Organisationid($Organisation['id'])->get()->toArray();
-                    
-                    $label_should_be_ids               = [];
-                    foreach ($labels as $key => $value) 
-                    {
-                        $label_should_be_ids[]         = $value['id'];
-                    }
-
-                    $difference_label_ids              = array_diff($label_should_be_ids, $label_current_ids);
-
-                    if($difference_label_ids)
-                    {
-                        foreach ($difference_label_ids as $key => $value) 
-                        {
-                            $label_data                = \App\Models\OrganisationLabel::find($value);
-
-                            if(!$label_data->delete())
-                            {
-                                $errors->add('OrganisationLabel', $label_data->getError());
-                            }
+                            $workleave_current_ids[]       = $workleave_data['id'];
                         }
                     }
                 }
             }
-        }
-        //End of validate Organisation label
-
-        //7. Validate Organisation Image Parameter
-        if(!$errors->count())
-        {
-            $label_current_ids         = [];
-            foreach ($Organisation['images'] as $key => $value) 
+            //if there was no error, check if there were things need to be delete
+            if(!$errors->count())
             {
-                if(!$errors->count())
+                $workleaves                            = \App\Models\Workleave::Organisationid($organisation['id'])->get()->toArray();
+                
+                $workleave_should_be_ids               = [];
+                foreach ($workleaves as $key => $value) 
                 {
-                    $image_data        = \App\Models\Image::find($value['id']);
-
-                    if($image_data)
-                    {
-                        $image_rules   =   [
-                                                'imageable_id'              => 'required|numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'imageable_type'            => 'required|max:255|in:'.$image_data['imageable_type'],
-                                                'thumbnail'                 => 'required|max:255|in:'.$image_data['thumbnail'],
-                                                'image_xs'                  => 'required|max:255|in:'.$image_data['image_xs'],
-                                                'image_sm'                  => 'required|max:255|in:'.$image_data['image_sm'],
-                                                'image_md'                  => 'required|max:255|in:'.$image_data['image_md'],
-                                                'image_lg'                  => 'required|max:255|in:'.$image_data['image_lg'],
-                                                'is_default'                => 'boolean|in:'.$image_data['is_default'],
-                                            ];
-
-                        $validator      = Validator::make($image_data['attributes'], $image_rules);
-                    }
-                    else
-                    {
-                        $image_rules   =   [
-                                                'imageable_id'              => 'numeric|'.($is_new ? '' : 'in:'.$Organisation_data['id']),
-                                                'thumbnail'                 => 'required|max:255',
-                                                'image_xs'                  => 'required|max:255',
-                                                'image_sm'                  => 'required|max:255',
-                                                'image_md'                  => 'required|max:255',
-                                                'image_lg'                  => 'required|max:255',
-                                                'is_default'                => 'boolean',
-                                            ];
-
-                        $validator      = Validator::make($value, $image_rules);
-                    }
-
-                    //if there was image and validator false
-                    if ($image_data && !$validator->passes())
-                    {
-                        if($value['imageable_id']!=$Organisation['id'])
-                        {
-                            $errors->add('Image', 'Produk dari Image Tidak Valid.');
-                        }
-                        elseif($is_new)
-                        {
-                            $errors->add('Image', 'Produk Image Tidak Valid.');
-                        }
-                        else
-                        {
-                            $image_data                = $image_data->fill($value);
-
-                            if(!$image_data->save())
-                            {
-                                $errors->add('Image', $image_data->getError());
-                            }
-                            else
-                            {
-                                $image_current_ids[]   = $image_data['id'];
-                            }
-                        }
-                    }
-                    //if there was image and validator false
-                    elseif (!$image_data && !$validator->passes())
-                    {
-                        $errors->add('Image', $validator->errors());
-                    }
-                    elseif($image_data && $validator->passes())
-                    {
-                        $image_current_ids[]            = $image_data['id'];
-                    }
-                    else
-                    {
-                        $value['imageable_id']          = $Organisation_data['id'];
-                        $value['imageable_type']        = get_class($Organisation_data);
-
-                        $image_data                     = new \App\Models\Image;
-
-                        $image_data                     = $image_data->fill($value);
-
-                        if(!$image_data->save())
-                        {
-                            $errors->add('Image', $image_data->getError());
-                        }
-                        else
-                        {
-                            $image_current_ids[]       = $image_data['id'];
-                        }
-                    }
+                    $workleave_should_be_ids[]         = $value['id'];
                 }
 
-                //if there was no error, check if there were things need to be delete
-                if(!$errors->count())
+                $difference_workleave_ids              = array_diff($workleave_should_be_ids, $workleave_current_ids);
+
+                if($difference_workleave_ids)
                 {
-                    $images                            = \App\Models\Image::imageableid($Organisation['id'])->get()->toArray();
-                    
-                    $image_should_be_ids               = [];
-                    foreach ($images as $key => $value) 
+                    foreach ($difference_workleave_ids as $key => $value) 
                     {
-                        $image_should_be_ids[]         = $value['id'];
-                    }
+                        $workleave_data                = \App\Models\Workleave::find($value);
 
-                    $difference_image_ids              = array_diff($image_should_be_ids, $image_current_ids);
-
-                    if($difference_image_ids)
-                    {
-                        foreach ($difference_image_ids as $key => $value) 
+                        if(!$workleave_data->delete())
                         {
-                            $image_data                = \App\Models\Image::find($value);
-
-                            if(!$image_data->delete())
-                            {
-                                $errors->add('Image', $image_data->getError());
-                            }
+                            $errors->add('Workleave', $workleave_data->getError());
                         }
                     }
                 }
             }
         }
-        //End of validate Organisation image
+        //End of validate Organisation workleave
 
         if($errors->count())
         {
@@ -660,28 +495,28 @@ class OrganisationController extends Controller
 
         DB::commit();
         
-        $final_Organisation              = \App\Models\Organisation::id($Organisation_data['id'])->with(['varians', 'categories', 'tags', 'labels', 'images', 'prices'])->first()->toArray();
+        $final_organisation             = \App\Models\Organisation::id($organisation_data['id'])->with(['branches', 'calendars', 'calendars.schedules', 'workleaves'])->first()->toArray();
 
-        return new JSend('success', (array)$final_Organisation);
+        return new JSend('success', (array)$final_organisation);
     }
 
     /**
-     * Delete a Organisation
+     * Delete an Organisation
      *
      * @return Response
      */
     public function delete($id = null)
     {
         //
-        $Organisation                    = \App\Models\Organisation::id($id)->with(['varians', 'categories', 'tags', 'labels', 'images', 'prices'])->first();
+        $organisation               = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves'])->first();
 
-        $result                     = $Organisation;
+        $result                     = $organisation;
 
-        if($Organisation->delete())
+        if($organisation->delete())
         {
             return new JSend('success', (array)$result);
         }
 
-        return new JSend('error', (array)$result, $Organisation->getError());
+        return new JSend('error', (array)$result, $organisation->getError());
     }
 }

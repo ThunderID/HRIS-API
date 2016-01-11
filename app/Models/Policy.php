@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\BranchObserver;
+// use App\Models\Observers\PolicyObserver;
 
 /**
- * Used for Branch Models
+ * Used for Policy Models
  * 
  * @author cmooy
  */
-class Branch extends BaseModel
+class Policy extends BaseModel
 {
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table					= 'branches';
+	protected $table					= 'tmp_policies';
 
 	/**
 	 * Timestamp field
@@ -30,7 +30,7 @@ class Branch extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates					=	['created_at', 'updated_at', 'deleted_at', 'started_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
@@ -52,8 +52,9 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'name'							,
-											'organisation_id'				,
+											'type'							,
+											'value'							,
+											'started_at'					,
 										];
 										
 	/**
@@ -62,8 +63,9 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:50',
-											'organisation_id'				=> 'required|exists:organisations,id',
+											'type'							=> 'required',
+											'value'							=> 'required',
+											'started_at'					=> 'required|date_format:"Y-m-d H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -85,7 +87,7 @@ class Branch extends BaseModel
 	{
         parent::boot();
  
-        // Branch::observe(new BranchObserver());
+        // Policy::observe(new PolicyObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
