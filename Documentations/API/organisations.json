@@ -221,6 +221,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/workleaves'
+      documents:
+        type: array
+        items:
+          $ref: '#/definitions/documents'
   branches:
     properties:
       id:
@@ -273,6 +277,30 @@ definitions:
         type: string
       is_active:
         type: boolean
+  documents:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      tag:
+        type: string
+      template:
+        type: string
+      is_required:
+        type: boolean
+      templates:
+        type: array
+        items:
+          $ref: '#/definitions/templates'
+  templates:
+    properties:
+      id:
+        type: string
+      field:
+        type: string
+      type:
+        type: string
   Error:
     type: object
     properties:

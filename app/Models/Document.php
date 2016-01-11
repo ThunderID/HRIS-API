@@ -2,31 +2,27 @@
 
 namespace App\Models;
 
-use App\Models\Observers\OrganisationObserver;
+// use App\Models\Observers\DocumentObserver;
 
 /**
- * Used for Organisation Models
+ * Used for Document Models
  * 
  * @author cmooy
  */
-class Organisation extends BaseModel
+class Document extends BaseModel
 {
 	/**
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\Models\Traits\hasMany\HasBranchesTrait;
-	use \App\Models\Traits\hasMany\HasCalendarsTrait;
-	use \App\Models\Traits\hasMany\HasWorkleavesTrait;
-	use \App\Models\Traits\hasMany\HasDocumentsTrait;
-	// use \App\Models\Traits\hasMany\HasEmployeesTrait;
+	use \App\Models\Traits\hasMany\HasTemplatesTrait;
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'organisations';
+	protected $table				= 'tmp_documents';
 
 	/**
 	 * Timestamp field
@@ -62,8 +58,11 @@ class Organisation extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'organisation_id'				,
 											'name'							,
-											'code'							,
+											'tag'							,
+											'is_required'					,
+											'template'						,
 										];
 										
 	/**
@@ -72,8 +71,11 @@ class Organisation extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:50',
-											'code'							=> 'required|max:255',
+											'organisation_id'				=> 'required|exists:organisations,id',
+											'name'							=> 'required|max:255',
+											'tag'							=> 'required|max:255',
+											'is_required'					=> 'boolean',
+											'template'						=> 'required',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -95,18 +97,8 @@ class Organisation extends BaseModel
 	{
         parent::boot();
  
-        Organisation::observe(new OrganisationObserver());
+        // Document::observe(new DocumentObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
-	
-	/**
-	 * scope to find code of organisation
-	 *
-	 * @param string of code
-	 */
-	public function scopeCode($query, $variable)
-	{
-		return 	$query->where('code', $variable);
-	}
 }

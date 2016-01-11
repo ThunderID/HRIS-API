@@ -68,7 +68,7 @@ class OrganisationController extends Controller
     public function detail($id = null)
     {
         //
-        $result                     = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves'])->first();
+        $result                     = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves', 'documents', 'documents.templates'])->first();
 
         if($result)
         {
@@ -84,6 +84,7 @@ class OrganisationController extends Controller
      * 2. store branch
      * 3. store calendar
      * 4. store workleave
+     * 5. store document
      *
      * @param organisation
      * @return Response
@@ -139,7 +140,7 @@ class OrganisationController extends Controller
         //End of validate Organisation
 
         //2. Validate Organisation branch Parameter
-        if(!$errors->count() && isset($product['branches']) && is_array($product['branches']))
+        if(!$errors->count() && isset($organisation['branches']) && is_array($organisation['branches']))
         {
             $branch_current_ids         = [];
             foreach ($organisation['branches'] as $key => $value) 
@@ -251,7 +252,7 @@ class OrganisationController extends Controller
         //End of validate Organisation branch
 
         //3. Validate Organisation calendar Parameter
-        if(!$errors->count() && isset($product['calendars']) && is_array($product['calendars']))
+        if(!$errors->count() && isset($organisation['calendars']) && is_array($organisation['calendars']))
         {
             $calendar_current_ids         = [];
             foreach ($organisation['calendars'] as $key => $value) 
@@ -370,7 +371,7 @@ class OrganisationController extends Controller
         //End of validate Organisation calendar
 
         //4. Validate Organisation workleave Parameter
-        if(!$errors->count())
+        if(!$errors->count() && isset($organisation['workleaves']) && is_array($organisation['workleaves']))
         {
             $workleave_current_ids         = [];
             foreach ($organisation['workleaves'] as $key => $value) 
@@ -486,6 +487,235 @@ class OrganisationController extends Controller
         }
         //End of validate Organisation workleave
 
+        //5. Validate Organisation document Parameter
+        if(!$errors->count() && isset($organisation['documents']) && is_array($organisation['documents']))
+        {
+            $document_current_ids         = [];
+            foreach ($organisation['documents'] as $key => $value) 
+            {
+                if(!$errors->count())
+                {
+                    $document_data        = \App\Models\Document::find($value['id']);
+
+                    if($document_data)
+                    {
+                        $document_rules   = [
+                                                'organisation_id'           => 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'name'                      => 'required|max:255',
+                                                'tag'                       => 'required|max:255',
+                                                'template'                  => 'required',
+                                                'is_required'               => 'boolean',
+                                            ];
+
+                        $validator      = Validator::make($document_data['attributes'], $document_rules);
+                    }
+                    else
+                    {
+                        $document_rules   =   [
+                                                'organisation_id'           => 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'name'                      => 'required|max:255',
+                                                'quota'                     => 'required|max:255',
+                                                'template'                  => 'required',
+                                                'is_required'               => 'boolean',
+                                            ];
+
+                        $validator      = Validator::make($value, $document_rules);
+                    }
+
+                    //if there was document and validator false
+                    if ($document_data && !$validator->passes())
+                    {
+                        if($value['organisation_id']!=$organisation['id'])
+                        {
+                            $errors->add('document', 'Organisasi dari document Tidak Valid.');
+                        }
+                        elseif($is_new)
+                        {
+                            $errors->add('document', 'Organisasi document Tidak Valid.');
+                        }
+                        else
+                        {
+                            $document_data                = $document_data->fill($value);
+
+                            if(!$document_data->save())
+                            {
+                                $errors->add('document', $document_data->getError());
+                            }
+                            else
+                            {
+                                $document_current_ids[]   = $document_data['id'];
+                            }
+                        }
+                    }
+                    //if there was document and validator false
+                    elseif (!$document_data && !$validator->passes())
+                    {
+                        $errors->add('document', $validator->errors());
+                    }
+                    elseif($document_data && $validator->passes())
+                    {
+                        $document_current_ids[]           = $document_data['id'];
+                    }
+                    else
+                    {
+                        $value['organisation_id']            = $organisation_data['id'];
+
+                        $document_data                    = new \App\Models\Document;
+
+                        $document_data                    = $document_data->fill($value);
+
+                        if(!$document_data->save())
+                        {
+                            $errors->add('document', $document_data->getError());
+                        }
+                        else
+                        {
+                            $document_current_ids[]       = $document_data['id'];
+                        }
+                    }
+                }
+
+                //save templates
+                if(!$errors->count() && isset($product['templates']) && is_array($product['templates']))
+                {
+                    $template_current_ids         = [];
+                    foreach ($value['templates'] as $key2 => $value2) 
+                    {
+                        if(!$errors->count())
+                        {
+                            $template_data        = \App\Models\Template::find($value2['id']);
+
+                            if($template_data)
+                            {
+                                $template_rules   = [
+                                                        'document_id'               => 'required|numeric|'.($is_new ? '' : 'in:'.$value['id']),
+                                                        'field'                     => 'required|max:255',
+                                                        'type'                      => 'required|max:255',
+                                                    ];
+
+                                $validator      = Validator::make($template_data['attributes'], $template_rules);
+                            }
+                            else
+                            {
+                                $template_rules   =   [
+                                                        'document_id'               => 'numeric|'.($is_new ? '' : 'in:'.$value['id']),
+                                                        'field'                     => 'required|max:255',
+                                                        'type'                      => 'required|max:255',
+                                                    ];
+
+                                $validator      = Validator::make($value2, $template_rules);
+                            }
+
+                            //if there was template and validator false
+                            if ($template_data && !$validator->passes())
+                            {
+                                if($value2['document_id']!=$value['id'])
+                                {
+                                    $errors->add('template', 'Dokumen dari template Tidak Valid.');
+                                }
+                                elseif($is_new)
+                                {
+                                    $errors->add('template', 'Dokumen template Tidak Valid.');
+                                }
+                                else
+                                {
+                                    $template_data                = $template_data->fill($value2);
+
+                                    if(!$template_data->save())
+                                    {
+                                        $errors->add('template', $template_data->getError());
+                                    }
+                                    else
+                                    {
+                                        $template_current_ids[]   = $template_data['id'];
+                                    }
+                                }
+                            }
+                            //if there was template and validator false
+                            elseif (!$template_data && !$validator->passes())
+                            {
+                                $errors->add('template', $validator->errors());
+                            }
+                            elseif($template_data && $validator->passes())
+                            {
+                                $template_current_ids[]           = $template_data['id'];
+                            }
+                            else
+                            {
+                                $value2['document_id']            = $value['id'];
+
+                                $template_data                    = new \App\Models\Template;
+
+                                $template_data                    = $template_data->fill($value2);
+
+                                if(!$template_data->save())
+                                {
+                                    $errors->add('template', $template_data->getError());
+                                }
+                                else
+                                {
+                                    $template_current_ids[]       = $template_data['id'];
+                                }
+                            }
+                        }
+                    }
+                    //if there was no error, check if there were things need to be delete
+                    if(!$errors->count())
+                    {
+                        $templates                            = \App\Models\Template::documentid($value['id'])->get()->toArray();
+                        
+                        $template_should_be_ids               = [];
+                        foreach ($templates as $key2 => $value2) 
+                        {
+                            $template_should_be_ids[]         = $value2['id'];
+                        }
+
+                        $difference_template_ids              = array_diff($template_should_be_ids, $template_current_ids);
+
+                        if($difference_template_ids)
+                        {
+                            foreach ($difference_template_ids as $key2 => $value2) 
+                            {
+                                $template_data                = \App\Models\Template::find($value2);
+
+                                if(!$template_data->delete())
+                                {
+                                    $errors->add('template', $template_data->getError());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //if there was no error, check if there were things need to be delete
+            if(!$errors->count())
+            {
+                $documents                            = \App\Models\Document::Organisationid($organisation['id'])->get()->toArray();
+                
+                $document_should_be_ids               = [];
+                foreach ($documents as $key => $value) 
+                {
+                    $document_should_be_ids[]         = $value['id'];
+                }
+
+                $difference_document_ids              = array_diff($document_should_be_ids, $document_current_ids);
+
+                if($difference_document_ids)
+                {
+                    foreach ($difference_document_ids as $key => $value) 
+                    {
+                        $document_data                = \App\Models\Document::find($value);
+
+                        if(!$document_data->delete())
+                        {
+                            $errors->add('document', $document_data->getError());
+                        }
+                    }
+                }
+            }
+        }
+        //End of validate Organisation document
+
         if($errors->count())
         {
             DB::rollback();
@@ -495,7 +725,7 @@ class OrganisationController extends Controller
 
         DB::commit();
         
-        $final_organisation             = \App\Models\Organisation::id($organisation_data['id'])->with(['branches', 'calendars', 'calendars.schedules', 'workleaves'])->first()->toArray();
+        $final_organisation             = \App\Models\Organisation::id($organisation_data['id'])->with(['branches', 'calendars', 'calendars.schedules', 'workleaves', 'documents', 'documents.templates'])->first()->toArray();
 
         return new JSend('success', (array)$final_organisation);
     }
@@ -508,7 +738,7 @@ class OrganisationController extends Controller
     public function delete($id = null)
     {
         //
-        $organisation               = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves'])->first();
+        $organisation               = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves', 'documents', 'documents.templates'])->first();
 
         $result                     = $organisation;
 
