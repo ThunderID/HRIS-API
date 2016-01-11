@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\WorkleaveObserver;
+use App\Models\Observers\WorkleaveObserver;
 
 /**
  * Used for Workleave Models
@@ -11,6 +11,12 @@ namespace App\Models;
  */
 class Workleave extends BaseModel
 {
+	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsToMany\HasFollowedWorksTrait;
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -91,7 +97,7 @@ class Workleave extends BaseModel
 	{
         parent::boot();
  
-        // Workleave::observe(new WorkleaveObserver());
+        Workleave::observe(new WorkleaveObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

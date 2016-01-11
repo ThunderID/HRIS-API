@@ -16,6 +16,7 @@ class Document extends BaseModel
 	 *
 	 */
 	use \App\Models\Traits\hasMany\HasTemplatesTrait;
+	use \App\Models\Traits\hasMany\HasPersonDocumentsTrait;
 
 	/**
 	 * The database table used by the model.

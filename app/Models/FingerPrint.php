@@ -2,27 +2,27 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\TemplateObserver;
+// use App\Models\Observers\FingerPrintObserver;
 
 /**
- * Used for Template Models
+ * Used for FingerPrint Models
  * 
  * @author cmooy
  */
-class Template extends BaseModel
+class FingerPrint extends BaseModel
 {
 	/**
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\Models\Traits\hasMany\HasDocumentDetailsTrait;
+	use \App\Models\Traits\belongsTo\HasBranchTrait;
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'tmp_templates';
+	protected $table					= 'finger_prints';
 
 	/**
 	 * Timestamp field
@@ -36,21 +36,21 @@ class Template extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
 	 */
-	protected $appends				=	[];
+	protected $appends					=	[];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden 				= [];
+	protected $hidden 					= [];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -58,9 +58,17 @@ class Template extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'document_id'					,
-											'field'							,
-											'type'							,
+											'branch_id'						,
+											'left_thumb'					,
+											'left_index_finger'				,
+											'left_middle_finger'			,
+											'left_ring_finger'				,
+											'left_little_finger'			,
+											'right_thumb'					,
+											'right_index_finger'			,
+											'right_middle_finger'			,
+											'right_ring_finger'				,
+											'right_little_finger'			,
 										];
 										
 	/**
@@ -69,9 +77,17 @@ class Template extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'document_id'					=> 'required|exists:tmp_documents,id',
-											'field'							=> 'required|max:255',
-											'type'							=> 'required|max:255',
+											'branch_id'						=> 'required|exists:branches,id',
+											'left_thumb'					=> 'boolean',
+											'left_index_finger'				=> 'boolean',
+											'left_middle_finger'			=> 'boolean',
+											'left_ring_finger'				=> 'boolean',
+											'left_little_finger'			=> 'boolean',
+											'right_thumb'					=> 'boolean',
+											'right_index_finger'			=> 'boolean',
+											'right_middle_finger'			=> 'boolean',
+											'right_ring_finger'				=> 'boolean',
+											'right_little_finger'			=> 'boolean',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -83,7 +99,7 @@ class Template extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-
+	
 	/**
 	 * boot
 	 * observing model
@@ -93,7 +109,7 @@ class Template extends BaseModel
 	{
         parent::boot();
  
-        // Template::observe(new TemplateObserver());
+        // FingerPrint::observe(new FingerPrintObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

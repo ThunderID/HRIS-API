@@ -2,27 +2,21 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\TemplateObserver;
+// use App\Models\Observers\DocumentDetailObserver;
 
 /**
- * Used for Template Models
+ * Used for DocumentDetail Models
  * 
  * @author cmooy
  */
-class Template extends BaseModel
+class DocumentDetail extends BaseModel
 {
-	/**
-	 * Relationship Traits.
-	 *
-	 */
-	use \App\Models\Traits\hasMany\HasDocumentDetailsTrait;
-
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'tmp_templates';
+	protected $table				= 'documents_details';
 
 	/**
 	 * Timestamp field
@@ -58,9 +52,10 @@ class Template extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'document_id'					,
-											'field'							,
-											'type'							,
+											'person_document_id'				,
+											'template_id'						,
+											'numeric'							,
+											'text'								,
 										];
 										
 	/**
@@ -69,9 +64,10 @@ class Template extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'document_id'					=> 'required|exists:tmp_documents,id',
-											'field'							=> 'required|max:255',
-											'type'							=> 'required|max:255',
+											'person_document_id'			=> 'required|exists:person_documents,id',
+											'template_id'					=> 'required|exists:tmp_templates,id',
+											'numeric'						=> 'required|numeric',
+											'text'							=> 'required',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -93,7 +89,7 @@ class Template extends BaseModel
 	{
         parent::boot();
  
-        // Template::observe(new TemplateObserver());
+        // DocumentDetail::observe(new DocumentDetailObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
