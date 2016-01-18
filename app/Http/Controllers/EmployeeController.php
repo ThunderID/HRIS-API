@@ -15,19 +15,43 @@ class EmployeeController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index($code = null)
     {
         $result                     = new \App\Models\Employee;
 
-        if(Input::has('code'))
-        {
-            $search                 = Input::get('code');
-
-            $result                 = $result->organisationcode($search);
-        }
+        // $result                     = $result->organisationcode($code);
         
-        $result                     = $result->quotaworkleave(true)->get()->toArray();
+        if(Input::has('search'))
+        {
+            $search                 = Input::get('search');
 
+            foreach ($search as $key => $value) 
+            {
+                switch (strtolower($key)) 
+                {
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+
+        $count                      = $result->count();
+
+        if(Input::has('skip'))
+        {
+            $skip                   = Input::get('skip');
+            $result                 = $result->skip($skip);
+        }
+
+        if(Input::has('take'))
+        {
+            $take                   = Input::get('take');
+            $result                 = $result->take($take);
+        }
+
+        $result                     = $result->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template'])->get()->toArray();
+dd($result);
         return new JSend('success', (array)$result);
     }
 }

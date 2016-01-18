@@ -2,30 +2,21 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasEmployeeTrait;
-use App\Models\Traits\HasSelectAllTrait;
-use App\Models\Traits\HasQuotaWorkleaveTrait;
-
-// use App\Models\Observers\EmployeeObserver;
+use App\Models\Traits\HasRequiredTrait;
 
 /** 
-	* Inheritance Person Model
-	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
+	* Inheritance PersonDocument Model
+	* For every inheritance model, allowed to have only $required, fillable, rules, and available function
 */
-class Employee extends Person
+class EmploymentDocument extends PersonDocument
 {
-	/**
-	 * Relationship Traits.
-	 *
-	 */
-
 	/**
 	 * Global traits used as query builder (global scope).
 	 *
-	 */	
-	use HasSelectAllTrait;
-	use HasEmployeeTrait;
-	use HasQuotaWorkleaveTrait;
+	 */
+	use HasRequiredTrait;
+
+	public $required 				= false;
 
 	/**
 	 * The attributes that are mass assignable.
@@ -34,14 +25,17 @@ class Employee extends Person
 	 */
 
 	protected $fillable				=	[
+											'document_id'					,
+											'person_id'						,
 										];
-
 	/**
 	 * Basic rule of database
 	 *
 	 * @var array
 	 */
 	protected $rules				=	[
+											'document_id'					=> 'max:255',
+											'person_id'						=> 'date_format:"Y-m-d H:i:s"',
 										];
 	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -52,13 +46,13 @@ class Employee extends Person
 	
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
-	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-		
+	/**
+	 * boot
+	 *
+	 */
 	public static function boot() 
 	{
         parent::boot();
- 
-        // Employee::observe(new EmployeeObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

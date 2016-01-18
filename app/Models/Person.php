@@ -2,13 +2,33 @@
 
 namespace App\Models;
 
-class Person extends BaseModel
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+
+/**
+ * Used for Person Models
+ * 
+ * @author cmooy
+ */
+class Person extends BaseModel implements AuthenticatableContract, CanResetPasswordContract 
 {
-	/* ---------------------------------------------------------------------------- RELATIONSHIP TRAITS ---------------------------------------------------------------------*/
-	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
+    use Authenticatable, CanResetPassword;
+
+	/**
+	 * Relationship Traits.
+	 *
+	 */
 	use \App\Models\Traits\hasMany\HasPersonDocumentsTrait;
-	
-	/* ---------------------------------------------------------------------------- GLOBAL SCOPE TRAITS ---------------------------------------------------------------------*/
+
+	/**
+	 * Global traits used as query builder (global scope).
+	 *
+	 */
 
 	/**
 	 * The database table used by the model.
@@ -17,10 +37,15 @@ class Person extends BaseModel
 	 */
 	protected $table				= 'persons';
 
-	// protected $timestamps			= true;
-
 	/**
 	 * Timestamp field
+	 *
+	 * @var array
+	 */
+	// protected $timestamps			= true;
+	
+	/**
+	 * Date will be returned as carbon
 	 *
 	 * @var array
 	 */
@@ -49,12 +74,14 @@ class Person extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-	
+		
+	/**
+	 * boot
+	 *
+	 */	
 	public static function boot() 
 	{
         parent::boot();
- 
-        // Person::observe(new PersonObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

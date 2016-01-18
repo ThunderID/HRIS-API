@@ -24,6 +24,15 @@ trait HasPersonDocumentsTrait
 	 **/
 	public function PersonDocuments()
 	{
-		return $this->hasMany('App\Models\PersonDocument');
+		return $this->hasMany('App\Models\PersonDocument', 'person_id');
+	}
+
+	/**
+	 * call has many relationship for ancestors
+	 *
+	 **/
+	public function PrivateDocuments()
+	{
+		return $this->hasMany('App\Models\PrivateDocument', 'person_id');
 	}
 }

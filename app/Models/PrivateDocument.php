@@ -2,65 +2,44 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasDocumentRequiredTrait;
 use App\Models\Traits\HasSelectAllTrait;
-// use App\Models\Observers\PersonDocumentObserver;
 
-/**
- * Used for Private and employment document
- * 
- * @author cmooy
- */
-class PersonDocument extends BaseModel
+/** 
+	* Inheritance PersonDocument Model
+	* For every inheritance model, allowed to have only $required, fillable, rules, and available function
+*/
+class PrivateDocument extends PersonDocument
 {
-
-	/**
-	 * Relationship Traits.
-	 *
-	 */
-	use \App\Models\Traits\belongsTo\HasDocumentTrait;
-	use \App\Models\Traits\hasMany\HasDocumentDetailsTrait;
-
 	/**
 	 * Global traits used as query builder (global scope).
 	 *
-	 */	
+	 */
 	use HasSelectAllTrait;
+	use HasDocumentRequiredTrait;
+
+	public $required 				= true;
 
 	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table				= 'persons_documents';
-
-	/**
-	 * Timestamp field
+	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-	// protected $timestamps			= true;
+
+	protected $fillable				=	[
+											'document_id'					,
+											'person_id'						,
+										];
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'document_id'					=> 'max:255',
+											'person_id'						=> 'date_format:"Y-m-d H:i:s"',
+										];
 	
-	/**
-	 * Date will be returned as carbon
-	 *
-	 * @var array
-	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
-
-	/**
-	 * The appends attributes from mutator and accessor
-	 *
-	 * @var array
-	 */
-	protected $appends				=	[];
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden 				= [];
-
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/
@@ -69,13 +48,13 @@ class PersonDocument extends BaseModel
 	
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
-	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-	
+	/**
+	 * boot
+	 *
+	 */
 	public static function boot() 
 	{
         parent::boot();
- 
-        // PersonDocument::observe(new PersonDocumentObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
