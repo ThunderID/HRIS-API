@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\DocumentObserver;
+use App\Models\Observers\DocumentObserver;
 
 /**
  * Used for Document Models
@@ -99,7 +99,7 @@ class Document extends BaseModel
 	{
         parent::boot();
  
-        // Document::observe(new DocumentObserver());
+        Document::observe(new DocumentObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\TemplateObserver;
+use App\Models\Observers\TemplateObserver;
 
 /**
  * Used for Template Models
@@ -93,7 +93,7 @@ class Template extends BaseModel
 	{
         parent::boot();
  
-        // Template::observe(new TemplateObserver());
+        Template::observe(new TemplateObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

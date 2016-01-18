@@ -19,6 +19,8 @@ class DocumentObserver
      */
 	public function deleting($model)
 	{
+		$errors 			= new MessageBag;
+		
 		//1. check persondocuments
 		if($model->persondocuments()->count())
 		{
