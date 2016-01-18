@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSelectAllTrait;
+use App\Models\Traits\HasContactTrait;
+
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -29,6 +32,8 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 * Global traits used as query builder (global scope).
 	 *
 	 */
+	use HasSelectAllTrait;
+	use HasContactTrait;
 
 	/**
 	 * The database table used by the model.
