@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\CalendarObserver;
+use App\Models\Observers\CalendarObserver;
 
 /**
  * Used for Calendar Models
@@ -100,7 +100,7 @@ class Calendar extends BaseModel
 	{
         parent::boot();
  
-        // Calendar::observe(new CalendarObserver());
+        Calendar::observe(new CalendarObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
