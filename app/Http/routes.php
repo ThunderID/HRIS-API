@@ -36,7 +36,7 @@ $app->post('/organisation/store',
 	]
 );
 
-$app->delete('/organisation/delete/{id}',
+$app->get('/organisation/delete/{id}',
 	[
 		'uses'				=> 'OrganisationController@delete'
 	]

@@ -51,7 +51,7 @@ class EmployeeController extends Controller
         }
 
         $result                     = $result->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template'])->get()->toArray();
-dd($result);
+
         return new JSend('success', (array)$result);
     }
 }

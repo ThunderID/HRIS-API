@@ -2,60 +2,47 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasSelectAllTrait;
-use App\Models\Traits\HasTypeTrait;
-
-// use App\Models\Observers\ContactObserver;
-
-/**
- * Used for personcontact and branchcontact
- * 
- * @author cmooy
- */
-class Contact extends BaseModel
+/** 
+	* Inheritance Contact Model
+	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
+*/
+class BranchContact extends Contact
 {
 	/**
-	 * Global traits used as query builder (global scope).
-	 *
-	 */	
-	use HasSelectAllTrait;
-	use HasTypeTrait;
-
-	/**
-	 * The database table used by the model.
+	 * The public variable that assigned type of inheritance model
 	 *
 	 * @var string
 	 */
-	protected $table				= 'contacts';
+	public $type_field				=	'branch_type';
+
+	public $type					=	'App\Models\Branch';
 
 	/**
-	 * Timestamp field
+	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-	// protected $timestamps			= true;
+	protected $fillable				=	[
+											'branch_id'						,
+											'item'							,
+											'value'							,
+											'branch_type'					,
+											'is_default'					,
+										];
+										
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'branch_id'						=> 'exists:branches,id',
+											'item'							=> 'required|max:255',
+											'value'							=> 'required',
+											'branch_type'					=> 'required|max:255',
+											'is_default'					=> 'boolean',
+										];
 	
-	/**
-	 * Date will be returned as carbon
-	 *
-	 * @var array
-	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
-
-	/**
-	 * The appends attributes from mutator and accessor
-	 *
-	 * @var array
-	 */
-	protected $appends				=	[];
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden 				= [];
-
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/
@@ -64,13 +51,13 @@ class Contact extends BaseModel
 	
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
-	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-	
+	/**
+	 * boot
+	 *
+	 */
 	public static function boot() 
 	{
         parent::boot();
- 
-        // Contact::observe(new ContactObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

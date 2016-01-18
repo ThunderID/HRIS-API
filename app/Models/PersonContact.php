@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasTypeTrait;
-
 /** 
 	* Inheritance Contact Model
 	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
@@ -11,12 +9,13 @@ use App\Models\Traits\HasTypeTrait;
 class PersonContact extends Contact
 {
 	/**
-	 * Global traits used as query builder (global scope).
+	 * The public variable that assigned type of inheritance model
 	 *
+	 * @var string
 	 */
-	use HasTypeTrait;
+	public $type_field				=	'person_type';
 
-	public $type 						= false;
+	public $type					=	'App\Models\Person';
 
 	/**
 	 * The attributes that are mass assignable.
