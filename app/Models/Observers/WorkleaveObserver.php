@@ -19,6 +19,8 @@ class WorkleaveObserver
      */
 	public function updating($model)
 	{
+        $errors                     = new MessageBag();
+        
 		//1. cek quota
 		if(isset($model->getDirty()['quota']))
 		{

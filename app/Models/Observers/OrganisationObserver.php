@@ -149,6 +149,8 @@ class OrganisationObserver
      */
 	public function deleting($model)
 	{
+		$errors						= new MessageBag();
+		
 		//1. check calendar
 		if($model->calendars()->count())
 		{

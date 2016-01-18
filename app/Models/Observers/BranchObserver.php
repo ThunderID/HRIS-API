@@ -58,6 +58,8 @@ class BranchObserver
      */
 	public function deleting($model)
 	{
+		$errors						= new MessageBag();
+		
 		//1. check chart
 		if($model->charts()->count())
 		{

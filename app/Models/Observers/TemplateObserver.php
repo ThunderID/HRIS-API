@@ -19,6 +19,8 @@ class TemplateObserver
      */
 	public function deleting($model)
 	{
+		$errors						= new MessageBag();
+		
 		//1. check documentdetails
 		if($model->documentdetails()->count())
 		{
