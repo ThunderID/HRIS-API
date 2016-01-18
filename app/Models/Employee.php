@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\HasEmployeeTrait;
 use App\Models\Traits\HasQuotaWorkleaveTrait;
+use App\Models\Traits\HasCurrentMaritalStatusTrait;
 
 // use App\Models\Observers\EmployeeObserver;
 
@@ -24,6 +25,7 @@ class Employee extends Person
 	 */	
 	use HasEmployeeTrait;
 	use HasQuotaWorkleaveTrait;
+	use HasCurrentMaritalStatusTrait;
 
 	/**
 	 * The attributes that are mass assignable.
