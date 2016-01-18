@@ -2,55 +2,53 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\WorkObserver;
+// use App\Models\Observers\WorkExperienceObserver;
 
 /**
- * Used for Work Models
+ * Used for WorkExperience Models
  * 
  * @author cmooy
  */
-class Work extends BaseModel
+class WorkExperience extends Work
 {
 	/**
-	 * Global traits used as query builder (global scope).
-	 *
-	 */	
-	use HasTypeTrait;
-
-	/**
-	 * The database table used by the model.
+	 * The public variable that assigned type of inheritance model
 	 *
 	 * @var string
 	 */
-	protected $table				= 'works';
+	public $type_field				=	'status';
+
+	public $type					=	'previous';
 
 	/**
-	 * Timestamp field
+	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-	// protected $timestamps			= true;
-	
+	protected $fillable				=	[
+											'position' 					,
+											'organisation' 				,
+											'status' 					,
+											'start' 					,
+											'end' 						,
+											'reason_end_job' 			,
+											'is_absence' 				,
+										];
+										
 	/**
-	 * Date will be returned as carbon
+	 * Basic rule of database
 	 *
 	 * @var array
 	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at', 'start', 'end'];
-
-	/**
-	 * The appends attributes from mutator and accessor
-	 *
-	 * @var array
-	 */
-	protected $appends				=	[];
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden 				= [];
+	protected $rules				=	[
+											'status' 					=> 'required|in:previous',
+											'start' 					=> 'required|date_format:"Y-m-d"',
+											'end' 						=> 'required_if:status,previous|date_format:"Y-m-d"',
+											'position' 					=> 'required|max:255',
+											'organisation' 				=> 'required|max:255',
+											'reason_end_job' 			=> 'required',
+											'is_absence' 				=> 'boolean',
+										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
@@ -71,7 +69,7 @@ class Work extends BaseModel
 	{
         parent::boot();
  
-        // Work::observe(new WorkObserver());
+        // WorkExperience::observe(new WorkExperienceObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

@@ -15,11 +15,11 @@ class EmployeeController extends Controller
      *
      * @return Response
      */
-    public function index($code = null)
+    public function index($org_id = null)
     {
         $result                     = new \App\Models\Employee;
 
-        // $result                     = $result->organisationcode($code);
+        $result                     = $result->organisationid($org_id);
         
         if(Input::has('search'))
         {

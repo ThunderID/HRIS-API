@@ -7,7 +7,6 @@
  */
 trait HasOrganisationTrait 
 {
-
 	/**
 	 * boot
 	 *
@@ -34,6 +33,6 @@ trait HasOrganisationTrait
 	 **/
 	public function scopeOrganisationID($query, $variable)
 	{
-		return $query->where('organisation_id', $variable);
+		return $query->where($this->getTable().'.organisation_id', $variable);
 	}
 }

@@ -2,55 +2,55 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\WorkObserver;
+// use App\Models\Observers\CareerObserver;
 
 /**
- * Used for Work Models
+ * Used for Career Models
  * 
  * @author cmooy
  */
-class Work extends BaseModel
+class Career extends Work
 {
 	/**
-	 * Global traits used as query builder (global scope).
-	 *
-	 */	
-	use HasTypeTrait;
-
-	/**
-	 * The database table used by the model.
+	 * The public variable that assigned type of inheritance model
 	 *
 	 * @var string
 	 */
-	protected $table				= 'works';
+	public $type_field				=	'status';
+
+	public $type					=	['contract','probation','internship','permanent','others','admin'];
 
 	/**
-	 * Timestamp field
+	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-	// protected $timestamps			= true;
-	
+	protected $fillable				=	[
+											'calendar_id' 				,
+											'chart_id' 					,
+											'grade' 					,
+											'status' 					,
+											'start' 					,
+											'end' 						,
+											'reason_end_job' 			,
+											'is_absence' 				,
+										];
+										
 	/**
-	 * Date will be returned as carbon
+	 * Basic rule of database
 	 *
 	 * @var array
 	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at', 'start', 'end'];
-
-	/**
-	 * The appends attributes from mutator and accessor
-	 *
-	 * @var array
-	 */
-	protected $appends				=	[];
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden 				= [];
+	protected $rules				=	[
+											'calendar_id'				=> 'exists:tmp_calendars,id',
+											'chart_id'					=> 'required',
+											'grade' 					=> 'numeric',
+											'status' 					=> 'required|in:contract,probation,internship,permanent,others,admin',
+											'start' 					=> 'required|date_format:"Y-m-d"',
+											'end' 						=> 'required_if:status,probation,contract,internship|date_format:"Y-m-d"',
+											'reason_end_job' 			=> 'required_with:end',
+											'is_absence' 				=> 'boolean',
+										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
@@ -71,7 +71,7 @@ class Work extends BaseModel
 	{
         parent::boot();
  
-        // Work::observe(new WorkObserver());
+        // Career::observe(new CareerObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

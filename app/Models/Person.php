@@ -26,6 +26,7 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
 	use \App\Models\Traits\hasMany\HasPersonDocumentsTrait;
 
 	/**
