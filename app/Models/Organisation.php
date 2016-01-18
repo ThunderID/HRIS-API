@@ -19,6 +19,7 @@ class Organisation extends BaseModel
 	use \App\Models\Traits\hasMany\HasCalendarsTrait;
 	use \App\Models\Traits\hasMany\HasWorkleavesTrait;
 	use \App\Models\Traits\hasMany\HasDocumentsTrait;
+	use \App\Models\Traits\hasMany\HasPoliciesTrait;
 	// use \App\Models\Traits\hasMany\HasEmployeesTrait;
 
 	/**

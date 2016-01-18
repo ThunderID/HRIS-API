@@ -68,13 +68,13 @@ class OrganisationController extends Controller
     public function detail($id = null)
     {
         //
-        $result                     = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves', 'documents', 'documents.templates'])->first();
+        $result                     = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars', 'workleaves', 'documents', 'documents.templates', 'policies'])->first();
 
         if($result)
         {
             return new JSend('success', (array)$result->toArray());
         }
-        
+
         return new JSend('error', (array)Input::all(), 'ID Tidak Valid.');
     }
 
@@ -85,6 +85,7 @@ class OrganisationController extends Controller
      * 3. store calendar
      * 4. store workleave
      * 5. store document
+     * 6. store policy
      *
      * @param organisation
      * @return Response
@@ -114,7 +115,7 @@ class OrganisationController extends Controller
 
         $organisation_rules         =   [
                                             'name'                      => 'required|max:255',
-                                            'code'                      => 'required|max:255|unique:organisations,upc,'.(!is_null($organisation['id']) ? $organisation['id'] : ''),
+                                            'code'                      => 'required|max:255|unique:organisations,code,'.(!is_null($organisation['id']) ? $organisation['id'] : ''),
                                         ];
 
         //1a. Get original data
@@ -224,7 +225,7 @@ class OrganisationController extends Controller
             //if there was no error, check if there were things need to be delete
             if(!$errors->count())
             {
-                $branches                            = \App\Models\Branch::Organisationid($organisation['id'])->get()->toArray();
+                $branches                            = \App\Models\Branch::organisationid($organisation['id'])->get()->toArray();
                 
                 $branch_should_be_ids               = [];
                 foreach ($branches as $key => $value) 
@@ -344,7 +345,7 @@ class OrganisationController extends Controller
             //if there was no error, check if there were things need to be delete
             if(!$errors->count())
             {
-                $calendars                            = \App\Models\Calendar::Organisationid($organisation['id'])->get()->toArray();
+                $calendars                            = \App\Models\Calendar::organisationid($organisation['id'])->get()->toArray();
                 
                 $calendar_should_be_ids               = [];
                 foreach ($calendars as $key => $value) 
@@ -461,7 +462,7 @@ class OrganisationController extends Controller
             //if there was no error, check if there were things need to be delete
             if(!$errors->count())
             {
-                $workleaves                            = \App\Models\Workleave::Organisationid($organisation['id'])->get()->toArray();
+                $workleaves                            = \App\Models\Workleave::organisationid($organisation['id'])->get()->toArray();
                 
                 $workleave_should_be_ids               = [];
                 foreach ($workleaves as $key => $value) 
@@ -690,7 +691,7 @@ class OrganisationController extends Controller
             //if there was no error, check if there were things need to be delete
             if(!$errors->count())
             {
-                $documents                            = \App\Models\Document::Organisationid($organisation['id'])->get()->toArray();
+                $documents                            = \App\Models\Document::organisationid($organisation['id'])->get()->toArray();
                 
                 $document_should_be_ids               = [];
                 foreach ($documents as $key => $value) 
@@ -716,6 +717,120 @@ class OrganisationController extends Controller
         }
         //End of validate Organisation document
 
+        //6. Validate Organisation Policy Parameter
+        if(!$errors->count() && isset($organisation['policies']) && is_array($organisation['policies']))
+        {
+            $policy_current_ids         = [];
+            foreach ($organisation['policies'] as $key => $value) 
+            {
+                if(!$errors->count())
+                {
+                    $policy_data        = \App\Models\Policy::find($value['id']);
+
+                    if($policy_data)
+                    {
+                        $policy_rules   = [
+                                                'organisation_id'           => 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'type'                      => 'required|max:255',
+                                                'value'                     => 'required',
+                                                'started_at'                => 'required|date_format:"Y-m-d H:i:s"',
+                                            ];
+
+                        $validator      = Validator::make($policy_data['attributes'], $policy_rules);
+                    }
+                    else
+                    {
+                        $policy_rules   =   [
+                                                'organisation_id'           => 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+                                                'type'                      => 'required|max:255',
+                                                'value'                     => 'required',
+                                                'started_at'                => 'required|date_format:"Y-m-d H:i:s"',
+                                            ];
+
+                        $validator      = Validator::make($value, $policy_rules);
+                    }
+
+                    //if there was Policy and validator false
+                    if ($policy_data && !$validator->passes())
+                    {
+                        if($value['organisation_id']!=$organisation['id'])
+                        {
+                            $errors->add('Policy', 'Organisasi dari Policy Tidak Valid.');
+                        }
+                        elseif($is_new)
+                        {
+                            $errors->add('Policy', 'Organisasi Policy Tidak Valid.');
+                        }
+                        else
+                        {
+                            $policy_data                = $policy_data->fill($value);
+
+                            if(!$policy_data->save())
+                            {
+                                $errors->add('Policy', $policy_data->getError());
+                            }
+                            else
+                            {
+                                $policy_current_ids[]   = $policy_data['id'];
+                            }
+                        }
+                    }
+                    //if there was Policy and validator false
+                    elseif (!$policy_data && !$validator->passes())
+                    {
+                        $errors->add('Policy', $validator->errors());
+                    }
+                    elseif($policy_data && $validator->passes())
+                    {
+                        $policy_current_ids[]           = $policy_data['id'];
+                    }
+                    else
+                    {
+                        $value['organisation_id']            = $organisation_data['id'];
+
+                        $policy_data                    = new \App\Models\Policy;
+
+                        $policy_data                    = $policy_data->fill($value);
+
+                        if(!$policy_data->save())
+                        {
+                            $errors->add('Policy', $policy_data->getError());
+                        }
+                        else
+                        {
+                            $policy_current_ids[]       = $policy_data['id'];
+                        }
+                    }
+                }
+            }
+            //if there was no error, check if there were things need to be delete
+            if(!$errors->count())
+            {
+                $policies                               = \App\Models\Policy::organisationid($organisation['id'])->get()->toArray();
+                
+                $policy_should_be_ids                   = [];
+                foreach ($policies as $key => $value) 
+                {
+                    $policy_should_be_ids[]             = $value['id'];
+                }
+
+                $difference_policy_ids                  = array_diff($policy_should_be_ids, $policy_current_ids);
+
+                if($difference_policy_ids)
+                {
+                    foreach ($difference_policy_ids as $key => $value) 
+                    {
+                        $policy_data                    = \App\Models\Policy::find($value);
+
+                        if(!$policy_data->delete())
+                        {
+                            $errors->add('Policy', $policy_data->getError());
+                        }
+                    }
+                }
+            }
+        }
+        //End of validate Organisation Policy
         if($errors->count())
         {
             DB::rollback();

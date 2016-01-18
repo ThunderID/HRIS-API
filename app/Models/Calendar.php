@@ -15,8 +15,9 @@ class Calendar extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
 	use \App\Models\Traits\hasMany\HasSchedulesTrait;
-
+	
 	/**
 	 * The database table used by the model.
 	 *

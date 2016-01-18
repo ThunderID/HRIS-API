@@ -1,34 +1,39 @@
 <?php namespace App\Models\Traits\belongsTo;
 
-trait HasOrganisationTrait {
+/**
+ * Trait for models belongs To Organisation.
+ *
+ * @author cmooy
+ */
+trait HasOrganisationTrait 
+{
 
 	/**
 	 * boot
 	 *
 	 * @return void
-	 * @author 
 	 **/
-
 	function HasOrganisationTraitConstructor()
 	{
 		//
 	}
 
-	/* ------------------------------------------------------------------- RELATIONSHIP IN Organisation PACKAGE -------------------------------------------------------------------*/
-
+	/**
+	 * call belongs to relationship
+	 *
+	 **/
 	public function Organisation()
 	{
 		return $this->belongsTo('App\Models\Organisation');
 	}
 
-	public function scopeOrganisationCode($query, $variable)
+	/**
+	 * check if model has organisation in certain id
+	 *
+	 * @var array or singular id
+	 **/
+	public function scopeOrganisationID($query, $variable)
 	{
-		return $query->join('organisations', function ($join) use($variable)
-				 {
-	                                    $join->on ( 'branches.organisation_id', '=', 'organisations.id' )
-	                                    ->where('organisations.code', '=', $variable)
-	                                    ->wherenull('organisations.deleted_at')
-	                                    ;
-				});
+		return $query->where('organisation_id', $variable);
 	}
 }

@@ -36,12 +36,39 @@ $app->post('/organisation/store',
 	]
 );
 
-$app->get('/organisation/delete/{id}',
+$app->delete('/organisation/delete/{id}',
 	[
 		'uses'				=> 'OrganisationController@delete'
 	]
 );
 
+
+// ------------------------------------------------------------------------------------
+// EMPLOYEES
+// ------------------------------------------------------------------------------------
+$app->get('/employees',
+	[
+		'uses'				=> 'EmployeeController@index'
+	]
+);
+
+$app->get('/employee/{id}',
+	[
+		'uses'				=> 'EmployeeController@detail'
+	]
+);
+
+$app->post('/employee/store',
+	[
+		'uses'				=> 'EmployeeController@store'
+	]
+);
+
+$app->delete('/employee/delete/{id}',
+	[
+		'uses'				=> 'EmployeeController@delete'
+	]
+);
 // ------------------------------------------------------------------------------------
 // ME
 // ------------------------------------------------------------------------------------
@@ -53,16 +80,3 @@ $app->post('/authorized/me',
 		'uses'				=> 'MeController@index'
 	]
 );
-
-// ------------------------------------------------------------------------------------
-// EMPLOYEES
-// ------------------------------------------------------------------------------------
-
-//all employee it self
-$app->post('/employees',
-	[
-		// 'middleware'		=> 'oauth',
-		'uses'				=> 'EmployeeController@index'
-	]
-);
-

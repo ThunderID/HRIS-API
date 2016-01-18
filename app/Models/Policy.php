@@ -12,6 +12,12 @@ namespace App\Models;
 class Policy extends BaseModel
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
+
+	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
@@ -52,6 +58,7 @@ class Policy extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'organisation_id'				,
 											'type'							,
 											'value'							,
 											'started_at'					,
@@ -63,6 +70,7 @@ class Policy extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
+											'organisation_id'				=> 'required|exists:organisations,id',
 											'type'							=> 'required',
 											'value'							=> 'required',
 											'started_at'					=> 'required|date_format:"Y-m-d H:i:s"',

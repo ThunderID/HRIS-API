@@ -5,7 +5,6 @@
  *
  * @author cmooy
  */
-
 trait HasDocumentsTrait 
 {
 	/**

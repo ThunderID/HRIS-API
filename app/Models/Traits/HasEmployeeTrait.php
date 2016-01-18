@@ -4,6 +4,11 @@ namespace App\Models\Traits;
 
 use App\Models\Scopes\EmployeeScope;
 
+/**
+ * Apply scope to get person work here
+ *
+ * @author cmooy
+ */
 trait HasEmployeeTrait 
 {
     /**

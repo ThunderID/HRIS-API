@@ -12,6 +12,12 @@ namespace App\Models;
 class Branch extends BaseModel
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
+
+	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
@@ -52,8 +58,8 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'name'							,
 											'organisation_id'				,
+											'name'							,
 										];
 										
 	/**
@@ -62,8 +68,8 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:50',
 											'organisation_id'				=> 'required|exists:organisations,id',
+											'name'							=> 'required|max:50',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

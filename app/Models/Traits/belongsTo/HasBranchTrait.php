@@ -18,7 +18,7 @@ trait HasBranchTrait
 	}
 
 	/**
-	 * call has many relationship
+	 * call belongs to relationship
 	 *
 	 **/
 	public function Branch()

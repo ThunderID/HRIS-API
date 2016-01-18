@@ -15,6 +15,7 @@ class Workleave extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
 	use \App\Models\Traits\belongsToMany\HasFollowedWorksTrait;
 
 	/**
