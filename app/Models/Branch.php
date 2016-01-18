@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\BranchObserver;
+use App\Models\Observers\BranchObserver;
 
 /**
  * Used for Branch Models
@@ -91,7 +91,7 @@ class Branch extends BaseModel
 	{
         parent::boot();
  
-        // Branch::observe(new BranchObserver());
+        Branch::observe(new BranchObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
