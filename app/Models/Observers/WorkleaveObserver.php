@@ -25,11 +25,16 @@ class WorkleaveObserver
 			$errors 			= new MessageBag;
 
 			$errors->add('quota', 'Perubahan hak cuti untuk karyawan tidak dapat dilakukan. Silahkan tambahkan template cuti yang baru.');
-			
-			$model['errors'] 	= $errors;
-
-			return false;
 		}
+
+        if($errors->count())
+        {
+			$model['errors'] 		= $errors;
+
+        	return false;
+        }
+
+        return true;
 	}
 
 	/** 
