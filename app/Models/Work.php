@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\ChartObserver;
+// use App\Models\Observers\WorkObserver;
 
 /**
- * Used for Chart Models
+ * Used for Work Models
  * 
  * @author cmooy
  */
-class Chart extends BaseModel
+class Work extends BaseModel
 {
 	/**
 	 * Relationship Traits.
@@ -22,7 +22,7 @@ class Chart extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table				= 'charts';
+	protected $table				= 'works';
 
 	/**
 	 * Timestamp field
@@ -36,7 +36,7 @@ class Chart extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates				=	['created_at', 'updated_at', 'deleted_at', 'start', 'end'];
 
 	/**
 	 * The appends attributes from mutator and accessor
@@ -58,16 +58,16 @@ class Chart extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'branch_id'						,
-											'chart_id'						,
-											'name'							,
-											'path'							,
-											'grade'							,
-											'tag'							,
-											'min_employee'					,
-											'ideal_employee'				,
-											'max_employee'					,
-											'current_employee'				,
+											'calendar_id' 				,
+											'chart_id' 					,
+											'grade' 					,
+											'status' 					,
+											'start' 					,
+											'end' 						,
+											'position' 					,
+											'organisation' 				,
+											'reason_end_job' 			,
+											'is_absence' 				,
 										];
 										
 	/**
@@ -76,16 +76,16 @@ class Chart extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'branch_id'						=> 'required|exists:branches,id',
-											// 'chart_id'						=> 'required|max:255',
-											'name'							=> 'required|max:255',
-											'path'							=> 'required|max:255',
-											'grade'							=> 'numeric',
-											'tag'							=> 'required|max:255',
-											'min_employee'					=> 'numeric',
-											'ideal_employee'				=> 'numeric',
-											'max_employee'					=> 'numeric',
-											'current_employee'				=> 'numeric',
+											'calendar_id'				=> 'exists:tmp_calendars,id',
+											'chart_id'					=> 'required_without:position',
+											'grade' 					=> 'max:255',
+											'status' 					=> 'required|in:contract,probation,internship,permanent,others,admin,previous',
+											'start' 					=> 'required|date_format:"Y-m-d"',
+											'end' 						=> 'required_if:status,probation,contract,internship,previous|date_format:"Y-m-d"',
+											'position' 					=> 'required_without:chart_id',
+											'organisation' 				=> 'required_without:chart_id',
+											'reason_end_job' 			=> 'required_with:end',
+											'is_absence' 				=> 'boolean',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -107,18 +107,8 @@ class Chart extends BaseModel
 	{
         parent::boot();
  
-        // Chart::observe(new ChartObserver());
+        // Work::observe(new WorkObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
-	
-	/**
-	 * scope to find code of Chart
-	 *
-	 * @param string of code
-	 */
-	public function scopeCode($query, $variable)
-	{
-		return 	$query->where('code', $variable);
-	}
 }

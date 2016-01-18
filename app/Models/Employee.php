@@ -25,7 +25,7 @@ class Employee extends Person
 	 *
 	 */	
 	use HasEmployeeTrait;
-	use HasQuotaWorkleaveTrait;
+	// use HasQuotaWorkleaveTrait;
 
 	/**
 	 * The attributes that are mass assignable.

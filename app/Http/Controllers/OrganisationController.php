@@ -855,7 +855,12 @@ class OrganisationController extends Controller
         //
         $organisation               = \App\Models\Organisation::id($id)->with(['branches', 'calendars', 'calendars.schedules', 'workleaves', 'documents', 'documents.templates'])->first();
 
-        $result                     = $organisation;
+        if(!$organisation)
+        {
+            return new JSend('error', (array)Input::all(), 'Organisasi tidak ditemukan.');
+        }
+
+        $result                     = $organisation->toArray();
 
         if($organisation->delete())
         {

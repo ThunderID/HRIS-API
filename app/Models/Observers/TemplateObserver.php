@@ -26,17 +26,7 @@ class TemplateObserver
 		{
 			$errors->add('Template', 'Tidak dapat menghapus dokumen yang berkaitan dengan karyawan atau yang memiliki template.');
 		}
-		else
-		{
-			foreach ($model->templates as $key => $value) 
-			{
-				if(!$value->delete())
-				{
-					$errors->add('Template', $delete->getError());
-				}
-			}
-		}
-
+		
         if($errors->count())
         {
 			$model['errors'] 		= $errors;

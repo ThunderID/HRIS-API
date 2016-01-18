@@ -11,7 +11,7 @@ class PersonDocument extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table				= 'person_documents';
+	protected $table				= 'persons_documents';
 
 	// protected $timestamps			= true;
 

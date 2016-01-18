@@ -20,7 +20,7 @@ class Organisation extends BaseModel
 	use \App\Models\Traits\hasMany\HasWorkleavesTrait;
 	use \App\Models\Traits\hasMany\HasDocumentsTrait;
 	use \App\Models\Traits\hasMany\HasPoliciesTrait;
-	// use \App\Models\Traits\hasMany\HasEmployeesTrait;
+	use \App\Models\Traits\hasMany\HasEmployeesTrait;
 
 	/**
 	 * The database table used by the model.

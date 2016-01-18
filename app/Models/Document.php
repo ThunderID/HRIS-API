@@ -18,6 +18,7 @@ class Document extends BaseModel
 	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
 	use \App\Models\Traits\hasMany\HasTemplatesTrait;
 	use \App\Models\Traits\hasMany\HasPersonDocumentsTrait;
+	use \App\Models\Traits\belongsToMany\HasPersonsTrait;
 	
 	/**
 	 * The database table used by the model.

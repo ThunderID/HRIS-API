@@ -76,13 +76,10 @@ class BranchObserver
 		}
 
 		//3. delete finger
-		foreach ($model->fingers as $key => $value) 
-		{
-            if(!$value->delete())
-            {
-            	$errors->add('Branch', $value->getError());
-            }
-		}
+        if($model->fingerprint()->count() && !$model->fingerprint->delete())
+        {
+        	$errors->add('Branch', $value->getError());
+        }
 
         if($errors->count())
         {

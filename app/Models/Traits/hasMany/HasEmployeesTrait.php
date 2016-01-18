@@ -1,21 +1,26 @@
 <?php namespace App\Models\Traits\hasMany;
 
-trait HasEmployeesTrait {
-
+/**
+ * Trait for models has many Employees.
+ *
+ * @author cmooy
+ */
+trait HasEmployeesTrait 
+{
 	/**
 	 * boot
 	 *
 	 * @return void
-	 * @author 
 	 **/
-
 	function HasEmployeesTraitConstructor()
 	{
 		//
 	}
 
-	/* ------------------------------------------------------------------- RELATIONSHIP IN Employee PACKAGE -------------------------------------------------------------------*/
-
+	/**
+	 * call has many relationship
+	 *
+	 **/
 	public function Employees()
 	{
 		return $this->hasMany('App\Models\Employee');

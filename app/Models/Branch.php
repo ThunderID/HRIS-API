@@ -16,6 +16,9 @@ class Branch extends BaseModel
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
+	use \App\Models\Traits\hasMany\HasChartsTrait;
+	use \App\Models\Traits\morphMany\HasOfficeContactsTrait;
+	use \App\Models\Traits\hasOne\HasFingerPrintTrait;
 
 	/**
 	 * The database table used by the model.
