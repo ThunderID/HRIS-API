@@ -18,6 +18,8 @@ class Employee extends Person
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\Models\Traits\hasMany\HasWorksTrait;
+	use \App\Models\Traits\hasMany\HasMaritalStatusesTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).

@@ -46,25 +46,25 @@ $app->get('/organisation/delete/{id}',
 // ------------------------------------------------------------------------------------
 // EMPLOYEES
 // ------------------------------------------------------------------------------------
-$app->get('/employees/{org_id}',
+$app->get('/{org_id}/employees',
 	[
 		'uses'				=> 'EmployeeController@index'
 	]
 );
 
-$app->get('/employee/{id}',
+$app->get('/{org_id}/employee/{id}',
 	[
 		'uses'				=> 'EmployeeController@detail'
 	]
 );
 
-$app->post('/employee/store',
+$app->post('/{org_id}/employee/store',
 	[
 		'uses'				=> 'EmployeeController@store'
 	]
 );
 
-$app->delete('/employee/delete/{id}',
+$app->delete('/{org_id}/employee/delete/{id}',
 	[
 		'uses'				=> 'EmployeeController@delete'
 	]

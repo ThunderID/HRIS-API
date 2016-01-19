@@ -54,4 +54,21 @@ class EmployeeController extends Controller
 
         return new JSend('success', (array)$result);
     }
+
+    /**
+     * Display all employeers of an org
+     *
+     * @return Response
+     */
+    public function detail($org_id = null, $id = null)
+    {
+        $result                     = \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
+
+        if($result)
+        {
+            return new JSend('success', (array)$result->toArray());
+        }
+
+        return new JSend('error', (array)Input::all(), 'ID Tidak Valid.');
+    }
 }

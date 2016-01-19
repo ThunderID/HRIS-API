@@ -26,4 +26,22 @@ trait HasWorksTrait
 	{
 		return $this->hasMany('App\Models\Work');
 	}
+
+	/**
+	 * call has many relationship
+	 *
+	 **/
+	public function Careers()
+	{
+		return $this->hasMany('App\Models\Career', 'person_id');
+	}
+
+	/**
+	 * call has many relationship
+	 *
+	 **/
+	public function WorkExperiences()
+	{
+		return $this->hasMany('App\Models\WorkExperience', 'person_id');
+	}
 }

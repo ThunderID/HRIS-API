@@ -10,7 +10,7 @@ basePath: /v1
 produces:
   - application/json
 paths:
-  /employees:
+  /org_id/employees:
     get:
       summary: Employee Lists
       description: |
@@ -54,7 +54,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /employee/store:
+  /org_id/employee/store:
     post:
       summary: Store an employee
       description: >
@@ -126,7 +126,7 @@ paths:
           required: false
           type: string
           format: string
-        - name: maritalstatusses
+        - name: maritalstatuses
           in: query
           description: Must be array of employees' marital status.
           required: false
@@ -174,7 +174,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /employee/id/:
+  /org_id/employee/id/:
     get:
       summary: Employee Detail
       description: 'Get employee detail information.'
@@ -204,7 +204,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /employee/delete/id/:
+  /org_id/employee/delete/id/:
     delete:
       summary: Delete an employee
       description: 'Get employee detail information.'
@@ -333,10 +333,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/contacts'
-      maritalstatusses:
+      maritalstatuses:
         type: array
         items:
-          $ref: '#/definitions/maritalstatusses'
+          $ref: '#/definitions/maritalstatuses'
   persondocuments:
     properties:
       id:
@@ -395,7 +395,7 @@ definitions:
         type: string
       is_default:
         type: string
-  maritalstatusses:
+  maritalstatuses:
     properties:
       id:
         type: string

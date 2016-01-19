@@ -28,6 +28,7 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 */
 	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
 	use \App\Models\Traits\hasMany\HasPersonDocumentsTrait;
+	use \App\Models\Traits\hasMany\HasPersonContactsTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
