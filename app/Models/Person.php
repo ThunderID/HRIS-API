@@ -56,7 +56,7 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 *
 	 * @var array
 	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at', 'date_of_birth'];
+	protected $dates				=	['created_at', 'updated_at', 'deleted_at', 'date_of_birth', 'last_password_updated_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor

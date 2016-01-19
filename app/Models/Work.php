@@ -14,6 +14,12 @@ use App\Models\Traits\HasTypeTrait;
 class Work extends BaseModel
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasPersonTrait;
+
+	/**
 	 * Global traits used as query builder (global scope).
 	 *
 	 */	

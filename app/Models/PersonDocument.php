@@ -12,14 +12,14 @@ use App\Models\Traits\HasSelectAllTrait;
  */
 class PersonDocument extends BaseModel
 {
-
 	/**
 	 * Relationship Traits.
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasDocumentTrait;
 	use \App\Models\Traits\hasMany\HasDocumentDetailsTrait;
-
+	use \App\Models\Traits\belongsTo\HasPersonTrait;
+	
 	/**
 	 * Global traits used as query builder (global scope).
 	 *

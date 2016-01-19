@@ -36,6 +36,18 @@ class Employee extends Person
 	 */
 
 	protected $fillable				=	[
+											'organisation_id'				,
+											'uniqid' 						,
+											'username' 						,
+											'name' 							,
+											'prefix_title' 					,
+											'suffix_title' 					,
+											'place_of_birth' 				,
+											'date_of_birth' 				,
+											'gender' 						,
+											'password'						,
+											'avatar'						,
+											'last_password_updated_at'		,
 										];
 
 	/**
@@ -44,6 +56,17 @@ class Employee extends Person
 	 * @var array
 	 */
 	protected $rules				=	[
+											'organisation_id'				=> 'exists:organisations,id',
+											'uniqid' 						=> 'required|max:255',
+											'username' 						=> 'max:255',
+											'name' 							=> 'required|max:255',
+											'prefix_title' 					=> 'max:255',
+											'suffix_title' 					=> 'max:255',
+											'place_of_birth' 				=> 'required|max:255',
+											'date_of_birth' 				=> 'required|date_format:"Y-m-d"',
+											'gender' 						=> 'required|in:female,male',
+											'password'						=> 'max:255',
+											'last_password_updated_at'		=> 'date_format:"Y-m-d H:i:s"|before:tomorrow',
 										];
 	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

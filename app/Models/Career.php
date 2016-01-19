@@ -18,7 +18,7 @@ class Career extends Work
 	 */
 	public $type_field				=	'status';
 
-	public $type					=	['contract','probation','internship','permanent','others','admin'];
+	public $type					=	['contract','probation','internship','permanent','others'];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -26,6 +26,7 @@ class Career extends Work
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'person_id' 				,
 											'calendar_id' 				,
 											'chart_id' 					,
 											'grade' 					,
@@ -43,9 +44,9 @@ class Career extends Work
 	 */
 	protected $rules				=	[
 											'calendar_id'				=> 'exists:tmp_calendars,id',
-											'chart_id'					=> 'required',
+											'chart_id'					=> 'exists:charts,id',
 											'grade' 					=> 'numeric',
-											'status' 					=> 'required|in:contract,probation,internship,permanent,others,admin',
+											'status' 					=> 'required|in:contract,probation,internship,permanent,others',
 											'start' 					=> 'required|date_format:"Y-m-d"',
 											'end' 						=> 'required_if:status,probation,contract,internship|date_format:"Y-m-d"',
 											'reason_end_job' 			=> 'required_with:end',

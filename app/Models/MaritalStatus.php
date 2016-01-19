@@ -12,6 +12,12 @@ namespace App\Models;
 class MaritalStatus extends BaseModel
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasPersonTrait;
+
+	/**
 	 * The database table used by the model.
 	 *
 	 * @var string

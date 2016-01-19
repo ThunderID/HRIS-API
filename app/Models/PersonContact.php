@@ -9,6 +9,12 @@ namespace App\Models;
 class PersonContact extends Contact
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasPersonTrait;
+
+	/**
 	 * The public variable that assigned type of inheritance model
 	 *
 	 * @var string

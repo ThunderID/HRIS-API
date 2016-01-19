@@ -26,6 +26,7 @@ class WorkExperience extends Work
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'person_id'					,
 											'position' 					,
 											'organisation' 				,
 											'status' 					,
