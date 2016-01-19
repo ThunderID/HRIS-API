@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrganisationsTable extends Migration {
+class CreateMaritalStatusesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,15 +12,16 @@ class CreateOrganisationsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('organisations', function(Blueprint $table)
-		{
+		Schema::create('marital_statuses', function(Blueprint $table) {
 			$table->increments('id');
-			$table->string('name', 255);
-			$table->string('code', 255);
+			$table->integer('person_id')->unsigned()->index();
+			$table->string('status', 255);
+			$table->datetime('on');
 			$table->timestamps();
 			$table->softDeletes();
 		});
 	}
+
 
 	/**
 	 * Reverse the migrations.
@@ -29,7 +30,7 @@ class CreateOrganisationsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('organisations');
+		Schema::drop('marital_statuses');
 	}
 
 }

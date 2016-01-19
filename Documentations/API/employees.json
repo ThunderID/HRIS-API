@@ -1,0 +1,527 @@
+swagger: '2.0'
+info:
+  title: Employee API
+  description: Move your app forward with the Employee API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /employees:
+    get:
+      summary: Employee Lists
+      description: |
+        The employees endpoint returns information about the *HRIS* employees.
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+      tags:
+        - employees
+      responses:
+        '200':
+          description: An array of employees' data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employees'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /employee/store:
+    post:
+      summary: Store an employee
+      description: >
+        Store an employee with details those are contacts, works, private documents, marital statuses
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new employee.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: employee name.
+          required: true
+          type: string
+          format: string
+        - name: uniqid
+          in: query
+          description: Must be unique.
+          required: true
+          type: string
+          format: string
+        - name: prefix_title
+          in: query
+          description: prefix title of employee.
+          required: false
+          type: string
+          format: string
+        - name: suffix_title
+          in: query
+          description: suffix title of employee.
+          required: false
+          type: string
+          format: string
+        - name: place_of_birth
+          in: query
+          description: place where employee was born.
+          required: false
+          type: string
+          format: string
+        - name: date_of_birth
+          in: query
+          description: in format Y-m-d H:i:s.
+          required: false
+          type: string
+          format: string
+        - name: gender
+          in: query
+          description: in male or female.
+          required: false
+          type: string
+          format: string
+        - name: username
+          in: query
+          description: must be unique and follow the rule.
+          required: true
+          type: string
+          format: string
+        - name: avatar
+          in: query
+          description: url of avatar.
+          required: false
+          type: string
+          format: string
+        - name: maritalstatusses
+          in: query
+          description: Must be array of employees' marital status.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: careers
+          in: query
+          description: Must be array of employees' career.
+          required: true
+          type: array
+          items:
+            type: string
+        - name: workexperiences
+          in: query
+          description: Must be array of employees' work experience from other company.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: contacts
+          in: query
+          description: Must be array of employees' contact.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: privatedocuments
+          in: query
+          description: Must be array of employees' private document and detail (look below).
+          required: false
+          type: array
+          items:
+            type: string
+      tags:
+        - employees
+      responses:
+        '200':
+          description: An array of employee
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employee'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /employee/id/:
+    get:
+      summary: Employee Detail
+      description: 'Get employee detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: employee id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - employees
+      responses:
+        '200':
+          description: employee rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employee'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /employee/delete/id/:
+    delete:
+      summary: Delete an employee
+      description: 'Get employee detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: employee id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - employees
+      responses:
+        '200':
+          description: employee rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employee'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  search:
+    properties:
+      name:
+        type: string
+        description: 'Search employee that hath certain name'
+  employees:
+    properties:
+      count:
+        type: number
+        description: 'Total employees.'
+      data:
+        properties:
+          id:
+            type: string
+          uniqid:
+            type: string
+          name:
+            type: string
+          prefix_title:
+            type: string
+          suffix_title:
+            type: string
+          place_of_birth:
+            type: string
+          date_of_birth:
+            type: string
+          gender:
+            type: string
+          username:
+            type: string
+          avatar:
+            type: string
+          address:
+            type: string
+          phone:
+            type: string
+          email:
+            type: string
+          quota_workleave:
+            type: number
+          current_job:
+            type: string
+          marital_status:
+            type: string
+          privatedocuments:
+            type: array
+            items:
+              $ref: '#/definitions/persondocuments'
+  employee:
+    properties:
+      id:
+        type: string
+      uniqid:
+        type: string
+      name:
+        type: string
+      prefix_title:
+        type: string
+      suffix_title:
+        type: string
+      place_of_birth:
+        type: string
+      date_of_birth:
+        type: string
+      gender:
+        type: string
+      username:
+        type: string
+      avatar:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      quota_workleave:
+        type: number
+      current_job:
+        type: string
+      marital_status:
+        type: string
+      privatedocuments:
+        type: array
+        items:
+          $ref: '#/definitions/persondocuments'
+      careers:
+        type: array
+        items:
+          $ref: '#/definitions/careers'
+      workexperiences:
+        type: array
+        items:
+          $ref: '#/definitions/workexperiences'
+      contacts:
+        type: array
+        items:
+          $ref: '#/definitions/contacts'
+      maritalstatusses:
+        type: array
+        items:
+          $ref: '#/definitions/maritalstatusses'
+  persondocuments:
+    properties:
+      id:
+        type: string
+      document:
+        type: array
+        items:
+          $ref: '#/definitions/document'
+      documentdetails:
+        type: array
+        items:
+          $ref: '#/definitions/documentdetails'
+  document:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      tag:
+        type: string
+      is_required:
+        type: string
+      template:
+        type: string     
+  documentdetails:
+    properties:
+      id:
+        type: string
+      numeric:
+        type: string
+      on:
+        type: string
+      string:
+        type: string
+      text:
+        type: string
+      template:
+        type: array
+        items:
+          $ref: '#/definitions/template'
+  template:
+    properties:
+      id:
+        type: string
+      field:
+        type: string
+      type:
+        type: string
+  contacts:
+    properties:
+      id:
+        type: string
+      item:
+        type: string
+      value:
+        type: string
+      is_default:
+        type: string
+  maritalstatusses:
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+      on:
+        type: string
+  workexperiences:
+    properties:
+      id:
+        type: string
+      organisation:
+        type: string
+      position:
+        type: string
+      grade:
+        type: string
+      status:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+      reason_end_job:
+        type: string
+      is_absence:
+        type: string
+  careers:
+    properties:
+      id:
+        type: string
+      grade:
+        type: string
+      status:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+      reason_end_job:
+        type: string
+      is_absence:
+        type: string
+      followworkleaves:
+        type: array
+        items:
+          $ref: '#/definitions/followworkleaves'
+      chart:
+        type: array
+        items:
+          $ref: '#/definitions/chart'
+      calendar:
+        type: array
+        items:
+          $ref: '#/definitions/calendar'
+  followworkleaves:
+    properties:
+      id:
+        type: string
+      workleave:
+        type: array
+        items:
+          $ref: '#/definitions/workleave'
+  workleave:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      quota:
+        type: string
+      status:
+        type: string
+      is_active:
+        type: string
+  chart:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      tag:
+        type: string
+      min_employee:
+        type: string
+      ideal_employee:
+        type: string
+      max_employee:
+        type: string
+      current_employee:
+        type: string
+      branch:
+        type: array
+        items:
+          $ref: '#/definitions/branch'
+  branch:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  calendar:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      workdays:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+      break_idle:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32

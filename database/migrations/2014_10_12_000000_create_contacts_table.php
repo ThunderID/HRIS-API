@@ -25,8 +25,8 @@ class CreateContactsTable extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(['deleted_at' ,'is_default', 'branch_id', 'item']);
-			$table->index(['deleted_at' ,'is_default', 'person_id', 'item']);
+			$table->index(['deleted_at' ,'branch_id', 'item', 'is_default']);
+			$table->index(['deleted_at' ,'person_id', 'item', 'is_default']);
 		});
 	}
 

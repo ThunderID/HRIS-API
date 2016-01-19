@@ -19,6 +19,7 @@ class CreateTmpCalendarsTable extends Migration {
 			$table->integer('import_from_id')->unsigned()->index();
 			$table->string('name', 255);
 			$table->text('workdays');
+			$table->text('break_idle');
 			$table->time('start');
 			$table->time('end');
 			$table->timestamps();

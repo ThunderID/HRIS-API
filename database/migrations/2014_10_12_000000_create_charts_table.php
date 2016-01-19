@@ -18,7 +18,6 @@ class CreateChartsTable extends Migration {
 			$table->integer('chart_id')->unsigned()->index();
 			$table->string('name', 255);
 			$table->string('path', 255);
-			$table->string('grade', 255);
 			$table->string('tag', 255);
 			$table->integer('min_employee');
 			$table->integer('ideal_employee');

@@ -15,14 +15,15 @@ class CreatePersonWidgetsTable extends Migration {
 		Schema::create('person_widgets', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->integer('organisation_id')->unsigned()->index();
 			$table->integer('person_id')->unsigned()->index();
-			$table->string('title', 255);
-			$table->enum('type', ['panel', 'table', 'stat']);
+			$table->enum('type', ['list', 'table', 'stat']);
+			$table->string('widget', 255);
+			$table->text('query');
+			$table->string('dashboard', 255);
 			$table->tinyinteger('row');
 			$table->tinyinteger('col');
-			$table->text('query');
-			$table->text('field');
-			$table->string('function', 255);
+			$table->boolean('is_active');
 			$table->timestamps();
 			$table->softDeletes();
 		});

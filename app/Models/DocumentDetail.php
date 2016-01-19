@@ -61,6 +61,8 @@ class DocumentDetail extends BaseModel
 											'person_document_id'				,
 											'template_id'						,
 											'numeric'							,
+											'on'								,
+											'string'							,
 											'text'								,
 										];
 										
@@ -72,8 +74,10 @@ class DocumentDetail extends BaseModel
 	protected $rules				=	[
 											'person_document_id'			=> 'required|exists:person_documents,id',
 											'template_id'					=> 'required|exists:tmp_templates,id',
-											'numeric'						=> 'required|numeric',
-											'text'							=> 'required',
+											'numeric'						=> 'numeric',
+											'on'							=> 'date_format:"Y-m-d"',
+											'string'						=> 'max:255',
+											// 'text'							=> 'required',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

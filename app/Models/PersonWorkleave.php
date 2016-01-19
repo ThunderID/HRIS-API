@@ -4,6 +4,11 @@ namespace App\Models;
 
 // use App\Models\Observers\PersonWorkleaveObserver;
 
+/**
+ * Used for PersonWorkleave Models
+ * 
+ * @author cmooy
+ */
 class PersonWorkleave extends BaseModel
 {
 	/**
@@ -13,10 +18,15 @@ class PersonWorkleave extends BaseModel
 	 */
 	protected $table				= 'person_workleaves';
 
-	// protected $timestamps			= true;
-
 	/**
 	 * Timestamp field
+	 *
+	 * @var array
+	 */
+	// protected $timestamps			= true;
+	
+	/**
+	 * Date will be returned as carbon
 	 *
 	 * @var array
 	 */

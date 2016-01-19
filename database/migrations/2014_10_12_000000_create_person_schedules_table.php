@@ -22,6 +22,7 @@ class CreatePersonSchedulesTable extends Migration {
 			$table->date('on');
 			$table->time('start');
 			$table->time('end');
+			$table->double('break_idle');
 			$table->timestamps();
 			$table->softDeletes();
 			

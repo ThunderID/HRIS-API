@@ -26,6 +26,7 @@ class CreatePersonsTable extends Migration {
 			$table->string('username', 255);
 			$table->string('password', 255);
 			$table->text('avatar');
+			$table->datetime('last_password_updated_at');
 			$table->timestamps();
 			$table->softDeletes();
 

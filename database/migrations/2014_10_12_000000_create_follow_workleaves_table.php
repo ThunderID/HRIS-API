@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrganisationsTable extends Migration {
+class CreateFollowWorkleavesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,13 +12,15 @@ class CreateOrganisationsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('organisations', function(Blueprint $table)
+		Schema::create('follow_workleaves', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name', 255);
-			$table->string('code', 255);
+			$table->integer('workleave_id')->unsigned()->index();
+			$table->integer('work_id')->unsigned()->index();
 			$table->timestamps();
 			$table->softDeletes();
+			
+			$table->index(['deleted_at']);
 		});
 	}
 
@@ -29,7 +31,7 @@ class CreateOrganisationsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('organisations');
+		Schema::drop('follow_workleaves');
 	}
 
 }

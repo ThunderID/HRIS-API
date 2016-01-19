@@ -24,11 +24,12 @@ class CreateWorksTable extends Migration {
 			$table->string('position', 255);
 			$table->string('organisation', 255);
 			$table->text('reason_end_job');
+			$table->boolean('is_absence');
 			$table->timestamps();
 			$table->softDeletes();
 			
-			$table->index(['deleted_at', 'start', 'end']);
-			$table->index(['end']);
+			$table->index(['deleted_at', 'person_id', 'end', 'status']);
+			$table->index(['start']);
 		});
 	}
 

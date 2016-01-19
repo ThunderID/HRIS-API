@@ -17,12 +17,15 @@ class CreateDocumentsDetailsTable extends Migration {
 			$table->increments('id');
 			$table->integer('person_document_id')->unsigned()->index();
 			$table->integer('template_id')->unsigned()->index();
+			$table->string('string', 255);
+			$table->datetime('on');
 			$table->double('numeric');
 			$table->text('text');
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(['deleted_at', 'person_document_id', 'numeric']);
+			$table->index(['deleted_at', 'on']);
+			$table->index(['deleted_at', 'numeric']);
 		});
 	}
 
