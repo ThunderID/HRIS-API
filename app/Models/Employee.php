@@ -6,7 +6,7 @@ use App\Models\Traits\HasEmployeeTrait;
 use App\Models\Traits\HasQuotaWorkleaveTrait;
 use App\Models\Traits\HasCurrentMaritalStatusTrait;
 
-// use App\Models\Observers\EmployeeObserver;
+use App\Models\Observers\EmployeeObserver;
 
 /** 
 	* Inheritance Person Model
@@ -19,7 +19,10 @@ class Employee extends Person
 	 *
 	 */
 	use \App\Models\Traits\hasMany\HasWorksTrait;
+	use \App\Models\Traits\hasMany\HasPersonWorkleavesTrait;
+	use \App\Models\Traits\hasMany\HasPersonSchedulesTrait;
 	use \App\Models\Traits\hasMany\HasMaritalStatusesTrait;
+	use \App\Models\Traits\hasMany\HasLogsTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
@@ -83,7 +86,7 @@ class Employee extends Person
 	{
         parent::boot();
  
-        // Employee::observe(new EmployeeObserver());
+        Employee::observe(new EmployeeObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

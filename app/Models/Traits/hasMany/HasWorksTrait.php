@@ -24,7 +24,7 @@ trait HasWorksTrait
 	 **/
 	public function Works()
 	{
-		return $this->hasMany('App\Models\Work');
+		return $this->hasMany('App\Models\Work', 'person_id');
 	}
 
 	/**

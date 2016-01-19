@@ -858,4 +858,29 @@ class EmployeeController extends Controller
 
 		return new JSend('success', (array)$final_employee);
 	}
+
+	/**
+	 * Delete an employee
+	 *
+	 * @return Response
+	 */
+	public function delete($org_id = null, $id = null)
+	{
+		//
+		$employee				= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
+
+		if(!$employee)
+		{
+			return new JSend('error', (array)Input::all(), 'Karyawan tidak ditemukan.');
+		}
+
+		$result					= $employee->toArray();
+
+		if($employee->delete())
+		{
+			return new JSend('success', (array)$result);
+		}
+
+		return new JSend('error', (array)$result, $employee->getError());
+	}
 }
