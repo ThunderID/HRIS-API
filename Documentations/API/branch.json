@@ -160,6 +160,12 @@ definitions:
         type: string
       name:
         type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
       charts:
         type: array
         items:
