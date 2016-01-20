@@ -2,30 +2,27 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\ChartObserver;
+// use App\Models\Observers\ChartWorkleaveObserver;
 
 /**
- * Used for Chart Models
+ * Used for Private and employment document
  * 
  * @author cmooy
  */
-class Chart extends BaseModel
+class ChartWorkleave extends BaseModel
 {
 	/**
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\Models\Traits\belongsTo\HasBranchTrait;
-	use \App\Models\Traits\hasMany\HasWorksTrait;
-	use \App\Models\Traits\hasMany\HasFollowsTrait;
-	use \App\Models\Traits\hasMany\HasChartWorkleavesTrait;
-
+	use \App\Models\Traits\belongsTo\HasWorkleaveTrait;
+	
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'charts';
+	protected $table				= 'charts_workleaves';
 
 	/**
 	 * Timestamp field
@@ -42,6 +39,26 @@ class Chart extends BaseModel
 	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+
+	protected $fillable				=	[
+											'workleave_id'					,
+											'chart_id'						,
+										];
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'workleave_id'					=> 'exists:tmp_workleaves,id',
+											'chart_id'						=> 'exists:charts,id',
+										];
+	
+	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
@@ -55,42 +72,6 @@ class Chart extends BaseModel
 	 */
 	protected $hidden 				= [];
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable				=	[
-											'branch_id'						,
-											'chart_id'						,
-											'name'							,
-											'path'							,
-											'grade'							,
-											'tag'							,
-											'min_employee'					,
-											'ideal_employee'				,
-											'max_employee'					,
-											'current_employee'				,
-										];
-										
-	/**
-	 * Basic rule of database
-	 *
-	 * @var array
-	 */
-	protected $rules				=	[
-											'branch_id'						=> 'required|exists:branches,id',
-											// 'chart_id'						=> 'required|max:255',
-											'name'							=> 'required|max:255',
-											'path'							=> 'required|max:255',
-											'grade'							=> 'numeric',
-											'tag'							=> 'required|max:255',
-											'min_employee'					=> 'numeric',
-											'ideal_employee'				=> 'numeric',
-											'max_employee'					=> 'numeric',
-											'current_employee'				=> 'numeric',
-										];
-
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/
@@ -100,17 +81,12 @@ class Chart extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-
-	/**
-	 * boot
-	 * observing model
-	 *
-	 */	
+	
 	public static function boot() 
 	{
         parent::boot();
  
-        // Chart::observe(new ChartObserver());
+        // ChartWorkleave::observe(new ChartWorkleaveObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

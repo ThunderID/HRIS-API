@@ -69,6 +69,28 @@ $app->delete('/{org_id}/employee/delete/{id}',
 		'uses'				=> 'EmployeeController@delete'
 	]
 );
+
+// ------------------------------------------------------------------------------------
+// BRANCH
+// ------------------------------------------------------------------------------------
+$app->get('/{org_id}/branch/{id}',
+	[
+		'uses'				=> 'BranchController@detail'
+	]
+);
+
+$app->post('/{org_id}/branch/store',
+	[
+		'uses'				=> 'BranchController@store'
+	]
+);
+
+$app->delete('/{org_id}/branch/delete/{id}',
+	[
+		'uses'				=> 'BranchController@delete'
+	]
+);
+
 // ------------------------------------------------------------------------------------
 // ME
 // ------------------------------------------------------------------------------------

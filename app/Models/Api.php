@@ -2,30 +2,27 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\ChartObserver;
+// use App\Models\Observers\ApiObserver;
 
 /**
- * Used for Chart Models
+ * Used for Api Models
  * 
  * @author cmooy
  */
-class Chart extends BaseModel
+class Api extends BaseModel
 {
 	/**
 	 * Relationship Traits.
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasBranchTrait;
-	use \App\Models\Traits\hasMany\HasWorksTrait;
-	use \App\Models\Traits\hasMany\HasFollowsTrait;
-	use \App\Models\Traits\hasMany\HasChartWorkleavesTrait;
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'charts';
+	protected $table				= 'apis';
 
 	/**
 	 * Timestamp field
@@ -62,15 +59,12 @@ class Chart extends BaseModel
 	 */
 	protected $fillable				=	[
 											'branch_id'						,
-											'chart_id'						,
-											'name'							,
-											'path'							,
-											'grade'							,
-											'tag'							,
-											'min_employee'					,
-											'ideal_employee'				,
-											'max_employee'					,
-											'current_employee'				,
+											'client'						,
+											'secret'						,
+											'workstation_address'			,
+											'workstation_name'				,
+											'tr_version'					,
+											'is_active'						,
 										];
 										
 	/**
@@ -79,16 +73,13 @@ class Chart extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'branch_id'						=> 'required|exists:branches,id',
-											// 'chart_id'						=> 'required|max:255',
-											'name'							=> 'required|max:255',
-											'path'							=> 'required|max:255',
-											'grade'							=> 'numeric',
-											'tag'							=> 'required|max:255',
-											'min_employee'					=> 'numeric',
-											'ideal_employee'				=> 'numeric',
-											'max_employee'					=> 'numeric',
-											'current_employee'				=> 'numeric',
+											'branch_id'						=> 'exists:branches,id',
+											'client'						=> 'max:255',
+											'secret'						=> 'max:255',
+											'workstation_address'			=> 'max:255',
+											'workstation_name'				=> 'max:255',
+											'tr_version'					=> 'max:255',
+											'is_active'						=> 'boolean',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -110,7 +101,7 @@ class Chart extends BaseModel
 	{
         parent::boot();
  
-        // Chart::observe(new ChartObserver());
+        // Api::observe(new ApiObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
