@@ -2,7 +2,6 @@
 
 use Illuminate\Support\MessageBag;
 
-use App\Models\Contact;
 use App\Models\FingerPrint;
 
 /**
@@ -38,7 +37,7 @@ class BranchObserver
 		        
         if($errors->count())
         {
-			$model['errors'] 		= $errors;
+			$model['errors']	= $errors;
 
         	return false;
         }
@@ -48,7 +47,7 @@ class BranchObserver
 
 	/** 
      * observe branch event deleting
-     * 1. save default finger print
+     * 1. delete chart
      * 2. delete contact
      * 3. delete finger
      * 4. act, accept or refuse
@@ -60,10 +59,13 @@ class BranchObserver
 	{
 		$errors						= new MessageBag();
 		
-		//1. check chart
-		if($model->charts()->count())
+		//1. delete chart
+		foreach ($model->charts as $key => $value) 
 		{
-			$errors->add('Branch', 'Tidak dapat menghapus cabang yang memiliki departemen.');
+            if(!$value->delete())
+            {
+            	$errors->add('Branch', $value->getError());
+            }
 		}
 
 		//2. delete contact

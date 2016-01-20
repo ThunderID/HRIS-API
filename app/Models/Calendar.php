@@ -17,6 +17,8 @@ class Calendar extends BaseModel
 	 */
 	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
 	use \App\Models\Traits\hasMany\HasSchedulesTrait;
+	use \App\Models\Traits\hasMany\HasCalendarsTrait;
+	use \App\Models\Traits\hasMany\HasFollowsTrait;
 	
 	/**
 	 * The database table used by the model.
@@ -73,12 +75,12 @@ class Calendar extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'required|exists:organisations,id',
-											'import_from_id'				=> 'required|exists:tmp_calendars,id',
-											'name'							=> 'required|max:255',
-											'workdays'						=> 'required|max:255',
-											'start'							=> 'required',
-											'end'							=> 'required',
+											'organisation_id'				=> 'exists:organisations,id',
+											'import_from_id'				=> 'exists:tmp_calendars,id',
+											'name'							=> 'max:255',
+											'workdays'						=> 'max:255',
+											'start'							=> 'date_format:"H:i:s"',
+											'end'							=> 'date_format:"H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

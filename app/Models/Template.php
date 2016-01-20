@@ -69,9 +69,9 @@ class Template extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'document_id'					=> 'required|exists:tmp_documents,id',
-											'field'							=> 'required|max:255',
-											'type'							=> 'required|max:255',
+											'document_id'					=> 'exists:tmp_documents,id',
+											'field'							=> 'max:255',
+											'type'							=> 'max:255',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

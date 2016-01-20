@@ -2,8 +2,7 @@
 
 use Illuminate\Support\MessageBag;
 
-use App\Models\PersonDocument;
-use App\Models\DocumentDetail;
+use App\Models\Document;
 
 /**
  * Used in PersonDocument model
@@ -60,13 +59,10 @@ class PersonDocumentObserver
 	    //1. delete document detail
 		foreach ($model->documentdetails as $key => $value) 
 		{
-			$ddetail 	 					= new DocumentDetail;
-			
-			$delete 						= $ddetail->id($value->id)->first();
-			if($delete && !$delete->delete())
-			{
-				$errors->add('Document', $delete->getError());
-			}
+			if(!$value->delete())
+            {
+            	$errors->add('Document', $value->getError());
+            }
 		}
 
 		if($errors->count())

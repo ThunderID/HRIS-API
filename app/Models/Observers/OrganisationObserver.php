@@ -113,10 +113,19 @@ class OrganisationObserver
      */
 	public function saving($model)
 	{
-		$errors						= new MessageBag();
-		
+		$errors									= new MessageBag();
+
+		if(is_null($model->id))
+		{
+			$id 								= 0;
+		}
+		else
+		{
+			$id 								= $model->id;
+		}
+
 		//1. check unique code
-        $code						= Organisation::code($model->code)->notid($model->id)->first();
+        $code						= Organisation::code($model->code)->notid($id)->first();
 
         if(!is_null($code))
         {

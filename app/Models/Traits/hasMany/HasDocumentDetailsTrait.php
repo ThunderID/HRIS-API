@@ -24,6 +24,6 @@ trait HasDocumentDetailsTrait
 	 **/
 	public function DocumentDetails()
 	{
-		return $this->hasMany('App\Models\DocumentDetail', 'person_document_id');
+		return $this->hasMany('App\Models\DocumentDetail');
 	}
 }

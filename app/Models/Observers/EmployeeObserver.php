@@ -5,13 +5,6 @@ use Carbon\Carbon;
 use Hash;
 
 use App\Models\Employee;
-use App\Models\MaritalStatus;
-use App\Models\PersonDocument;
-use App\Models\DocumentDetail;
-use App\Models\Work;
-use App\Models\PersonWorkleave;
-use App\Models\PersonSchedule;
-use App\Models\PersonContact;
 
 /**
  * Used in Employee model
@@ -129,11 +122,9 @@ class EmployeeObserver
 		//2. delete marital status
 		foreach ($model->maritalstatuses as $key => $value) 
 		{
-			$ms 	 						= new MaritalStatus;
-			$delete 						= $ms->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Employee', $delete->getError());
+				$errors->add('Employee', $value->getError());
 			}
 		}
 
@@ -143,63 +134,51 @@ class EmployeeObserver
 			//7a. delete detail documents
 			foreach ($value->documentdetails as $key2 => $value2) 
 			{
-				$dd 		 				= new DocumentDetail;
-				$delete 					= $dd->id($value2->id)->first();
-				if($delete && !$delete->delete())
+				if(!$value2->delete())
 				{
-					$errors->add('Employee', $delete->getError());
+					$errors->add('Employee', $value2->getError());
 				}
 			}
 
-			$document 	 					= new PersonDocument;
-			$delete 						= $document->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Employee', $delete->getError());
+				$errors->add('Employee', $value->getError());
 			}
 		}
 
 		//4. delete works
 		foreach ($model->works as $key => $value) 
 		{
-			$work 	 						= new Work;
-			$delete 						= $work->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Employee', $delete->getError());
+				$errors->add('Employee', $value->getError());
 			}
 		}
 
 		//5. delete workleaves
 		foreach ($model->personworkleaves as $key => $value) 
 		{
-			$pw 	 						= new PersonWorkleave;
-			$delete 						= $pw->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Employee', $delete->getError());
+				$errors->add('Employee', $value->getError());
 			}
 		}
 
 		//6. delete schedules
 		foreach ($model->personschedules as $key => $value) 
 		{
-			$ps 	 						= new PersonSchedule;
-			$delete 						= $ps->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Employee', $delete->getError());
+				$errors->add('Employee', $value->getError());
 			}
 		}
 
 		//7. delete contacts
 		foreach ($model->contacts as $key => $value) 
 		{
-			$pc 	 						= new PersonContact;
-			$delete 						= $pc->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Employee', $delete->getError());
+				$errors->add('Employee', $value->getError());
 			}
 		}
 

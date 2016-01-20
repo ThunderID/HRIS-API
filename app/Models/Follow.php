@@ -2,32 +2,27 @@
 
 namespace App\Models;
 
-use App\Models\Observers\OrganisationObserver;
+// use App\Models\Observers\FollowObserver;
 
 /**
- * Used for Organisation Models
+ * Used for Private and employment document
  * 
  * @author cmooy
  */
-class Organisation extends BaseModel
+class Follow extends BaseModel
 {
 	/**
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\Models\Traits\hasMany\HasBranchesTrait;
-	use \App\Models\Traits\hasMany\HasCalendarsTrait;
-	use \App\Models\Traits\hasMany\HasWorkleavesTrait;
-	use \App\Models\Traits\hasMany\HasDocumentsTrait;
-	use \App\Models\Traits\hasMany\HasPoliciesTrait;
-	use \App\Models\Traits\hasMany\HasEmployeesTrait;
-
+	use \App\Models\Traits\belongsTo\HasCalendarTrait;
+	
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'organisations';
+	protected $table				= 'follows';
 
 	/**
 	 * Timestamp field
@@ -44,6 +39,26 @@ class Organisation extends BaseModel
 	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+
+	protected $fillable				=	[
+											'calendar_id'					,
+											'chart_id'						,
+										];
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'calendar_id'					=> 'exists:tmp_calendars,id',
+											'chart_id'						=> 'exists:charts,id',
+										];
+	
+	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
@@ -57,26 +72,6 @@ class Organisation extends BaseModel
 	 */
 	protected $hidden 				= [];
 
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable				=	[
-											'name'							,
-											'code'							,
-										];
-										
-	/**
-	 * Basic rule of database
-	 *
-	 * @var array
-	 */
-	protected $rules				=	[
-											'name'							=> 'max:255',
-											'code'							=> 'max:255',
-										];
-
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/
@@ -86,28 +81,13 @@ class Organisation extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-
-	/**
-	 * boot
-	 * observing model
-	 *
-	 */	
+	
 	public static function boot() 
 	{
         parent::boot();
  
-        Organisation::observe(new OrganisationObserver());
+        // Follow::observe(new FollowObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
-	
-	/**
-	 * scope to find code of organisation
-	 *
-	 * @param string of code
-	 */
-	public function scopeCode($query, $variable)
-	{
-		return 	$query->where('code', $variable);
-	}
 }

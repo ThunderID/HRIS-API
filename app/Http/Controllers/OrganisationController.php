@@ -148,66 +148,23 @@ class OrganisationController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$branch_data		= \App\Models\Branch::find($value['id']);
+					$branch_data		= \App\Models\Branch::findornew($value['id']);
 
-					if($branch_data)
-					{
-						$branch_rules	=	[
-												'organisation_id'			=> 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+					$branch_rules		=	[
+												'organisation_id'			=> 'required|exists:organisations,id|'.($is_new ? '' : 'in:'.$organisation_data['id']),
 												'name'						=> 'required|max:255',
 											];
 
-						$validator		= Validator::make($branch_data['attributes'], $branch_rules);
-					}
-					else
-					{
-						$branch_rules	=	[
-												'organisation_id'			=> 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
-												'name'						=> 'required|max:255',
-											];
-
-						$validator		= Validator::make($value, $branch_rules);
-					}
+					$validator		= Validator::make($value, $branch_rules);
 
 					//if there was branch and validator false
-					if ($branch_data && !$validator->passes())
-					{
-						if($value['organisation_id']!=$organisation['id'])
-						{
-							$errors->add('branch', 'Organisasi dari branch Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('branch', 'Organisasi branch Tidak Valid.');
-						}
-						else
-						{
-							$branch_data				= $branch_data->fill($value);
-
-							if(!$branch_data->save())
-							{
-								$errors->add('branch', $branch_data->getError());
-							}
-							else
-							{
-								$branch_current_ids[]	= $branch_data['id'];
-							}
-						}
-					}
-					//if there was branch and validator false
-					elseif (!$branch_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('branch', $validator->errors());
-					}
-					elseif($branch_data && $validator->passes())
-					{
-						$branch_current_ids[]			= $branch_data['id'];
 					}
 					else
 					{
 						$value['organisation_id']		= $organisation_data['id'];
-
-						$branch_data					= new \App\Models\Branch;
 
 						$branch_data					= $branch_data->fill($value);
 
@@ -225,7 +182,7 @@ class OrganisationController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$branches								= \App\Models\Branch::organisationid($organisation['id'])->get()->toArray();
+				$branches								= \App\Models\Branch::organisationid($organisation['id'])->get(['id'])->toArray();
 				
 				$branch_should_be_ids					= [];
 				foreach ($branches as $key => $value) 
@@ -259,80 +216,33 @@ class OrganisationController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$calendar_data					= \App\Models\Calendar::find($value['id']);
+					$calendar_data	= \App\Models\Calendar::findornew($value['id']);
 
-					if($calendar_data)
-					{
-						$calendar_rules	=	[
-												'organisation_id'		=> 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
-												'import_from_id'		=> 'required',
-												'name'					=> 'required|max:255',
-												'workdays'				=> 'required',
-												'start'					=> 'required',
-												'end'					=> 'required',
-											];
+					$calendar_rules	=	[
+											'organisation_id'		=> 'exists:organisations,id|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+											'import_from_id'		=> 'required|exists:tmp_calendars,id',
+											'name'					=> 'required|max:255',
+											'workdays'				=> 'required|max:255',
+											'start'					=> 'required|date_format:"H:i:s"',
+											'end'					=> 'required|date_format:"H:i:s"',
+										];
 
-						$validator		= Validator::make($calendar_data['attributes'], $calendar_rules);
-					}
-					else
-					{
-						$calendar_rules	=	[
-												'organisation_id'		=> 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
-												'import_from_id'		=> 'required',
-												'name'					=> 'required|max:255',
-												'workdays'				=> 'required',
-												'start'					=> 'required',
-												'end'					=> 'required',
-											];
-
-						$validator      = Validator::make($value, $calendar_rules);
-					}
+					$validator      = Validator::make($value, $calendar_rules);
 
 					//if there was calendar and validator false
-					if ($calendar_data && !$validator->passes())
-					{
-						if($value['organisation_id']!=$organisation['id'])
-						{
-							$errors->add('calendar', 'Organisasi dari calendar Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('calendar', 'Organisasi calendar Tidak Valid.');
-						}
-						else
-						{
-							$calendar_data				= $calendar_data->fill($value);
-
-							if(!$calendar_data->save())
-							{
-								$errors->add('calendar', $calendar_data->getError());
-							}
-							else
-							{
-								$calendar_current_ids[]	= $calendar_data['id'];
-							}
-						}
-					}
-					//if there was calendar and validator false
-					elseif (!$calendar_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('calendar', $validator->errors());
-					}
-					elseif($calendar_data && $validator->passes())
-					{
-						$calendar_current_ids[]			= $calendar_data['id'];
 					}
 					else
 					{
 						$value['organisation_id']		= $organisation_data['id'];
 
-						$calendar_data					= new \App\Models\Calendar;
-
 						$calendar_data					= $calendar_data->fill($value);
 
 						if(!$calendar_data->save())
 						{
-							$errors->add('calendar', $calendar_data->getError());
+							$errors->add('calendar', $validator->errors());
 						}
 						else
 						{
@@ -344,7 +254,7 @@ class OrganisationController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$calendars								= \App\Models\Calendar::organisationid($organisation['id'])->get()->toArray();
+				$calendars								= \App\Models\Calendar::organisationid($organisation['id'])->get(['id'])->toArray();
 				
 				$calendar_should_be_ids					= [];
 				foreach ($calendars as $key => $value) 
@@ -378,72 +288,27 @@ class OrganisationController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$workleave_data			= \App\Models\Workleave::find($value['id']);
+					$workleave_data			= \App\Models\Workleave::findornew($value['id']);
 
-					if($workleave_data)
-					{
-						$workleave_rules	= 	[
-													'organisation_id'	=> 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+				
+					$workleave_rules		= 	[
+													'organisation_id'	=> 'required|exists:organisations,id|'.($is_new ? '' : 'in:'.$organisation_data['id']),
 													'name'				=> 'required|max:255',
 													'quota'				=> 'required|numeric',
 													'status'			=> 'required|in:CN,CB,CI',
 													'is_active'			=> 'boolean',
 												];
-
-						$validator			= Validator::make($workleave_data['attributes'], $workleave_rules);
-					}
-					else
-					{
-						$workleave_rules	=   [
-													'organisation_id'	=> 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
-													'name'				=> 'required|max:255',
-													'quota'				=> 'required|numeric',
-													'status'			=> 'required|in:CN,CB,CI',
-													'is_active'			=> 'boolean',
-												];
-
-						$validator			= Validator::make($value, $workleave_rules);
-					}
+				
+					$validator				= Validator::make($value, $workleave_rules);
 
 					//if there was workleave and validator false
-					if ($workleave_data && !$validator->passes())
-					{
-						if($value['organisation_id']!=$organisation['id'])
-						{
-							$errors->add('Workleave', 'Organisasi dari Workleave Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('Workleave', 'Organisasi Workleave Tidak Valid.');
-						}
-						else
-						{
-							$workleave_data					= $workleave_data->fill($value);
-
-							if(!$workleave_data->save())
-							{
-								$errors->add('Workleave', $workleave_data->getError());
-							}
-							else
-							{
-								$workleave_current_ids[]	= $workleave_data['id'];
-							}
-						}
-					}
-					//if there was workleave and validator false
-					elseif (!$workleave_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('Workleave', $validator->errors());
-					}
-					elseif($workleave_data && $validator->passes())
-					{
-						$workleave_current_ids[]			= $workleave_data['id'];
 					}
 					else
 					{
 						$value['organisation_id']			= $organisation_data['id'];
-
-						$workleave_data						= new \App\Models\Workleave;
 
 						$workleave_data						= $workleave_data->fill($value);
 
@@ -461,7 +326,7 @@ class OrganisationController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$workleaves								= \App\Models\Workleave::organisationid($organisation['id'])->get()->toArray();
+				$workleaves								= \App\Models\Workleave::organisationid($organisation['id'])->get(['id'])->toArray();
 				
 				$workleave_should_be_ids				= [];
 				foreach ($workleaves as $key => $value) 
@@ -495,72 +360,25 @@ class OrganisationController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$document_data			= \App\Models\Document::find($value['id']);
+					$document_data			= \App\Models\Document::findornew($value['id']);
 
-					if($document_data)
-					{
-						$document_rules		=	[
-													'organisation_id'			=> 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+					$document_rules			=	[
+													'organisation_id'			=> 'required|exists:organisations,id|'.($is_new ? '' : 'in:'.$organisation_data['id']),
 													'name'						=> 'required|max:255',
 													'tag'						=> 'required|max:255',
-													'template'					=> 'required',
 													'is_required'				=> 'boolean',
 												];
 
-						$validator			= Validator::make($document_data['attributes'], $document_rules);
-					}
-					else
-					{
-						$document_rules		=	[
-													'organisation_id'			=> 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
-													'name'						=> 'required|max:255',
-													'quota'						=> 'required|max:255',
-													'template'					=> 'required',
-													'is_required'				=> 'boolean',
-												];
-
-						$validator			= Validator::make($value, $document_rules);
-					}
+					$validator				= Validator::make($value, $document_rules);
 
 					//if there was document and validator false
-					if ($document_data && !$validator->passes())
-					{
-						if($value['organisation_id']!=$organisation['id'])
-						{
-							$errors->add('document', 'Organisasi dari document Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('document', 'Organisasi document Tidak Valid.');
-						}
-						else
-						{
-							$document_data				= $document_data->fill($value);
-
-							if(!$document_data->save())
-							{
-								$errors->add('document', $document_data->getError());
-							}
-							else
-							{
-								$document_current_ids[]	= $document_data['id'];
-							}
-						}
-					}
-					//if there was document and validator false
-					elseif (!$document_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('document', $validator->errors());
-					}
-					elseif($document_data && $validator->passes())
-					{
-						$document_current_ids[]			= $document_data['id'];
 					}
 					else
 					{
 						$value['organisation_id']		= $organisation_data['id'];
-
-						$document_data					= new \App\Models\Document;
 
 						$document_data					= $document_data->fill($value);
 
@@ -583,68 +401,25 @@ class OrganisationController extends Controller
 					{
 						if(!$errors->count())
 						{
-							$template_data			= \App\Models\Template::find($value2['id']);
+							$template_data			= \App\Models\Template::findornew($value2['id']);
 
-							if($template_data)
-							{
-								$template_rules		= 	[
-															'document_id'	=> 'required|numeric|'.($is_new ? '' : 'in:'.$value['id']),
+							
+							$template_rules			= 	[
+															'document_id'	=> 'required|exists:tmp_documents,id|'.($is_new ? '' : 'in:'.$value['id']),
 															'field'			=> 'required|max:255',
 															'type'			=> 'required|max:255',
 														];
 
-								$validator			= Validator::make($template_data['attributes'], $template_rules);
-							}
-							else
-							{
-								$template_rules		=	[
-															'document_id'	=> 'numeric|'.($is_new ? '' : 'in:'.$value['id']),
-															'field'			=> 'required|max:255',
-															'type'			=> 'required|max:255',
-														];
-
-								$validator			= Validator::make($value2, $template_rules);
-							}
+							$validator				= Validator::make($value2, $template_rules);
 
 							//if there was template and validator false
 							if ($template_data && !$validator->passes())
 							{
-								if($value2['document_id']!=$value['id'])
-								{
-									$errors->add('template', 'Dokumen dari template Tidak Valid.');
-								}
-								elseif($is_new)
-								{
-									$errors->add('template', 'Dokumen template Tidak Valid.');
-								}
-								else
-								{
-									$template_data				= $template_data->fill($value2);
-
-									if(!$template_data->save())
-									{
-										$errors->add('template', $template_data->getError());
-									}
-									else
-									{
-										$template_current_ids[]	= $template_data['id'];
-									}
-								}
-							}
-							//if there was template and validator false
-							elseif (!$template_data && !$validator->passes())
-							{
 								$errors->add('template', $validator->errors());
-							}
-							elseif($template_data && $validator->passes())
-							{
-								$template_current_ids[]			= $template_data['id'];
 							}
 							else
 							{
 								$value2['document_id']			= $value['id'];
-
-								$template_data					= new \App\Models\Template;
 
 								$template_data					= $template_data->fill($value2);
 
@@ -662,7 +437,7 @@ class OrganisationController extends Controller
 					//if there was no error, check if there were things need to be delete
 					if(!$errors->count())
 					{
-						$templates								= \App\Models\Template::documentid($value['id'])->get()->toArray();
+						$templates								= \App\Models\Template::documentid($value['id'])->get(['id'])->toArray();
 						
 						$template_should_be_ids					= [];
 						foreach ($templates as $key2 => $value2) 
@@ -690,7 +465,7 @@ class OrganisationController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$documents								= \App\Models\Document::organisationid($organisation['id'])->get()->toArray();
+				$documents								= \App\Models\Document::organisationid($organisation['id'])->get(['id'])->toArray();
 				
 				$document_should_be_ids					= [];
 				foreach ($documents as $key => $value) 
@@ -724,70 +499,25 @@ class OrganisationController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$policy_data		= \App\Models\Policy::find($value['id']);
+					$policy_data		= \App\Models\Policy::findornew($value['id']);
 
-					if($policy_data)
-					{
-						$policy_rules	=	[
-												'organisation_id'	=> 'required|numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
+					$policy_rules		=	[
+												'organisation_id'	=> 'required|exists:organisations,id|'.($is_new ? '' : 'in:'.$organisation_data['id']),
 												'type'				=> 'required|max:255',
 												'value'				=> 'required',
 												'started_at'		=> 'required|date_format:"Y-m-d H:i:s"',
 											];
 
-						$validator      = Validator::make($policy_data['attributes'], $policy_rules);
-					}
-					else
-					{
-						$policy_rules	=	[
-												'organisation_id'	=> 'numeric|'.($is_new ? '' : 'in:'.$organisation_data['id']),
-												'type'				=> 'required|max:255',
-												'value'				=> 'required',
-												'started_at'		=> 'required|date_format:"Y-m-d H:i:s"',
-											];
-
-						$validator		= Validator::make($value, $policy_rules);
-					}
+					$validator			= Validator::make($value, $policy_rules);
 
 					//if there was Policy and validator false
-					if ($policy_data && !$validator->passes())
-					{
-						if($value['organisation_id']!=$organisation['id'])
-						{
-							$errors->add('Policy', 'Organisasi dari Policy Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('Policy', 'Organisasi Policy Tidak Valid.');
-						}
-						else
-						{
-							$policy_data				= $policy_data->fill($value);
-
-							if(!$policy_data->save())
-							{
-								$errors->add('Policy', $policy_data->getError());
-							}
-							else
-							{
-								$policy_current_ids[]	= $policy_data['id'];
-							}
-						}
-					}
-					//if there was Policy and validator false
-					elseif (!$policy_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('Policy', $validator->errors());
-					}
-					elseif($policy_data && $validator->passes())
-					{
-						$policy_current_ids[]			= $policy_data['id'];
 					}
 					else
 					{
 						$value['organisation_id']		= $organisation_data['id'];
-
-						$policy_data					= new \App\Models\Policy;
 
 						$policy_data					= $policy_data->fill($value);
 
@@ -805,7 +535,7 @@ class OrganisationController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$policies								= \App\Models\Policy::organisationid($organisation['id'])->get()->toArray();
+				$policies								= \App\Models\Policy::organisationid($organisation['id'])->get(['id'])->toArray();
 				
 				$policy_should_be_ids					= [];
 				foreach ($policies as $key => $value) 

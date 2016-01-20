@@ -72,10 +72,10 @@ class Workleave extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'required|exists:organisations,id',
-											'name'							=> 'required|max:255',
-											'quota'							=> 'required|numeric',
-											'status'						=> 'required|in:CB,CI,CN',
+											'organisation_id'				=> 'exists:organisations,id',
+											'name'							=> 'max:255',
+											'quota'							=> 'numeric',
+											'status'						=> 'in:CB,CI,CN',
 											'is_active'						=> 'boolean',
 										];
 

@@ -77,7 +77,7 @@ class FingerPrint extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'branch_id'						=> 'required|exists:branches,id',
+											'branch_id'						=> 'exists:branches,id',
 											'left_thumb'					=> 'boolean',
 											'left_index_finger'				=> 'boolean',
 											'left_middle_finger'			=> 'boolean',

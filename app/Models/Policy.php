@@ -70,10 +70,9 @@ class Policy extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'required|exists:organisations,id',
-											'type'							=> 'required',
-											'value'							=> 'required',
-											'started_at'					=> 'required|date_format:"Y-m-d H:i:s"',
+											'organisation_id'				=> 'exists:organisations,id',
+											'type'							=> 'max:255',
+											'started_at'					=> 'date_format:"Y-m-d H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

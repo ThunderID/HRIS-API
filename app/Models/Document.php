@@ -74,11 +74,10 @@ class Document extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'required|exists:organisations,id',
-											'name'							=> 'required|max:255',
-											'tag'							=> 'required|max:255',
+											'organisation_id'				=> 'exists:organisations,id',
+											'name'							=> 'max:255',
+											'tag'							=> 'max:255',
 											'is_required'					=> 'boolean',
-											'template'						=> 'required',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

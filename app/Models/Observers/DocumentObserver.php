@@ -11,8 +11,9 @@ class DocumentObserver
 {
 	/** 
      * observe Document event deleting
-     * 1. check persondocuments
-     * 2. act, accept or refuse
+     * 1. delete person documents
+     * 2. delete document template
+     * 3. act, accept or refuse
      * 
      * @param $model
      * @return bool
@@ -21,19 +22,21 @@ class DocumentObserver
 	{
 		$errors 			= new MessageBag;
 		
-		//1. check persondocuments
-		if($model->persondocuments()->count())
+		//1. delete person documents
+		foreach ($model->persondocuments as $key => $value) 
 		{
-			$errors->add('Document', 'Tidak dapat menghapus dokumen yang berkaitan dengan karyawan atau yang memiliki template.');
-		}
-		else
-		{
-			foreach ($model->templates as $key => $value) 
+			if(!$value->delete())
 			{
-				if(!$value->delete())
-				{
-					$errors->add('Document', $delete->getError());
-				}
+				$errors->add('Document', $delete->getError());
+			}
+		}
+		
+		//2. delete document template
+		foreach ($model->templates as $key => $value) 
+		{
+			if(!$value->delete())
+			{
+				$errors->add('Document', $delete->getError());
 			}
 		}
 

@@ -51,9 +51,9 @@ class CalendarObserver
 
 	/** 
      * observe Calendar event deleting
-     * 1. check child
-     * 2. check chart
-     * 3. check schedule
+     * 1. delete child
+     * 2. delete chart
+     * 3. delete schedule
      * 4. act, accept or refuse
      * 
      * @param $model
@@ -63,24 +63,33 @@ class CalendarObserver
 	{
 		$errors					= new MessageBag();
 
-		//1. check child
-		if($model->childs()->count())
+		//1. delete child
+		foreach ($model->calendars as $key => $value) 
 		{
-			$errors->add('Calendar', 'Tidak dapat menghapus kalender yang diikuti oleh kalender lain.');
+            if(!$value->delete())
+            {
+            	$errors->add('Calendar', $value->getError());
+            }
 		}
 
-		//2. check chart
-		if($model->charts()->count())
+
+		//2. delete chart
+		foreach ($model->follows as $key => $value) 
 		{
-			$errors->add('Calendar', 'Tidak dapat menghapus kalender yang berkaitan dengan karyawan.');
+            if(!$value->delete())
+            {
+            	$errors->add('Calendar', $value->getError());
+            }
 		}
 
-		//3. check schedule
-		if($model->schedules()->count())
+		//3. delete schedule
+		foreach ($model->schedules as $key => $value) 
 		{
-			$errors->add('Calendar', 'Tidak dapat menghapus kalender yang memiliki jadwal.');
+            if(!$value->delete())
+            {
+            	$errors->add('Calendar', $value->getError());
+            }
 		}
-
         if($errors->count())
         {
 			$model['errors'] 		= $errors;

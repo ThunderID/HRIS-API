@@ -16,9 +16,9 @@ class Branch extends BaseModel
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
-	use \App\Models\Traits\hasMany\HasChartsTrait;
-	use \App\Models\Traits\morphMany\HasOfficeContactsTrait;
 	use \App\Models\Traits\hasOne\HasFingerPrintTrait;
+	use \App\Models\Traits\hasMany\HasChartsTrait;
+	use \App\Models\Traits\hasMany\HasBranchContactsTrait;
 
 	/**
 	 * The database table used by the model.
@@ -71,8 +71,8 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'required|exists:organisations,id',
-											'name'							=> 'required|max:50',
+											'organisation_id'				=> 'exists:organisations,id',
+											'name'							=> 'max:255',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
