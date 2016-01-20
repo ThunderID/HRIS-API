@@ -5,7 +5,7 @@ namespace App\Models\Traits;
 use App\Models\Scopes\ContactScope;
 
 /**
- * Apply scope to get person work here
+ * Apply scope to get contact of person who work here
  *
  * @author cmooy
  */

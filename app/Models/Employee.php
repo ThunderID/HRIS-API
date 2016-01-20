@@ -60,14 +60,14 @@ class Employee extends Person
 	 */
 	protected $rules				=	[
 											'organisation_id'				=> 'exists:organisations,id',
-											'uniqid' 						=> 'required|max:255',
+											'uniqid' 						=> 'max:255',
 											'username' 						=> 'max:255',
-											'name' 							=> 'required|max:255',
+											'name' 							=> 'max:255',
 											'prefix_title' 					=> 'max:255',
 											'suffix_title' 					=> 'max:255',
-											'place_of_birth' 				=> 'required|max:255',
-											'date_of_birth' 				=> 'required|date_format:"Y-m-d"',
-											'gender' 						=> 'required|in:female,male',
+											'place_of_birth' 				=> 'max:255',
+											'date_of_birth' 				=> 'date_format:"Y-m-d H:i:s"',
+											'gender' 						=> 'in:female,male',
 											'password'						=> 'max:255',
 											'last_password_updated_at'		=> 'date_format:"Y-m-d H:i:s"|before:tomorrow',
 										];
@@ -189,4 +189,24 @@ class Employee extends Person
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
+	/**
+	 * scope to find nik of organisation
+	 *
+	 * @param string of nik
+	 */
+	public function scopeNIK($query, $variable)
+	{
+		return 	$query->where('uniqid', $variable);
+	}
+
+	/**
+	 * scope to find username of username
+	 *
+	 * @param string of username
+	 */
+	public function scopeUsername($query, $variable)
+	{
+		return 	$query->where('username', $variable);
+	}
 }

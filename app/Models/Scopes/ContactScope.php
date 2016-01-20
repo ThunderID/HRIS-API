@@ -4,9 +4,14 @@ use Illuminate\Database\Eloquent\ScopeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Scope to get default contact of person
+ *
+ * @return phone, address, email
+ * @author cmooy
+ */
 class ContactScope implements ScopeInterface  
 {
-	
 	/**
 	 * Apply the scope to a given Eloquent query builder.
 	 *
@@ -22,6 +27,7 @@ class ContactScope implements ScopeInterface
     			->leftjoin('contacts', function ($join) 
 				 {
 	                                    $join->on ( 'persons.id', '=', 'contacts.person_id' )
+	                                    ->whereIn('contacts.person_type', ['App\Models\Person', 'App\Models\Employee'])
 	                                    ->where('contacts.is_default', '=', true)
 	                                    ->wherenull('contacts.deleted_at')
 	                                    ;

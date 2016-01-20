@@ -4,9 +4,14 @@ use Illuminate\Database\Eloquent\ScopeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Scope to get employment
+ *
+ * @return current_job
+ * @author cmooy
+ */
 class EmployeeScope implements ScopeInterface  
 {
-	
 	/**
 	 * Apply the scope to a given Eloquent query builder.
 	 *

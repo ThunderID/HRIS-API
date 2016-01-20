@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Scope to get select raw of all variable
+ * Scope to get current marital status
  *
- * @return record
+ * @return marital_status
  * @author cmooy
  */
 class CurrentMaritalStatusScope implements ScopeInterface  

@@ -5,7 +5,7 @@ namespace App\Models\Traits;
 use App\Models\Scopes\SelectAllScope;
 
 /**
- * Apply scope to get default image
+ * Scope to get select raw of all variable
  *
  * @author cmooy
  */

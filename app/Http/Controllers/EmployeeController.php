@@ -108,16 +108,15 @@ class EmployeeController extends Controller
 
 		$employee_rules				=   [
 											'organisation_id'			=> 'exists:organisations,id',
-											'uniqid'					=> 'required|max:255|unique:persons,uniqid,'.(!is_null($employee['id']) ? $employee['id'] : ''),
+											'uniqid'					=> 'max:255|unique:persons,uniqid,'.(!is_null($employee['id']) ? $employee['id'] : ''),
 											'username'					=> 'max:255|unique:persons,username,'.(!is_null($employee['id']) ? $employee['id'] : ''),
 											'name'						=> 'required|max:255',
 											'prefix_title'				=> 'max:255',
 											'suffix_title'				=> 'max:255',
-											'place_of_birth'			=> 'required|max:255',
-											'date_of_birth'				=> 'required|date_format:"Y-m-d H:i:s"',
-											'gender'					=> 'required|in:female,male',
+											'place_of_birth'			=> 'max:255',
+											'date_of_birth'				=> 'date_format:"Y-m-d H:i:s"',
+											'gender'					=> 'in:female,male',
 											'password'					=> 'max:255',
-											'last_password_updated_at'	=> 'date_format:"Y-m-d H:i:s"|before:tomorrow',
 										];
 
 		//1a. Get original data

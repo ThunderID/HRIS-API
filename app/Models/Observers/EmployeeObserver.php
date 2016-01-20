@@ -2,7 +2,9 @@
 
 use Illuminate\Support\MessageBag;
 use Carbon\Carbon;
+use Hash;
 
+use App\Models\Employee;
 use App\Models\MaritalStatus;
 use App\Models\PersonDocument;
 use App\Models\DocumentDetail;
@@ -40,20 +42,64 @@ class EmployeeObserver
 
 	/** 
      * observe Employee event saving
-     * 1. auto add last password updated at
-     * 2. act, accept or refuse
+     * 1. check need rehash
+     * 2. auto add last password updated at
+     * 3. unique nik
+     * 4. unique username
+     * 5. act, accept or refuse
      * 
      * @param $model
      * @return bool
      */
 	public function saving($model)
 	{
+		$errors									= new MessageBag();
+
+		//1. check need rehash
+		if (Hash::needsRehash($model->password))
+        {
+            $model->password					= bcrypt($model->password);
+        }
+
+		//2. auto add last password updated at
 		if(isset($model->getDirty()['last_password_updated_at']))
 		{
-			$model->last_password_updated_at 	= $model->created_at->format('Y-m-d H:i:s');
+			$model->last_password_updated_at 	= Carbon::now()->format('Y-m-d H:i:s');
 		}
 
-		return true;
+		if(is_null($model->id))
+		{
+			$id 								= 0;
+		}
+		else
+		{
+			$id 								= $model->id;
+		}
+
+		//3. unique nik
+		$other_employee 						= Employee::nik($model->uniqid)->notid($id)->first();
+
+		if($other_employee)
+		{
+			$errors->add('Employee', 'NIK sudah terdaftar');
+		}
+
+		//4. unique username
+		$other_employee 						= Employee::username($model->uniqid)->notid($id)->first();
+
+		if($other_employee)
+		{
+			$errors->add('Employee', 'Username sudah terdaftar');
+		}
+
+        if($errors->count())
+        {
+			$model['errors'] 					= $errors;
+
+        	return false;
+        }
+
+        return true;
 	}
 
 	/** 
