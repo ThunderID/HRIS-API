@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\ChartObserver;
+use App\Models\Observers\ChartObserver;
 
 /**
  * Used for Chart Models
@@ -79,12 +79,12 @@ class Chart extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'branch_id'						=> 'required|exists:branches,id',
-											// 'chart_id'						=> 'required|max:255',
-											'name'							=> 'required|max:255',
-											'path'							=> 'required|max:255',
+											'branch_id'						=> 'exists:branches,id',
+											'chart_id'						=> 'exists:charts,id',
+											'name'							=> 'max:255',
+											'path'							=> 'max:255',
 											'grade'							=> 'numeric',
-											'tag'							=> 'required|max:255',
+											'tag'							=> 'max:255',
 											'min_employee'					=> 'numeric',
 											'ideal_employee'				=> 'numeric',
 											'max_employee'					=> 'numeric',
@@ -110,7 +110,7 @@ class Chart extends BaseModel
 	{
         parent::boot();
  
-        // Chart::observe(new ChartObserver());
+        Chart::observe(new ChartObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
