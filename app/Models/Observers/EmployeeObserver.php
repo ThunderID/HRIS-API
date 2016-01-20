@@ -19,6 +19,44 @@ use App\Models\PersonContact;
 class EmployeeObserver 
 {
 	/** 
+     * observe Employee event creating
+     * 1. auto generate nik
+     * 2. auto generate username
+     * 3. act, accept or refuse
+     * 
+     * @param $model
+     * @return bool
+     */
+	public function creating($model)
+	{
+		//1. auto generate nik
+		$model->uniqid 							= $model->generateNIK($model);
+
+		//2. auto generate username
+		$model->username						= $model->generateUsername($model);
+
+		return true;
+	}
+
+	/** 
+     * observe Employee event saving
+     * 1. auto add last password updated at
+     * 2. act, accept or refuse
+     * 
+     * @param $model
+     * @return bool
+     */
+	public function saving($model)
+	{
+		if(isset($model->getDirty()['last_password_updated_at']))
+		{
+			$model->last_password_updated_at 	= $model->created_at->format('Y-m-d H:i:s');
+		}
+
+		return true;
+	}
+
+	/** 
      * observe Employee event deleting
      * 1. check logs
      * 2. delete marital status

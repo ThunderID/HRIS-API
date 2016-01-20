@@ -81,12 +81,111 @@ class Employee extends Person
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-		
+
+	/**
+	 * boot
+	 * observing model
+	 *
+	 */			
 	public static function boot() 
 	{
         parent::boot();
  
         Employee::observe(new EmployeeObserver());
+    }
+
+	/**
+	 * auto generate nik
+	 *
+	 * 1. get organisationcode
+	 * 2. get join date
+	 * 3. get last nik order number
+	 * @param model of employee
+	 * @return $nik
+	 */			
+	public function generateNIK($employee) 
+	{
+		//1. get organisationcode
+		$code 			= $employee->organisation->code;
+
+		//2. get join date
+		$work 			= Work::personid($employee)->notchartid(0)->orderby('start', 'desc')->first();
+		
+		if($work)
+		{
+			$join_year 	= $work->start;
+		}
+		else
+		{
+			$join_year 	= Carbon::now();
+		}
+
+		$nik 			= $code.$join_year->format('y').'.';
+
+		//3. get last nik order number
+		$last_nik 		= Employee::selectraw('max(uniqid)')->where('uniqid', 'like', $nik.'%')->organisationid($employee->organisation_id)->first();
+
+		if($last_nik)
+		{
+			$number		= 1 + (int)substr($last_nik['uniqid'],6)
+		}
+		else
+		{
+			$number 	= 1;
+		}
+
+		return $nik . str_pad($number,3,"0",STR_PAD_LEFT);
+    }
+
+	/**
+	 * auto generate username
+	 *
+	 * 1. get organisationcode
+	 * 2. get firstname
+	 * @param model of employee
+	 * @return $nik
+	 */			
+	public function generateNIK($employee) 
+	{
+		//1. get organisationcode
+		$code 			= $employee->organisation->code;
+
+		//2. get firstname
+		$original		= explode(' ', strtolower($employee->name));
+		$firstname		= $original[0];
+		$countog		= count($original)-1;
+
+		foreach ($original as $keyx => $valuex) 
+		{
+			if(is_array($valuex) || $valuex!='')
+			{
+				$countog 				= $keyx;
+			}
+		}
+
+		$idxuname						= 0;
+		
+		do
+		{
+			$uname						= Employee::username($modify.'.'.$code)->first();
+
+			if($uname)
+			{
+				if(isset($original[$countog]))
+				{
+					$modify 			= $modify.$original[$countog][$idxuname];
+				}
+				else
+				{
+					$modify 			= $modify.$modify;
+				}
+
+				$idxuname++;
+			}
+		}
+		while($uname);
+
+		return $modify.'.'.$code;
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
