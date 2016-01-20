@@ -15,6 +15,7 @@ class Chart extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\Models\Traits\belongsTo\HasBranchTrait;
 	use \App\Models\Traits\hasMany\HasWorksTrait;
 
 	/**

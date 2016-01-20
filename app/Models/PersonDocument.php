@@ -17,8 +17,8 @@ class PersonDocument extends BaseModel
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasDocumentTrait;
-	use \App\Models\Traits\hasMany\HasDocumentDetailsTrait;
 	use \App\Models\Traits\belongsTo\HasPersonTrait;
+	use \App\Models\Traits\hasMany\HasDocumentDetailsTrait;
 	
 	/**
 	 * Global traits used as query builder (global scope).

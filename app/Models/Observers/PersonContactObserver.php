@@ -2,7 +2,7 @@
 
 use Illuminate\Support\MessageBag;
 
-use App\Models\Employee;
+use App\Models\PersonContact;
 
 /**
  * Used in PersonContact model

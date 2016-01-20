@@ -62,7 +62,7 @@ class EmployeeController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
-		$result						= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
+		$result						= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'careers.calendar', 'careers.chart', 'careers.branch', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
 
 		if($result)
 		{
@@ -188,7 +188,7 @@ class EmployeeController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$contacts							= \App\Models\PersonContact::personid($employee['id'])->get()->toArray();
+				$contacts							= \App\Models\PersonContact::personid($employee['id'])->get(['id'])->toArray();
 				
 				$contact_should_be_ids				= [];
 				foreach ($contacts as $key => $value) 
@@ -222,66 +222,23 @@ class EmployeeController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$pd_data		= \App\Models\PrivateDocument::find($value['id']);
+					$pd_data		= \App\Models\PrivateDocument::findornew($value['id']);
 
-					if($pd_data)
-					{
-						$pd_rules	=   [
-											'document_id'		=> 'exists:tmp_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-											'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-										];
+					$pd_rules	=	[
+										'document_id'		=> 'exists:tmp_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+										'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+									];
 
-						$validator	= Validator::make($pd_data['attributes'], $pd_rules);
-					}
-					else
-					{
-						$pd_rules	=	[
-											'document_id'		=> 'exists:tmp_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-											'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-										];
-
-						$validator	= Validator::make($value, $pd_rules);
-					}
+					$validator	= Validator::make($value, $pd_rules);
 
 					//if there was privatedocument and validator false
-					if ($pd_data && !$validator->passes())
-					{
-						if($value['person_id']!=$employee['id'])
-						{
-							$errors->add('privatedocument', 'Dokumen Karyawan Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('privatedocument', 'Dokumen Karyawan Tidak Valid.');
-						}
-						else
-						{
-							$pd_data				= $pd_data->fill($value);
-
-							if(!$pd_data->save())
-							{
-								$errors->add('privatedocument', $pd_data->getError());
-							}
-							else
-							{
-								$pd_current_ids[]	= $pd_data['id'];
-							}
-						}
-					}
-					//if there was privatedocument and validator false
-					elseif (!$pd_data && !$validator->passes())
+					if(!$validator->passes())
 					{
 						$errors->add('privatedocument', $validator->errors());
-					}
-					elseif($pd_data && $validator->passes())
-					{
-						$pd_current_ids[]			= $pd_data['id'];
 					}
 					else
 					{
 						$value['person_id']			= $employee_data['id'];
-
-						$pd_data					= new \App\Models\PrivateDocument;
 
 						$pd_data					= $pd_data->fill($value);
 
@@ -301,77 +258,32 @@ class EmployeeController extends Controller
 					{
 						if(!$errors->count())
 						{
-							$dd_data		= \App\Models\DocumentDetail::find($value2['id']);
+							$dd_data		= \App\Models\DocumentDetail::findornew($value2['id']);
 
-							if($dd_data)
-							{
-								$dd_rules	=	[
-													'person_document_id'	=> 'exists:persons_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-													'template_id'			=> 'exists:tmp_templates,id',
-												];
+							$dd_rules   =   [
+												'person_document_id'	=> 'exists:persons_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+												'template_id'			=> 'exists:tmp_templates,id',
+											];
 
-								$validator		= Validator::make($dd_data['attributes'], $dd_rules);
-							}
-							else
-							{
-								$dd_rules   =   [
-													'person_document_id'	=> 'exists:persons_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-													'template_id'			=> 'exists:tmp_templates,id',
-												];
-
-								$validator		= Validator::make($value2, $dd_rules);
-							}
+							$validator		= Validator::make($value2, $dd_rules);
 
 							$template_data 		= \App\Models\Template::find($value2['template_id']);
 
 							if($template_data)
 							{
 								//if there was dd and validator false
-								if ($dd_data && !$validator->passes())
-								{
-									if($value2['person_document_id']!=$pd_data['id'])
-									{
-										$errors->add('dd', 'Dokumen Karyawan Tidak Valid.');
-									}
-									elseif($is_new)
-									{
-										$errors->add('dd', 'Dokumen Karyawan Tidak Valid.');
-									}
-									else
-									{
-										$param[($template_data['type']=='date' ? 'on' : strtolower($template_data['type']))] = $value2[($template_data['type']=='date' ? 'on' : strtolower($template_data['type']))];
-										$param['template_id']	= $template_data['id'];
-										$param['person_document_id']	= $pd_data['id'];
-
-										$dd_data				= $dd_data->fill($param);
-
-										if(!$dd_data->save())
-										{
-											$errors->add('dd', $dd_data->getError());
-										}
-										else
-										{
-											$dd_current_ids[]	= $dd_data['id'];
-										}
-									}
-								}
-								//if there was dd and validator false
-								elseif (!$dd_data && !$validator->passes())
+								if (!$validator->passes())
 								{
 									$errors->add('dd', $validator->errors());
 								}
-								elseif($dd_data && $validator->passes())
-								{
-									$dd_current_ids[]				= $dd_data['id'];
-								}
 								else
 								{
-									$dd_data						= new \App\Models\DocumentDetail;
 									$param[($template_data['type']=='date' ? 'on' : strtolower($template_data['type']))] = $value2[($template_data['type']=='date' ? 'on' : strtolower($template_data['type']))];
+									
 									$param['template_id']			= $template_data['id'];
 									$param['person_document_id']	= $pd_data['id'];
 
-									$dd_data				= $dd_data->fill($param);
+									$dd_data						= $dd_data->fill($param);
 
 									if(!$dd_data->save())
 									{
@@ -389,7 +301,7 @@ class EmployeeController extends Controller
 					//if there was no error, check if there were things need to be delete
 					if(!$errors->count())
 					{
-						$dds							= \App\Models\DocumentDetail::persondocumentid($pd_data['id'])->get()->toArray();
+						$dds							= \App\Models\DocumentDetail::persondocumentid($pd_data['id'])->get(['id'])->toArray();
 						
 						$dd_should_be_ids				= [];
 						foreach ($dds as $key2 => $value2) 
@@ -418,7 +330,7 @@ class EmployeeController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$privatedocuments					= \App\Models\PrivateDocument::personid($employee['id'])->get()->toArray();
+				$privatedocuments					= \App\Models\PrivateDocument::personid($employee['id'])->get(['id'])->toArray();
 				
 				$pd_should_be_ids					= [];
 				foreach ($privatedocuments as $key => $value) 
@@ -452,11 +364,9 @@ class EmployeeController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$career_data		= \App\Models\Career::find($value['id']);
+					$career_data		= \App\Models\Career::findornew($value['id']);
 
-					if($career_data)
-					{
-						$career_rules	=	[
+					$career_rules		=   [
 												'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
 												'calendar_id'		=> 'exists:tmp_calendars,id',
 												'chart_id'			=> 'exists:charts,id',
@@ -468,62 +378,16 @@ class EmployeeController extends Controller
 												'is_absence'		=> 'boolean',
 											];
 
-						$validator		= Validator::make($career_data['attributes'], $career_rules);
-					}
-					else
-					{
-						$career_rules   =   [
-												'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'calendar_id'		=> 'exists:tmp_calendars,id',
-												'chart_id'			=> 'exists:charts,id',
-												'grade'				=> 'numeric',
-												'status'			=> 'required|in:contract,probation,internship,permanent,others,admin',
-												'start'				=> 'required|date_format:"Y-m-d H:i:s"',
-												'end'				=> 'date_format:"Y-m-d H:i:s"',
-												'reason_end_job'	=> 'required_with:end',
-												'is_absence'		=> 'boolean',
-											];
-
-						$validator		= Validator::make($value, $career_rules);
-					}
+					$validator		= Validator::make($value, $career_rules);
 
 					//if there was career and validator false
-					if ($career_data && !$validator->passes())
-					{
-						if($value['person_id']!=$employee['id'])
-						{
-							$errors->add('career', 'Pekerjaan Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('career', 'Pekerjaan Tidak Valid.');
-						}
-						else
-						{
-							$career_data				= $career_data->fill($value);
-
-							if(!$career_data->save())
-							{
-								$errors->add('career', $career_data->getError());
-							}
-							else
-							{
-								$career_current_ids[]	= $career_data['id'];
-							}
-						}
-					}
-					//if there was career and validator false
-					elseif (!$career_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('career', $validator->errors());
 					}
-					elseif($career_data && $validator->passes())
-					{
-						$career_current_ids[]		= $career_data['id'];
-					}
 					else
 					{
-						$career_data				= new \App\Models\Career;
+						$value['person_id']			= $employee_data['id'];
 
 						$career_data				= $career_data->fill($value);
 
@@ -541,7 +405,7 @@ class EmployeeController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$careers							= \App\Models\Career::personid($employee['id'])->get()->toArray();
+				$careers							= \App\Models\Career::personid($employee['id'])->get(['id'])->toArray();
 				
 				$career_should_be_ids				= [];
 				foreach ($careers as $key => $value) 
@@ -575,79 +439,30 @@ class EmployeeController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$workexperience_data		= \App\Models\WorkExperience::find($value['id']);
+					$workexperience_data		= \App\Models\WorkExperience::findornew($value['id']);
 
-					if($workexperience_data)
-					{
-						$workexperience_rules	=	[
-												'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'position'			=> 'required|max:255',
-												'organisation'		=> 'required|max:255',
-												'grade'				=> 'numeric',
-												'status'			=> 'required|in:previous',
-												'start'				=> 'required|date_format:"Y-m-d H:i:s"',
-												'end'				=> 'required|date_format:"Y-m-d H:i:s"',
-												'reason_end_job'	=> 'required_with:end',
-												'is_absence'		=> 'boolean',
-											];
+					$workexperience_rules		=	[
+														'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+														'position'			=> 'required|max:255',
+														'organisation'		=> 'required|max:255',
+														'grade'				=> 'numeric',
+														'status'			=> 'required|in:previous',
+														'start'				=> 'required|date_format:"Y-m-d H:i:s"',
+														'end'				=> 'required|date_format:"Y-m-d H:i:s"',
+														'reason_end_job'	=> 'required_with:end',
+														'is_absence'		=> 'boolean',
+													];
 
-						$validator		= Validator::make($workexperience_data['attributes'], $workexperience_rules);
-					}
-					else
-					{
-						$workexperience_rules   =   [
-												'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'position'			=> 'required|max:255',
-												'organisation'		=> 'required|max:255',
-												'grade'				=> 'numeric',
-												'status'			=> 'required|in:previous',
-												'start'				=> 'required|date_format:"Y-m-d H:i:s"',
-												'end'				=> 'required|date_format:"Y-m-d H:i:s"',
-												'reason_end_job'	=> 'required_with:end',
-												'is_absence'		=> 'boolean',
-											];
-
-						$validator		= Validator::make($value, $workexperience_rules);
-					}
+					$validator					= Validator::make($value, $workexperience_rules);
 
 					//if there was workexperience and validator false
-					if ($workexperience_data && !$validator->passes())
-					{
-						if($value['person_id']!=$employee['id'])
-						{
-							$errors->add('workexperience', 'Pekerjaan Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('workexperience', 'Pekerjaan Tidak Valid.');
-						}
-						else
-						{
-							$workexperience_data				= $workexperience_data->fill($value);
-
-							if(!$workexperience_data->save())
-							{
-								$errors->add('workexperience', $workexperience_data->getError());
-							}
-							else
-							{
-								$workexperience_current_ids[]	= $workexperience_data['id'];
-							}
-						}
-					}
-					//if there was workexperience and validator false
-					elseif (!$workexperience_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('workexperience', $validator->errors());
 					}
-					elseif($workexperience_data && $validator->passes())
-					{
-						$workexperience_current_ids[]		= $workexperience_data['id'];
-					}
 					else
 					{
-						$workexperience_data				= new \App\Models\WorkExperience;
-
+						$value['person_id']					= $employee_data['id'];
 						$workexperience_data				= $workexperience_data->fill($value);
 
 						if(!$workexperience_data->save())
@@ -664,7 +479,7 @@ class EmployeeController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$workexperiences							= \App\Models\WorkExperience::personid($employee['id'])->get()->toArray();
+				$workexperiences							= \App\Models\WorkExperience::personid($employee['id'])->get(['id'])->toArray();
 				
 				$workexperience_should_be_ids				= [];
 				foreach ($workexperiences as $key => $value) 
@@ -698,66 +513,24 @@ class EmployeeController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$ms_data		= \App\Models\MaritalStatus::find($value['id']);
+					$ms_data		= \App\Models\MaritalStatus::findornew($value['id']);
 
-					if($ms_data)
+					$ms_rules   	=   [
+											'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+											'status'			=> 'required|max:255',
+											'on'				=> 'required|date_format:"Y-m-d H:i:s"',
+										];
+
+					$validator		= Validator::make($value, $ms_rules);
+
+					//if there was ms and validator false
+					if (!$validator->passes())
 					{
-						$ms_rules	=	[
-												'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'status'			=> 'required|max:255',
-												'on'				=> 'required|date_format:"Y-m-d H:i:s"',
-											];
-
-						$validator		= Validator::make($ms_data['attributes'], $ms_rules);
+						$errors->add('maritalstatus', $validator->errors());
 					}
 					else
 					{
-						$ms_rules   =   [
-												'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'status'			=> 'required|max:255',
-												'on'				=> 'required|date_format:"Y-m-d H:i:s"',
-											];
-
-						$validator		= Validator::make($value, $ms_rules);
-					}
-
-					//if there was ms and validator false
-					if ($ms_data && !$validator->passes())
-					{
-						if($value['person_id']!=$employee['id'])
-						{
-							$errors->add('ms', 'Pekerjaan Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('ms', 'Pekerjaan Tidak Valid.');
-						}
-						else
-						{
-							$ms_data				= $ms_data->fill($value);
-
-							if(!$ms_data->save())
-							{
-								$errors->add('ms', $ms_data->getError());
-							}
-							else
-							{
-								$ms_current_ids[]	= $ms_data['id'];
-							}
-						}
-					}
-					//if there was ms and validator false
-					elseif (!$ms_data && !$validator->passes())
-					{
-						$errors->add('ms', $validator->errors());
-					}
-					elseif($ms_data && $validator->passes())
-					{
-						$ms_current_ids[]		= $ms_data['id'];
-					}
-					else
-					{
-						$ms_data				= new \App\Models\MaritalStatus;
+						$value['person_id']		= $employee_data['id'];
 
 						$ms_data				= $ms_data->fill($value);
 
@@ -775,7 +548,7 @@ class EmployeeController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$mss							= \App\Models\MaritalStatus::personid($employee['id'])->get()->toArray();
+				$mss							= \App\Models\MaritalStatus::personid($employee['id'])->get(['id'])->toArray();
 				
 				$ms_should_be_ids				= [];
 				foreach ($mss as $key => $value) 
@@ -810,7 +583,7 @@ class EmployeeController extends Controller
 
 		DB::commit();
 		
-		$final_employee			= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'workexperiences', 'maritalstatuses', 'contacts'])->first()->toArray();
+		$final_employee			= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'careers.calendar', 'careers.chart', 'careers.branch', 'workexperiences', 'maritalstatuses', 'contacts'])->first()->toArray();
 
 		return new JSend('success', (array)$final_employee);
 	}
@@ -823,7 +596,7 @@ class EmployeeController extends Controller
 	public function delete($org_id = null, $id = null)
 	{
 		//
-		$employee				= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
+		$employee				= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'careers.calendar', 'careers.chart', 'careers.branch', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
 
 		if(!$employee)
 		{

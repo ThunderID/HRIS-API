@@ -42,12 +42,11 @@ class WorkExperience extends Work
 	 * @var array
 	 */
 	protected $rules				=	[
-											'status' 					=> 'required|in:previous',
-											'start' 					=> 'required|date_format:"Y-m-d"',
-											'end' 						=> 'required_if:status,previous|date_format:"Y-m-d"',
-											'position' 					=> 'required|max:255',
-											'organisation' 				=> 'required|max:255',
-											'reason_end_job' 			=> 'required',
+											'status' 					=> 'in:previous',
+											'start' 					=> 'date_format:"Y-m-d"',
+											'end' 						=> 'date_format:"Y-m-d"',
+											'position' 					=> 'max:255',
+											'organisation' 				=> 'max:255',
 											'is_absence' 				=> 'boolean',
 										];
 

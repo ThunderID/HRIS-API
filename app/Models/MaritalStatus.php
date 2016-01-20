@@ -69,9 +69,9 @@ class MaritalStatus extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'person_id'							=> 'required|exists:persons,id',
-											'status'							=> 'required|max:50',
-											'on'								=> 'required|date_format:"Y-m-d H:i:s"',
+											'person_id'							=> 'exists:persons,id',
+											'status'							=> 'max:255',
+											'on'								=> 'date_format:"Y-m-d H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

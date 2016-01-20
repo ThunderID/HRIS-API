@@ -12,6 +12,13 @@ namespace App\Models;
 class Career extends Work
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasCalendarTrait;
+	use \App\Models\Traits\belongsTo\HasChartTrait;
+
+	/**
 	 * The public variable that assigned type of inheritance model
 	 *
 	 * @var string
@@ -46,10 +53,9 @@ class Career extends Work
 											'calendar_id'				=> 'exists:tmp_calendars,id',
 											'chart_id'					=> 'exists:charts,id',
 											'grade' 					=> 'numeric',
-											'status' 					=> 'required|in:contract,probation,internship,permanent,others',
-											'start' 					=> 'required|date_format:"Y-m-d"',
-											'end' 						=> 'required_if:status,probation,contract,internship|date_format:"Y-m-d"',
-											'reason_end_job' 			=> 'required_with:end',
+											'status' 					=> 'in:contract,probation,internship,permanent,others',
+											'start' 					=> 'date_format:"Y-m-d"',
+											'end' 						=> 'date_format:"Y-m-d"',
 											'is_absence' 				=> 'boolean',
 										];
 
