@@ -1,0 +1,304 @@
+swagger: '2.0'
+info:
+  title: Branch API
+  description: Move your app forward with the Branch API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /org_id/branch/store:
+    post:
+      summary: Store a Branch
+      description: >
+        Store a Branch with details those are charts, apis, charts` calendar, charts` workleave, finger print setting, contacts
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new Branch.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: Branch name.
+          required: true
+          type: string
+          format: string
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+        - name: charts
+          in: query
+          description: Must be array of branch's charts.
+          required: true
+          type: array
+          items:
+            type: string
+        - name: apis
+          in: query
+          description: Must be array of Branch's apis.
+          required: true
+          type: array
+          items:
+            type: string
+        - name: contacts
+          in: query
+          description: Must be array of Branch's contacts.
+          required: true
+          type: array
+          items:
+            type: string
+        - name: fingerprint
+          in: query
+          description: Must be array of Branch's fingerprint setting.
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Branches
+      responses:
+        '200':
+          description: An array of Branch
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/branch'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/branch/id:
+    get:
+      summary: Branch Detail
+      description: 'Get Branch detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Branch id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Branches
+      responses:
+        '200':
+          description: Branch rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/branch'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/branch/delete/id:
+    delete:
+      summary: Delete a Branch
+      description: 'Get Branch detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Branch id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Branches
+      responses:
+        '200':
+          description: Branch rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/branch'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  branch:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      charts:
+        type: array
+        items:
+          $ref: '#/definitions/charts'
+      apis:
+        type: array
+        items:
+          $ref: '#/definitions/apis'
+      contacts:
+        type: array
+        items:
+          $ref: '#/definitions/contacts'
+      fingerprint:
+        type: array
+        items:
+          $ref: '#/definitions/fingerprint'
+  charts:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      grade:
+        type: number
+      tag:
+        type: string
+      min_employee:
+        type: number
+      ideal_employee:
+        type: number
+      max_employee:
+        type: number
+      follows:
+        type: array
+        items:
+          $ref: '#/definitions/follows'
+      chartworkleaves:
+        type: array
+        items:
+          $ref: '#/definitions/chartworkleaves'
+  apis:
+    properties:
+      id:
+        type: string
+      client:
+        type: string
+      secret:
+        type: string
+      workstation_address:
+        type: string
+      workstation_name:
+        type: string
+      tr_version:
+        type: string
+      is_active:
+        type: string
+  contacts:
+    properties:
+      id:
+        type: string
+      item:
+        type: string
+      value:
+        type: string
+      is_default:
+        type: string
+  fingerprint:
+    properties:
+      id:
+        type: string
+      left_thumb:
+        type: string
+      left_index_finger:
+        type: string
+      left_middle_finger:
+        type: string
+      left_ring_finger:
+        type: string
+      left_little_finger:
+        type: string
+      right_thumb:
+        type: string
+      right_index_finger:
+        type: string
+      right_middle_finger:
+        type: string
+      right_ring_finger:
+        type: string
+      right_little_finger:
+        type: string
+  follows:
+    properties:
+      calendar:
+        type: array
+        items:
+          $ref: '#/definitions/calendar'
+  chartworkleaves:
+    properties:
+      calendar:
+        type: array
+        items:
+          $ref: '#/definitions/workleave'
+  calendar:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      workdays:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+      break_idle:
+        type: string
+  workleave:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      quota:
+        type: string
+      status:
+        type: string
+      is_active:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32
