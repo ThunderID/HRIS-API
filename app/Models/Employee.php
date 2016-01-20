@@ -127,7 +127,7 @@ class Employee extends Person
 
 		if($last_nik)
 		{
-			$number		= 1 + (int)substr($last_nik['uniqid'],6)
+			$number		= 1 + (int)substr($last_nik['uniqid'],6);
 		}
 		else
 		{
@@ -145,7 +145,7 @@ class Employee extends Person
 	 * @param model of employee
 	 * @return $nik
 	 */			
-	public function generateNIK($employee) 
+	public function generateUsername($employee) 
 	{
 		//1. get organisationcode
 		$code 			= $employee->organisation->code;
