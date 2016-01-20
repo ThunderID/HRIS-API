@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSelectAllTrait;
+use App\Models\Traits\HasContactTrait;
+
 use App\Models\Observers\BranchObserver;
 
 /**
@@ -19,6 +22,13 @@ class Branch extends BaseModel
 	use \App\Models\Traits\hasOne\HasFingerPrintTrait;
 	use \App\Models\Traits\hasMany\HasChartsTrait;
 	use \App\Models\Traits\hasMany\HasBranchContactsTrait;
+
+	/**
+	 * Global traits used as query builder (global scope).
+	 *
+	 */
+	use HasSelectAllTrait;
+	use HasContactTrait;
 
 	/**
 	 * The database table used by the model.

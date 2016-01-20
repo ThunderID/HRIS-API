@@ -24,6 +24,11 @@ trait HasDocumentDetailsTrait
 	 **/
 	public function DocumentDetails()
 	{
+		if(in_array(get_class($this), ['App\Models\PersonDocument', 'App\Models\PrivateDocument', 'App\Models\EmploymentDocument']))
+		{
+			return $this->hasMany('App\Models\DocumentDetail', 'person_document_id');
+		}
+
 		return $this->hasMany('App\Models\DocumentDetail');
 	}
 }
