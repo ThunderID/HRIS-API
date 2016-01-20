@@ -149,71 +149,28 @@ class EmployeeController extends Controller
 			{
 				if(!$errors->count())
 				{
-					$contact_data		= \App\Models\PersonContact::find($value['id']);
+					$contact_data		= \App\Models\PersonContact::findornew($value['id']);
 
-					if($contact_data)
-					{
-						$contact_rules	=	[
+					
+					$contact_rules		=	[
 												'person_id'		=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
 												'item'			=> 'required|max:255',
-												'value'			=> 'required|max:255',
-												'is_default'	=> 'required|max:255',
+												// 'value'			=> 'required',
+												'is_default'	=> 'boolean',
 											];
 
-						$validator		= Validator::make($contact_data['attributes'], $contact_rules);
-					}
-					else
-					{
-						$contact_rules   =   [
-												'person_id'		=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'item'			=> 'required|max:255',
-												'value'			=> 'required|max:255',
-												'is_default'	=> 'required|max:255',
-											];
-
-						$validator		= Validator::make($value, $contact_rules);
-					}
+					$validator			= Validator::make($value, $contact_rules);
+					
 
 					//if there was contact and validator false
-					if ($contact_data && !$validator->passes())
-					{
-						if($value['person_id']!=$employee['id'])
-						{
-							$errors->add('contact', 'Dokumen Karyawan Tidak Valid.');
-						}
-						elseif($is_new)
-						{
-							$errors->add('contact', 'Dokumen Karyawan Tidak Valid.');
-						}
-						else
-						{
-							$contact_data				= $contact_data->fill($value);
-
-							if(!$contact_data->save())
-							{
-								$errors->add('contact', $contact_data->getError());
-							}
-							else
-							{
-								$contact_current_ids[]	= $contact_data['id'];
-							}
-						}
-					}
-					//if there was contact and validator false
-					elseif (!$contact_data && !$validator->passes())
+					if (!$validator->passes())
 					{
 						$errors->add('contact', $validator->errors());
-					}
-					elseif($contact_data && $validator->passes())
-					{
-						$contact_current_ids[]		= $contact_data['id'];
 					}
 					else
 					{
 						$value['person_id']			= $employee_data['id'];
 						$value['person_type']		= 'App\Models\Employee';
-
-						$contact_data				= new \App\Models\PersonContact;
 
 						$contact_data				= $contact_data->fill($value);
 

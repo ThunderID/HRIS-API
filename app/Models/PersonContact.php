@@ -21,7 +21,7 @@ class PersonContact extends Contact
 	 */
 	public $type_field				=	'person_type';
 
-	public $type					=	'App\Models\Person';
+	public $type					=	['App\Models\Person', 'App\Models\Employee'];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -43,9 +43,9 @@ class PersonContact extends Contact
 	 */
 	protected $rules				=	[
 											'person_id'						=> 'exists:persons,id',
-											'item'							=> 'required|max:255',
-											'value'							=> 'required',
-											'person_type'					=> 'required|max:255',
+											'item'							=> 'max:255',
+											// 'value'							=> '',
+											'person_type'					=> 'max:255|in:App\Models\Person,App\Models\Employee',
 											'is_default'					=> 'boolean',
 										];
 	

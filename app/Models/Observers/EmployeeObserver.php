@@ -203,13 +203,13 @@ class EmployeeObserver
 			}
 		}
 
-        if($errors->count())
-        {
+		if($errors->count())
+		{
 			$model['errors'] 		= $errors;
 
-        	return false;
-        }
+			return false;
+		}
 
-        return true;
+		return true;
 	}
 }
