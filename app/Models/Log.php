@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use App\Models\Observers\LogObserver;
+use App\Models\Traits\HasSelectAllTrait;
+use App\Models\Traits\HasEmployeeScheduleTrait;
 
 /**
  * Used for Log Models
@@ -16,6 +18,13 @@ class Log extends BaseModel
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasPersonTrait;
+
+	/**
+	 * Global traits used as query builder (plugged scope).
+	 *
+	 */
+	use HasSelectAllTrait;
+	use HasEmployeeScheduleTrait;
 
 	/**
 	 * The database table used by the model.
@@ -107,4 +116,28 @@ class Log extends BaseModel
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
+
+	/**
+	 * find range
+	 * 
+	 * @param array or singular date
+	 */	
+	public function scopeOnDate($query, $variable)
+	{
+		if(is_array($variable))
+		{
+			$started_at 	= date('Y-m-d H:i:s', strtotime($variable[0]));
+			$ended_at		= date('Y-m-d H:i:s', strtotime($variable[1]));
+		}
+		else
+		{
+			$started_at		= date('Y-m-d H:i:s', strtotime($variable));
+			$ended_at		= date('Y-m-d H:i:s', strtotime($variable.' + 1 day'));
+		}
+		
+		return $query->where($this->getTable().'.on', '>=', $started_at)
+						->where($this->getTable().'.on', '<=', $ended_at)
+						;
+	}
 }

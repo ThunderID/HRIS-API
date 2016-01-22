@@ -26,9 +26,11 @@ class EmployeeScope implements ScopeInterface
     			->join('works', function ($join) 
 				 {
 	                                    $join->on ( 'persons.id', '=', 'works.person_id' )
-	                                    ->wherenull('works.end')
-	                                    ->orwhere('works.end', '>=', date('Y-m-d H:i:s'))
-	                                    ->wherenull('works.deleted_at')
+	                                    ->where(function ($query)
+									    	{
+											    $query->wherenull('works.end')
+											    ->orwhere('works.end', '>=', date('Y-m-d H:i:s'));
+											})
 	                                    ;
 				})
 				->join('charts', function ($join) 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\ScheduleObserver;
+use App\Models\Observers\ScheduleObserver;
 
 /**
  * Used for Schedule Models
@@ -100,11 +100,10 @@ class Schedule extends BaseModel
 	{
         parent::boot();
  
-        // Schedule::observe(new ScheduleObserver());
+        Schedule::observe(new ScheduleObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
-
 
 	/**
 	 * find range
