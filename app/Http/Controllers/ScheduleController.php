@@ -23,7 +23,7 @@ class ScheduleController extends Controller
 	 */
 	public function index($org_id = null, $cal_id = null)
 	{
-		$calendar 					= \App\Models\Calendar::organisationid($org_id)->id($cal_id)->with(['calendars'])->first();
+		$calendar 					= \App\Models\Calendar::organisationid($org_id)->id($cal_id)->first();
 
 		if(!$calendar)
 		{
@@ -63,8 +63,82 @@ class ScheduleController extends Controller
 
 		$result						= $result->get()->toArray();
 
-		$calendar['schedules']		= $result;
+		return new JSend('success', (array)['count' => $count, 'data' => $result]);
+	}
 
-		return new JSend('success', (array)['count' => $count, 'data' => $calendar]);
+	/**
+	 * Display a schedule of a calendar
+	 *
+	 * @return Response
+	 */
+	public function detail($org_id = null, $cal_id = null, $id = null)
+	{
+		$result						= \App\Models\Schedule::id($id)->calendarid($cal_id)->with(['calendar', 'calendar.calendars'])->first();
+
+		if($result)
+		{
+			return new JSend('success', (array)$result->toArray());
+		}
+
+		return new JSend('error', (array)Input::all(), 'ID Tidak Valid.');
+	}
+
+	/**
+	 * Store a schedule
+	 * 
+	 * 1. case previous date
+	 * 2. case next date in status CB/UL
+	 * 3. case next date other status
+	 * @return JSend Response
+	 */
+	public function store($org_id = null, $cal_id = null)
+	{
+		if(!Input::has('schedule'))
+		{
+			return new JSend('error', (array)Input::all(), 'Tidak ada data schedule.');
+		}
+
+		$errors						= new MessageBag();
+
+		DB::beginTransaction();
+
+		//1. Validate branch Parameter
+		$branch						= Input::get('branch');
+
+		if(is_null($branch['id']))
+		{
+			$is_new					= true;
+		}
+		else
+		{
+			$is_new					= false;
+		}
+
+		$branch_rules				=	[
+											'name'			=> 'required|max:255',
+										];
+
+		//1a. Get original data
+		$branch_data				= \App\Models\Branch::findornew($branch['id']);
+
+		//1b. Validate Basic branch Parameter
+		$validator					= Validator::make($branch, $branch_rules);
+
+		if (!$validator->passes())
+		{
+			$errors->add('Branch', $validator->errors());
+		}
+		else
+		{
+			//if validator passed, save branch
+			$branch_data		= $branch_data->fill($branch);
+
+			if(!$branch_data->save())
+			{
+				$errors->add('Branch', $branch_data->getError());
+			}
+		}
+		//End of validate Branch
+
 	}
 }

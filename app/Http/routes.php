@@ -100,6 +100,12 @@ $app->get('/{org_id}/calendar/{cal_id}/schedules',
 	]
 );
 
+$app->get('/{org_id}/calendar/{cal_id}/schedule/{id}',
+	[
+		'uses'				=> 'ScheduleController@detail'
+	]
+);
+
 $app->post('/{org_id}/calendar/{cal_id}/schedule/store',
 	[
 		'uses'				=> 'ScheduleController@store'

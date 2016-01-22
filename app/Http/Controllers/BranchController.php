@@ -86,8 +86,7 @@ class BranchController extends Controller
 		}
 		//End of validate Branch
 
-
-		//3. Validate branch chart Parameter
+		//2. Validate branch chart Parameter
 		if(!$errors->count() && isset($branch['charts']) && is_array($branch['charts']))
 		{
 			$chart_current_ids		= [];
@@ -211,7 +210,7 @@ class BranchController extends Controller
 		}
 		//End of validate branch chart
 
-		//4. Validate branch contact Parameter
+		//3. Validate branch contact Parameter
 		if(!$errors->count() && isset($branch['contacts']) && is_array($branch['contacts']))
 		{
 			$contact_current_ids		= [];
@@ -283,7 +282,7 @@ class BranchController extends Controller
 		}
 		//End of validate branch contact
 
-		//5. Validate branch api Parameter
+		//4. Validate branch api Parameter
 		if(!$errors->count() && isset($branch['apis']) && is_array($branch['apis']))
 		{
 			$api_current_ids		= [];
@@ -356,7 +355,7 @@ class BranchController extends Controller
 		}
 		//End of validate branch api
 
-		//6. Validate branch fingerprint Parameter
+		//5. Validate branch fingerprint Parameter
 		if(!$errors->count() && isset($branch['fingerprint']) && is_array($branch['fingerprint']))
 		{
 			$fp_data		= \App\Models\FingerPrint::findornew($branch['fingerprint']['id']);

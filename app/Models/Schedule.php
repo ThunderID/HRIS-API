@@ -73,7 +73,7 @@ class Schedule extends BaseModel
 	 */
 	protected $rules				=	[
 											'name'							=> 'required|max:255',
-											'status'						=> 'required|in:DN,SS,SL,CN,CB,CI,UL,HB,L',
+											'status'						=> 'required|in:DN,CB,UL,HB,L',
 											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
 											'start'							=> 'required',
 											'end'							=> 'required',
