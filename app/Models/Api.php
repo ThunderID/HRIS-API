@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\ApiObserver;
+use App\Models\Observers\ApiObserver;
 
 /**
  * Used for Api Models
@@ -101,8 +101,18 @@ class Api extends BaseModel
 	{
         parent::boot();
  
-        // Api::observe(new ApiObserver());
+        Api::observe(new ApiObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
+	/**
+	 * scope to find workstation address of branch
+	 *
+	 * @param string of workstation address
+	 */
+	public function scopeAddress($query, $variable)
+	{
+		return 	$query->where('workstation_address', $variable);
+	}
 }

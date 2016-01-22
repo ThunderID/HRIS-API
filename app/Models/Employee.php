@@ -191,7 +191,7 @@ class Employee extends Person
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
 
 	/**
-	 * scope to find nik of organisation
+	 * scope to find nik of employee
 	 *
 	 * @param string of nik
 	 */
