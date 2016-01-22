@@ -411,7 +411,7 @@ class BranchController extends Controller
 
 
 	/**
-	 * Delete an branch
+	 * Delete a branch
 	 *
 	 * @return Response
 	 */
