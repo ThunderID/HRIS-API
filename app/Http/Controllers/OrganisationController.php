@@ -394,7 +394,7 @@ class OrganisationController extends Controller
 				}
 
 				//save templates
-				if(!$errors->count() && isset($product['templates']) && is_array($product['templates']))
+				if(!$errors->count() && isset($value['templates']) && is_array($value['templates']))
 				{
 					$template_current_ids			= [];
 					foreach ($value['templates'] as $key2 => $value2) 

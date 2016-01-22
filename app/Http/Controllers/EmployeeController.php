@@ -154,8 +154,8 @@ class EmployeeController extends Controller
 					
 					$contact_rules		=	[
 												'person_id'		=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+												'person_type'	=> (!$contact_data ? '' : 'in:'.get_class($employee_data)),
 												'item'			=> 'required|max:255',
-												// 'value'			=> 'required',
 												'is_default'	=> 'boolean',
 											];
 
@@ -170,7 +170,7 @@ class EmployeeController extends Controller
 					else
 					{
 						$value['person_id']			= $employee_data['id'];
-						$value['person_type']		= 'App\Models\Employee';
+						$value['person_type']		= get_class($employee_data);
 
 						$contact_data				= $contact_data->fill($value);
 
