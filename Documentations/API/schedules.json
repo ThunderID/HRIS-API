@@ -1,0 +1,245 @@
+swagger: '2.0'
+info:
+  title: Schedule API
+  description: Move your app forward with the Schedule API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /org_id/calendar/cal_id/schedules:
+    get:
+      summary: Schedule Lists
+      description: |
+        The schedules endpoint returns information about the *HRIS* schedules.
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+        - name: cal_id
+          in: query
+          description: Must be valid calendar id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Calendar
+        - Schedules
+      responses:
+        '200':
+          description: An array of schedules' data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/calendar'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/calendar/cal_id/schedule/store:
+    post:
+      summary: Store a Schedule
+      description: >
+        Store a Schedule with details those are workleave or holiday
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+        - name: cal_id
+          in: query
+          description: Must be valid calendar id.
+          required: true
+          type: string
+          format: string
+        - name: id
+          in: query
+          description: Let it null for new Schedule.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: Schedule name.
+          required: true
+          type: string
+          format: string
+        - name: status
+          in: query
+          description: Schedule status required in DN,SS,SL,CN,CB,CI,UL,HB,L.
+          required: true
+          type: string
+          format: string
+        - name: on
+          in: query
+          description: Schedule on.
+          required: true
+          type: string
+          format: string
+        - name: start
+          in: query
+          description: Schedule start.
+          required: true
+          type: string
+          format: string
+        - name: end
+          in: query
+          description: Schedule end.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Calendar
+        - Schedule
+      responses:
+        '200':
+          description: An array of Schedule
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/schedule'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/calendar/cal_id/schedule/delete/id:
+    delete:
+      summary: Delete a Schedule
+      description: 'Get Schedule detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Schedule id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: number
+          format: integer
+        - name: cal_id
+          in: query
+          description: Must be valid calendar id.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Calendar
+        - Schedule
+      responses:
+        '200':
+          description: Schedule rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/schedule'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  calendar:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      workdays:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+      schedules:
+        type: array
+        items:
+          $ref: '#/definitions/schedule'
+      calendars:
+        type: array
+        items:
+          $ref: '#/definitions/calendars'
+  schedule:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+      on:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+  calendar:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      workdays:
+        type: string
+      start:
+        type: string
+      end:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32
