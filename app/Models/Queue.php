@@ -2,31 +2,21 @@
 
 namespace App\Models;
 
-use App\Models\Observers\CalendarObserver;
+// use App\Models\Observers\QueueObserver;
 
 /**
- * Used for Calendar Models
+ * Used for Queue Models
  * 
  * @author cmooy
  */
-class Calendar extends BaseModel
+class Queue extends BaseModel
 {
-	/**
-	 * Relationship Traits.
-	 *
-	 */
-	use \App\Models\Traits\belongsTo\HasOrganisationTrait;
-	use \App\Models\Traits\belongsTo\HasCalendarTrait;
-	use \App\Models\Traits\hasMany\HasSchedulesTrait;
-	use \App\Models\Traits\hasMany\HasCalendarsTrait;
-	use \App\Models\Traits\hasMany\HasFollowsTrait;
-	
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'tmp_calendars';
+	protected $table					= 'tmp_queues';
 
 	/**
 	 * Timestamp field
@@ -40,21 +30,21 @@ class Calendar extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
+	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
 	 *
 	 * @var array
 	 */
-	protected $appends				=	[];
+	protected $appends					=	[];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden 				= [];
+	protected $hidden 					= [];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -62,12 +52,15 @@ class Calendar extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'organisation_id'				,
-											'import_from_id'				,
-											'name'							,
-											'workdays'						,
-											'start'							,
-											'end'							,
+											'created_by'				,
+											'process_name'				,
+											'process_option'			,
+											'parameter'					,
+											'total_process'				,
+											'task_per_process'			,
+											'process_number'			,
+											'total_task'				,
+											'message'					,
 										];
 										
 	/**
@@ -76,12 +69,13 @@ class Calendar extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'exists:organisations,id',
-											'import_from_id'				=> 'exists:tmp_calendars,id',
-											'name'							=> 'max:255',
-											'workdays'						=> 'max:255',
-											'start'							=> 'date_format:"H:i:s"',
-											'end'							=> 'date_format:"H:i:s"',
+											'created_by'				=> 'exists:persons,id',
+											'process_name'				=> 'max:255',
+											'process_option'			=> 'max:255',
+											'total_process'				=> 'numeric',
+											'task_per_process'			=> 'numeric',
+											'process_number'			=> 'numeric',
+											'total_task'				=> 'numeric',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -93,7 +87,7 @@ class Calendar extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-
+	
 	/**
 	 * boot
 	 * observing model
@@ -103,7 +97,7 @@ class Calendar extends BaseModel
 	{
         parent::boot();
  
-        Calendar::observe(new CalendarObserver());
+        // Queue::observe(new QueueObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

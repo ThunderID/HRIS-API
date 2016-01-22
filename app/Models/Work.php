@@ -18,6 +18,7 @@ class Work extends BaseModel
 	 *
 	 */
 	use \App\Models\Traits\belongsTo\HasPersonTrait;
+	use \App\Models\Traits\belongsTo\HasCalendarTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).

@@ -86,9 +86,8 @@ class ScheduleController extends Controller
 	/**
 	 * Store a schedule
 	 * 
-	 * 1. case previous date
-	 * 2. case next date in status CB/UL
-	 * 3. case next date other status
+	 * 1. store schedule of calendar to queue
+	 * 2. store schedule of calendars to queue
 	 * @return JSend Response
 	 */
 	public function store($org_id = null, $cal_id = null)
@@ -102,10 +101,10 @@ class ScheduleController extends Controller
 
 		DB::beginTransaction();
 
-		//1. Validate branch Parameter
-		$branch						= Input::get('branch');
+		//1. store schedule of calendar to queue
+		$schedule						= Input::get('schedule');
 
-		if(is_null($branch['id']))
+		if(is_null($schedule['id']))
 		{
 			$is_new					= true;
 		}
@@ -114,31 +113,95 @@ class ScheduleController extends Controller
 			$is_new					= false;
 		}
 
-		$branch_rules				=	[
-											'name'			=> 'required|max:255',
+		$schedule_rules				=	[
+											'calendar_id'					=> 'required|exists:tmp_calendars,id',
+											'name'							=> 'required|max:255',
+											'status'						=> 'required|in:DN,CB,UL,HB,L',
+											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
+											'start'							=> 'required|date_format:"H:i:s"',
+											'end'							=> 'required|date_format:"H:i:s"',
 										];
 
-		//1a. Get original data
-		$branch_data				= \App\Models\Branch::findornew($branch['id']);
+		//1a. Validate Basic schedule Parameter
+		$parameter 					= $schedule;
+		unset($parameter['calendar']);
 
-		//1b. Validate Basic branch Parameter
-		$validator					= Validator::make($branch, $branch_rules);
+		$validator					= Validator::make($schedule, $schedule_rules);
 
 		if (!$validator->passes())
 		{
-			$errors->add('Branch', $validator->errors());
+			$errors->add('Schedule', $validator->errors());
 		}
 		else
 		{
-			//if validator passed, save branch
-			$branch_data		= $branch_data->fill($branch);
+			$total 						= \App\Models\Work::calendarid($cal_id)->count();
 
-			if(!$branch_data->save())
+			$queue 						= new \App\Models\Queue;
+			$queue->fill([
+					'process_name' 			=> 'hr:schedules',
+					'process_option' 		=> 'give',
+					'parameter' 			=> json_encode($parameter),
+					'total_process' 		=> $total,
+					'task_per_process' 		=> 1,
+					'process_number' 		=> 0,
+					'total_task' 			=> $total,
+					'message' 				=> 'Initial Commit',
+				]);
+
+			if(!$queue->save())
 			{
-				$errors->add('Branch', $branch_data->getError());
+				$errors->add('Schedule', $queue->getError());
 			}
 		}
-		//End of validate Branch
+		//End of validate schedule
 
+		//2. store schedule of calendars to queue
+		if(!$errors->count() && isset($schedule['calendar']['calendars']) && is_array($schedule['calendar']['calendars']))
+		{
+			foreach ($schedule['calendar']['calendars'] as $key => $value) 
+			{
+				$cals_data						= \App\Models\Calendar::id($value['id'])->calendarid($cal_id)->first();
+
+				if(!$cals_data)
+				{
+					$errors->add('Calendar', 'Tidak ada kalender '.$value['name']);
+				}
+
+				if(!$errors->count())
+				{
+					$total 						= \App\Models\Work::calendarid($value['id'])->count();
+					$parameter['calendar_id']	= $value['id'];
+
+					$queue 						= new \App\Models\Queue;
+					$queue->fill([
+							'process_name' 			=> 'hr:schedules',
+							'process_option' 		=> 'give',
+							'parameter' 			=> json_encode($parameter),
+							'total_process' 		=> $total,
+							'task_per_process' 		=> 1,
+							'process_number' 		=> 0,
+							'total_task' 			=> $total,
+							'message' 				=> 'Initial Commit',
+						]);
+
+					if(!$queue->save())
+					{
+						$errors->add('Schedule', $queue->getError());
+					}
+				}
+			}
+		}
+		//End of validate calendar schedule
+
+		if($errors->count())
+		{
+			DB::rollback();
+
+			return new JSend('error', (array)Input::all(), $errors);
+		}
+
+		DB::commit();
+		
+		return new JSend('success', (array)Input::all());
 	}
 }

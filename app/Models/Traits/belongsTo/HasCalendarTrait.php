@@ -33,6 +33,11 @@ trait HasCalendarTrait
 	 **/
 	public function scopeCalendarID($query, $variable)
 	{
+		if(get_class($this)=='App\Models\Calendar')
+		{
+			return $query->where($this->getTable().'.import_from_id', $variable);
+		}
+
 		return $query->where($this->getTable().'.calendar_id', $variable);
 	}
 }

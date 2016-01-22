@@ -59,6 +59,7 @@ class Schedule extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'calendar_id'					,
 											'name'							,
 											'status'						,
 											'on'							,
@@ -72,11 +73,12 @@ class Schedule extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'name'							=> 'required|max:255',
-											'status'						=> 'required|in:DN,CB,UL,HB,L',
-											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
-											'start'							=> 'required',
-											'end'							=> 'required',
+											'calendar_id'					=> 'exists:tmp_calendars,id',
+											'name'							=> 'max:255',
+											'status'						=> 'in:DN,CB,UL,HB,L',
+											'on'							=> 'date_format:"Y-m-d H:i:s"',
+											'start'							=> 'date_format:"H:i:s"',
+											'end'							=> 'date_format:"H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
