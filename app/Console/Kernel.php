@@ -13,7 +13,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        //do something
+        'App\Console\Commands\ScheduleCommand',
+
+        //cron
+        'App\Console\Commands\HRQueueCommand',
     ];
 
     /**
@@ -24,6 +28,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        //running queue table jobs (every five minutes)
+        $schedule->command('hr:queue HRQueueCommand')
+                 ->everyFiveMinutes();
     }
 }
