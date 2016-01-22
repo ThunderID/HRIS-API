@@ -219,7 +219,7 @@ definitions:
         type: string
       end:
         type: string
-  calendar:
+  calendars:
     properties:
       id:
         type: string

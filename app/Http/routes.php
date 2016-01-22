@@ -92,6 +92,27 @@ $app->delete('/{org_id}/branch/delete/{id}',
 );
 
 // ------------------------------------------------------------------------------------
+// SCHEDULE
+// ------------------------------------------------------------------------------------
+$app->get('/{org_id}/calendar/{cal_id}/schedules',
+	[
+		'uses'				=> 'ScheduleController@index'
+	]
+);
+
+$app->post('/{org_id}/calendar/{cal_id}/schedule/store',
+	[
+		'uses'				=> 'ScheduleController@store'
+	]
+);
+
+$app->delete('/{org_id}/calendar/{cal_id}/schedule/delete/{id}',
+	[
+		'uses'				=> 'ScheduleController@delete'
+	]
+);
+
+// ------------------------------------------------------------------------------------
 // ME
 // ------------------------------------------------------------------------------------
 

@@ -24,7 +24,7 @@ trait HasCalendarsTrait
 	 **/
 	public function Calendars()
 	{
-		if(get_class($this)=='App\Models\Calendars')
+		if(get_class($this)=='App\Models\Calendar')
 		{
 			return $this->hasMany('App\Models\Calendar', 'import_from_id');
 		}

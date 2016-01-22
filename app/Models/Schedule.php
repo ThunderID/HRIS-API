@@ -15,6 +15,7 @@ class Schedule extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\Models\Traits\belongsTo\HasCalendarTrait;
 	use \App\Models\Traits\hasMany\HasSchedulesTrait;
 
 	/**
