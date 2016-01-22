@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\QueueObserver;
+// use App\Models\Observers\QueueMorphObserver;
 
 /**
- * Used for Queue Models
+ * Used for QueueMorph Models
  * 
  * @author cmooy
  */
-class Queue extends BaseModel
+class QueueMorph extends BaseModel
 {
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table					= 'tmp_queues';
+	protected $table					= 'queue_morphs';
 
 	/**
 	 * Timestamp field
@@ -52,15 +52,9 @@ class Queue extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'created_by'				,
-											'process_name'				,
-											'process_option'			,
-											'parameter'					,
-											'total_process'				,
-											'task_per_process'			,
-											'process_number'			,
-											'total_task'				,
-											'message'					,
+											'queue_id'					,
+											'queue_morph_id'			,
+											'queue_morph_type'			,
 										];
 										
 	/**
@@ -69,13 +63,9 @@ class Queue extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											// 'created_by'				=> 'exists:persons,id',
-											'process_name'				=> 'max:255',
-											'process_option'			=> 'max:255',
-											'total_process'				=> 'numeric',
-											'task_per_process'			=> 'numeric',
-											'process_number'			=> 'numeric',
-											'total_task'				=> 'numeric',
+											'queue_id'					=> 'exists:persons,id',
+											'queue_morph_id'			=> 'numeric',
+											'queue_morph_type'			=> 'max:255',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -97,7 +87,7 @@ class Queue extends BaseModel
 	{
         parent::boot();
  
-        // Queue::observe(new QueueObserver());
+        // QueueMorph::observe(new QueueMorphObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
