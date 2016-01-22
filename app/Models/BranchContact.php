@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Observers\ContactObserver;
+
 /** 
 	* Inheritance Contact Model
 	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
@@ -37,9 +39,8 @@ class BranchContact extends Contact
 	 */
 	protected $rules				=	[
 											'branch_id'						=> 'exists:branches,id',
-											'item'							=> 'required|max:255',
-											'value'							=> 'required',
-											'branch_type'					=> 'required|max:255',
+											'branch_type'					=> 'max:255|in:App\Models\Branch',
+											'item'							=> 'max:255',
 											'is_default'					=> 'boolean',
 										];
 	
@@ -53,11 +54,14 @@ class BranchContact extends Contact
 	
 	/**
 	 * boot
+	 * observing model
 	 *
 	 */
 	public static function boot() 
 	{
         parent::boot();
+        
+        BranchContact::observe(new ContactObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Observers\ContactObserver;
+
 /** 
 	* Inheritance Contact Model
 	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
@@ -44,7 +46,6 @@ class PersonContact extends Contact
 	protected $rules				=	[
 											'person_id'						=> 'exists:persons,id',
 											'item'							=> 'max:255',
-											// 'value'							=> '',
 											'person_type'					=> 'max:255|in:App\Models\Person,App\Models\Employee',
 											'is_default'					=> 'boolean',
 										];
@@ -59,11 +60,14 @@ class PersonContact extends Contact
 	
 	/**
 	 * boot
+	 * observing model
 	 *
 	 */
 	public static function boot() 
 	{
         parent::boot();
+
+        PersonContact::observe(new ContactObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
