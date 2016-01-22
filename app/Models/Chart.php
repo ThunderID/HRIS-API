@@ -20,6 +20,9 @@ class Chart extends BaseModel
 	use \App\Models\Traits\hasMany\HasFollowsTrait;
 	use \App\Models\Traits\hasMany\HasChartWorkleavesTrait;
 
+	use \App\Models\Traits\belongsToMany\HasCalendarsTrait;
+	use \App\Models\Traits\belongsToMany\HasWorkleavesTrait;
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -80,7 +83,7 @@ class Chart extends BaseModel
 	 */
 	protected $rules				=	[
 											'branch_id'						=> 'exists:branches,id',
-											'chart_id'						=> 'exists:charts,id',
+											// 'chart_id'						=> 'exists:charts,id',
 											'name'							=> 'max:255',
 											'path'							=> 'max:255',
 											'grade'							=> 'numeric',

@@ -200,14 +200,14 @@ definitions:
         type: number
       max_employee:
         type: number
-      follows:
+      calendars:
         type: array
         items:
-          $ref: '#/definitions/follows'
-      chartworkleaves:
+          $ref: '#/definitions/calendars'
+      workleaves:
         type: array
         items:
-          $ref: '#/definitions/chartworkleaves'
+          $ref: '#/definitions/workleaves'
   apis:
     properties:
       id:
@@ -258,19 +258,7 @@ definitions:
         type: string
       right_little_finger:
         type: string
-  follows:
-    properties:
-      calendar:
-        type: array
-        items:
-          $ref: '#/definitions/calendar'
-  chartworkleaves:
-    properties:
-      calendar:
-        type: array
-        items:
-          $ref: '#/definitions/workleave'
-  calendar:
+  calendars:
     properties:
       id:
         type: string
@@ -284,7 +272,7 @@ definitions:
         type: string
       break_idle:
         type: string
-  workleave:
+  workleaves:
     properties:
       id:
         type: string

@@ -17,7 +17,7 @@ class BranchController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
-		$result						= \App\Models\Branch::id($id)->organisationid($org_id)->with(['charts', 'charts.follows', 'charts.follows.calendar', 'charts.chartworkleaves', 'charts.chartworkleaves.workleave', 'contacts', 'apis', 'fingerprint'])->first();
+		$result						= \App\Models\Branch::id($id)->organisationid($org_id)->with(['charts', 'charts.calendars', 'charts.workleaves', 'contacts', 'apis', 'fingerprint'])->first();
 
 		if($result)
 		{
@@ -49,7 +49,7 @@ class BranchController extends Controller
 		DB::beginTransaction();
 
 		//1. Validate branch Parameter
-		$branch				= Input::get('branch');
+		$branch						= Input::get('branch');
 
 		if(is_null($branch['id']))
 		{
@@ -98,8 +98,8 @@ class BranchController extends Controller
 					$chart_data		= \App\Models\Chart::findornew($value['id']);
 
 					$chart_rules	=	[
-											'branch_id'			=> 'exists:branches,id|'.($is_new ? '' : 'in:'.$chart_data['id']),
-											'chart_id'			=> 'exists:charts,id',
+											'branch_id'			=> 'exists:branches,id|'.($is_new ? '' : 'in:'.$branch_data['id']),
+											// 'chart_id'			=> 'exists:charts,id',
 											'name'				=> 'required|max:255',
 											'grade'				=> 'numeric',
 											'tag'				=> 'required|max:255',
@@ -117,7 +117,7 @@ class BranchController extends Controller
 					}
 					else
 					{
-						$value['branch_id']				= $chart_data['id'];
+						$value['branch_id']				= $branch_data['id'];
 
 						$chart_data						= $chart_data->fill($value);
 
@@ -133,11 +133,11 @@ class BranchController extends Controller
 				}
 
 				//save follow calendars
-				if(!$errors->count() && isset($value['follows']) && is_array($product['follows']))
+				if(!$errors->count() && isset($value['calendars']) && is_array($value['calendars']))
 				{
 					$calendar_current_ids               = [];
 
-					foreach ($value['follows'] as $key2 => $value2) 
+					foreach ($value['calendars'] as $key2 => $value2) 
 					{
 						$calendar                       = \App\Models\Calendar::find($value2['id']);
 
@@ -149,7 +149,7 @@ class BranchController extends Controller
 					
 					if(!$errors->count())
 					{
-					    if(!$chart_data->follows()->sync($calendar_current_ids))
+					    if(!$chart_data->calendars()->sync($calendar_current_ids))
 					    {
 					        $errors->add('Calendar', 'Kalender jabatan tidak tersimpan.');
 					    }
@@ -158,11 +158,11 @@ class BranchController extends Controller
 
 
 				//save follow calendars
-				if(!$errors->count() && isset($value['chartworkleaves']) && is_array($product['chartworkleaves']))
+				if(!$errors->count() && isset($value['workleaves']) && is_array($value['workleaves']))
 				{
 					$workleave_current_ids               = [];
 
-					foreach ($value['chartworkleaves'] as $key2 => $value2) 
+					foreach ($value['workleaves'] as $key2 => $value2) 
 					{
 						$workleave                       = \App\Models\Workleave::find($value2['id']);
 
@@ -174,7 +174,7 @@ class BranchController extends Controller
 					
 					if(!$errors->count())
 					{
-					    if(!$chart_data->chartworkleaves()->sync($workleave_current_ids))
+					    if(!$chart_data->workleaves()->sync($workleave_current_ids))
 					    {
 					        $errors->add('Workleave', 'Cuti jabatan tidak tersimpan.');
 					    }
@@ -222,7 +222,7 @@ class BranchController extends Controller
 					$contact_data		= \App\Models\BranchContact::findornew($value['id']);
 
 					$contact_rules		=	[
-												'branch_id'		=> 'exists:branchs,id|'.($is_new ? '' : 'in:'.$branch_data['id']),
+												'branch_id'		=> 'exists:branches,id|'.($is_new ? '' : 'in:'.$branch_data['id']),
 												'branch_type'	=> (!$contact_data ? '' : 'in:'.get_class($branch_data)),
 												'item'			=> 'required|max:255',
 												'is_default'	=> 'boolean',
@@ -294,10 +294,10 @@ class BranchController extends Controller
 					$api_data		= \App\Models\Api::findornew($value['id']);
 
 					$api_rules		=	[
-												'branch_id'				=> 'exists:branches,id|'.($is_new ? '' : 'in:'.$api_data['id']),
+												'branch_id'				=> 'exists:branches,id|'.($is_new ? '' : 'in:'.$branch_data['id']),
 												'client'				=> 'required|max:255',
 												'secret'				=> 'required|max:255',
-												'workstation_address'	=> 'required|max:255|unique:varians,sku,'.(!is_null($value['id']) ? $value['id'] : ''),
+												'workstation_address'	=> 'required|max:255|unique:apis,workstation_address,'.(!is_null($value['id']) ? $value['id'] : ''),
 												'workstation_name'		=> 'required|max:255',
 												'is_active'				=> 'boolean',
 											];
@@ -311,7 +311,7 @@ class BranchController extends Controller
 					}
 					else
 					{
-						$value['branch_id']		= $api_data['id'];
+						$value['branch_id']		= $branch_data['id'];
 
 						$api_data				= $api_data->fill($value);
 
@@ -395,5 +395,44 @@ class BranchController extends Controller
 			}
 		}
 		//End of validate branch fingerprint
+		
+		if($errors->count())
+		{
+			DB::rollback();
+
+			return new JSend('error', (array)Input::all(), $errors);
+		}
+
+		DB::commit();
+		
+		$final_branch			= \App\Models\Branch::id($id)->organisationid($org_id)->with(['charts', 'charts.calendars', 'charts.workleaves', 'contacts', 'apis', 'fingerprint'])->first()->toArray();
+
+		return new JSend('success', (array)$final_branch);
+	}
+
+
+	/**
+	 * Delete an branch
+	 *
+	 * @return Response
+	 */
+	public function delete($id = null)
+	{
+		//
+		$branch					= \App\Models\Branch::id($id)->organisationid($org_id)->with(['charts', 'charts.calendars', 'charts.workleaves', 'contacts', 'apis', 'fingerprint'])->first();
+
+		if(!$branch)
+		{
+			return new JSend('error', (array)Input::all(), 'Kantor Cabang tidak ditemukan.');
+		}
+
+		$result					= $branch->toArray();
+
+		if($branch->delete())
+		{
+			return new JSend('success', (array)$result);
+		}
+
+		return new JSend('error', (array)$result, $branch->getError());
 	}
 }

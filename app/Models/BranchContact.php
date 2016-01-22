@@ -11,6 +11,12 @@ use App\Models\Observers\ContactObserver;
 class BranchContact extends Contact
 {
 	/**
+	 * Relationship Traits.
+	 *
+	 */
+	use \App\Models\Traits\belongsTo\HasBranchTrait;
+
+	/**
 	 * The public variable that assigned type of inheritance model
 	 *
 	 * @var string
