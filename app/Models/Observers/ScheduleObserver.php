@@ -66,7 +66,7 @@ class ScheduleObserver
 		//1. check employee doesn't have schedule on the day
 		if($model->calendar()->count())
 		{
-			$logs				= \App\Models\Log::ondate($model->on->format('Y-m-d'))->JoinPersonHasNoScheduleOn($model->on)->joinworkfrompersonon($model->on)->groupby('logs.person_id')->first();
+			$logs				= \App\Models\Log::ondate($model->on->format('Y-m-d'))->JoinPersonHasNoScheduleOn($model->on)->joinworkfrompersonon($model->on)->groupby('logs.person_id')->get();
 
 			if($logs->count())
 			{

@@ -227,56 +227,29 @@ class ScheduleController extends Controller
 		//1. store schedule of calendar to queue
 		$schedule					= $schedule->toArray();
 
-		if(is_null($schedule['id']))
-		{
-			$is_new					= true;
-		}
-		else
-		{
-			$is_new					= false;
-		}
-
-		$schedule_rules				=	[
-											'calendar_id'					=> 'required|exists:tmp_calendars,id',
-											'name'							=> 'required|max:255',
-											'status'						=> 'required|in:DN,CB,UL,HB,L',
-											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
-											'start'							=> 'required|date_format:"H:i:s"',
-											'end'							=> 'required|date_format:"H:i:s"',
-											'break_idle'					=> 'required|numeric',
-										];
-
 		//1a. Validate Basic schedule Parameter
 		$parameter 					= $schedule;
 		unset($parameter['calendar']);
 
-		$validator					= Validator::make($parameter, $schedule_rules);
+		$total 						= \App\Models\Work::calendarid($cal_id)->count();
 
-		if (!$validator->passes())
+		$queue 						= new \App\Models\Queue;
+		$queue->fill([
+				'process_name' 			=> 'hr:schedules',
+				'process_option' 		=> 'delete',
+				'parameter' 			=> json_encode($parameter),
+				'total_process' 		=> $total,
+				'task_per_process' 		=> 1,
+				'process_number' 		=> 0,
+				'total_task' 			=> $total,
+				'message' 				=> 'Initial Commit',
+			]);
+
+		if(!$queue->save())
 		{
-			$errors->add('Schedule', $validator->errors());
+			$errors->add('Schedule', $queue->getError());
 		}
-		else
-		{
-			$total 						= \App\Models\Work::calendarid($cal_id)->count();
 
-			$queue 						= new \App\Models\Queue;
-			$queue->fill([
-					'process_name' 			=> 'hr:schedules',
-					'process_option' 		=> 'delete',
-					'parameter' 			=> json_encode($parameter),
-					'total_process' 		=> $total,
-					'task_per_process' 		=> 1,
-					'process_number' 		=> 0,
-					'total_task' 			=> $total,
-					'message' 				=> 'Initial Commit',
-				]);
-
-			if(!$queue->save())
-			{
-				$errors->add('Schedule', $queue->getError());
-			}
-		}
 		//End of validate schedule
 
 		//2. store schedule of calendars to queue

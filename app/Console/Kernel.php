@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //do something
         'App\Console\Commands\ScheduleCommand',
+        'App\Console\Commands\PersonScheduleCommand',
 
         //cron
         'App\Console\Commands\HRQueueCommand',

@@ -8,26 +8,26 @@ use DB;
 use \Illuminate\Support\MessageBag as MessageBag;
 
 /**
- * store and delete schedule from queues
+ * store and delete Personschedule from queues
  *
  * @return boolean
  * @author cmooy
  **/
-class ScheduleCommand extends Command 
+class PersonScheduleCommand extends Command 
 {
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name 		= 'hr:schedules';
+	protected $name 		= 'hr:personschedule';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Batch Schedule Command.';
+	protected $description = 'Batch PersonSchedule Command.';
 
 	/**
 	 * Create a new command instance.
@@ -96,7 +96,7 @@ class ScheduleCommand extends Command
 	}
 
 	/**
-	 * store schedule and update for persons
+	 * store Personschedule and update for persons
 	 *
 	 * @return void
 	 **/
@@ -110,22 +110,22 @@ class ScheduleCommand extends Command
 
 		$errors 					= new MessageBag;
 
-		$data 						= \App\Models\Schedule::ondate($parameters['on'])->calendarid($parameters['calendar_id'])->first();
+		$data 						= \App\Models\PersonSchedule::ondate($parameters['on'])->personid($parameters['person_id'])->with(['person'])->first();
 
 		if($data)
 		{
-			$schedule_data			= $data;
+			$personschedule_data			= $data;
 		}
 		else
 		{
-			$schedule_data			= new \App\Models\Schedule;
+			$personschedule_data			= new \App\Models\PersonSchedule;
 		}
 
-		$schedule_data->fill($parameters);
+		$personschedule_data->fill($parameters);
 
-		if(!$schedule_data->save())
+		if(!$personschedule_data->save())
 		{
-			$errors->add('Batch', $schedule_data->getError());
+			$errors->add('Batch', $personschedule_data->getError());
 		}
 
 		if(!$errors->count())
@@ -133,15 +133,15 @@ class ScheduleCommand extends Command
 			$morphed 						= new \App\Models\QueueMorph;
 			$morphed->fill([
 				'queue_id'					=> $id,
-				'queue_morph_id'			=> $schedule_data->id,
-				'queue_morph_type'			=> get_class($schedule_data),
+				'queue_morph_id'			=> $personschedule_data->id,
+				'queue_morph_type'			=> get_class($personschedule_data),
 			]);
 
 			$morphed->save();
 
 			$pnumber 						= $pending->total_process;
 
-			$messages['message'][$pnumber] 	= 'Sukses Menyimpan Jadwal '.(isset($schedule_data['calendar']['name']) ? $schedule_data['calendar']['name'] : '');
+			$messages['message'][$pnumber] 	= 'Sukses Menyimpan Jadwal '.(isset($personschedule_data['person']['name']) ? $personschedule_data['person']['name'] : '');
 			
 			$pending->fill(['process_number' => $pnumber, 'message' => 'Sukses']);
 		}
@@ -149,7 +149,7 @@ class ScheduleCommand extends Command
 		{
 			$pnumber 						= $pending->total_process;
 			
-			$messages['message'][$pnumber] 	= 'Gagal Menyimpan Jadwal '.(isset($schedule_data['calendar']['name']) ? $schedule_data['calendar']['name'] : '');
+			$messages['message'][$pnumber] 	= 'Gagal Menyimpan Jadwal '.(isset($personschedule_data['person']['name']) ? $personschedule_data['person']['name'] : '');
 			
 			$messages['errors'][$pnumber] 	= $errors;
 
@@ -162,7 +162,7 @@ class ScheduleCommand extends Command
 	}
 
 	/**
-	 * delete schedule and update for persons
+	 * delete Personschedule and update for persons
 	 *
 	 * @return void
 	 **/
@@ -176,22 +176,22 @@ class ScheduleCommand extends Command
 
 		$errors 					= new MessageBag;
 
-		$schedule_data 				= \App\Models\Schedule::id($parameters['id'])->first();
+		$personschedule_data		= \App\Models\PersonSchedule::id($parameters['id'])->with(['person'])->first();
 
-		if(!$schedule_data)
+		if(!$personschedule_data)
 		{
-			$errors->add('Batch', 'Tidak ada schedule.');
+			$errors->add('Batch', 'Tidak ada Personschedule.');
 		}
-		elseif(!$schedule_data->delete())
+		elseif(!$personschedule_data->delete())
 		{
-			$errors->add('Batch', $schedule_data->getError());
+			$errors->add('Batch', $personschedule_data->getError());
 		}
 
 		if(!$errors->count())
 		{
 			$pnumber 						= $pending->total_process;
 
-			$messages['message'][$pnumber] 	= 'Sukses Menghapus Jadwal '.(isset($schedule_data['calendar']['name']) ? $schedule_data['calendar']['name'] : '');
+			$messages['message'][$pnumber] 	= 'Sukses Menghapus Jadwal '.(isset($personschedule_data['person']['name']) ? $personschedule_data['person']['name'] : '');
 			
 			$pending->fill(['process_number' => $pnumber, 'message' => 'Sukses']);
 		}
@@ -199,7 +199,7 @@ class ScheduleCommand extends Command
 		{
 			$pnumber 						= $pending->total_process;
 			
-			$messages['message'][$pnumber] 	= 'Gagal Menghapus Jadwal '.(isset($schedule_data['calendar']['name']) ? $schedule_data['calendar']['name'] : '');
+			$messages['message'][$pnumber] 	= 'Gagal Menghapus Jadwal '.(isset($personschedule_data['person']['name']) ? $personschedule_data['person']['name'] : '');
 			
 			$messages['errors'][$pnumber] 	= $errors;
 

@@ -268,52 +268,24 @@ class EmployeeScheduleController extends Controller
 		//1. store schedule of calendar to queue
 		$schedule					= $schedule->toArray();
 
-		if(is_null($schedule['id']))
-		{
-			$is_new					= true;
-		}
-		else
-		{
-			$is_new					= false;
-		}
-
-		$schedule_rules				=	[
-											'person_id'						=> 'required|exists:persons,id',
-											'name'							=> 'required|max:255',
-											'status'						=> 'required|in:DN,CB,UL,HB,L',
-											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
-											'start'							=> 'required|date_format:"H:i:s"',
-											'end'							=> 'required|date_format:"H:i:s"',
-											'break_idle'					=> 'required|numeric',
-										];
-
 		//1a. Validate Basic schedule Parameter
 		$parameter 					= $schedule;
 
-		$validator					= Validator::make($parameter, $schedule_rules);
+		$queue 						= new \App\Models\Queue;
+		$queue->fill([
+				'process_name' 			=> 'hr:personschedule',
+				'process_option' 		=> 'delete',
+				'parameter' 			=> json_encode($parameter),
+				'total_process' 		=> 1,
+				'task_per_process' 		=> 1,
+				'process_number' 		=> 0,
+				'total_task' 			=> 1,
+				'message' 				=> 'Initial Commit',
+			]);
 
-		if (!$validator->passes())
+		if(!$queue->save())
 		{
-			$errors->add('Schedule', $validator->errors());
-		}
-		else
-		{
-			$queue 						= new \App\Models\Queue;
-			$queue->fill([
-					'process_name' 			=> 'hr:personschedule',
-					'process_option' 		=> 'delete',
-					'parameter' 			=> json_encode($parameter),
-					'total_process' 		=> 1,
-					'task_per_process' 		=> 1,
-					'process_number' 		=> 0,
-					'total_task' 			=> 1,
-					'message' 				=> 'Initial Commit',
-				]);
-
-			if(!$queue->save())
-			{
-				$errors->add('Schedule', $queue->getError());
-			}
+			$errors->add('Schedule', $queue->getError());
 		}
 		//End of validate schedule
 
