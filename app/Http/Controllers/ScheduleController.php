@@ -244,6 +244,7 @@ class ScheduleController extends Controller
 											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
 											'start'							=> 'required|date_format:"H:i:s"',
 											'end'							=> 'required|date_format:"H:i:s"',
+											'break_idle'					=> 'required|numeric',
 										];
 
 		//1a. Validate Basic schedule Parameter

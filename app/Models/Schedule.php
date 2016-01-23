@@ -65,6 +65,7 @@ class Schedule extends BaseModel
 											'on'							,
 											'start'							,
 											'end'							,
+											'break_idle'					,
 										];
 										
 	/**
@@ -79,6 +80,7 @@ class Schedule extends BaseModel
 											'on'							=> 'date_format:"Y-m-d H:i:s"',
 											'start'							=> 'date_format:"H:i:s"',
 											'end'							=> 'date_format:"H:i:s"',
+											'break_idle'					=> 'numeric',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
