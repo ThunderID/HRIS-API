@@ -222,10 +222,11 @@ class EmployeeController extends Controller
 			{
 				if(!$errors->count())
 				{
+					$param 			= [];
 					$pd_data		= \App\Models\PrivateDocument::findornew($value['id']);
 
 					$pd_rules	=	[
-										'document_id'		=> 'exists:tmp_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+										'document_id'		=> 'exists:tmp_documents,id|'.($is_new ? '' : 'in:'.$value['document_id']),
 										'person_id'			=> 'exists:persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
 									];
 
@@ -261,7 +262,7 @@ class EmployeeController extends Controller
 							$dd_data		= \App\Models\DocumentDetail::findornew($value2['id']);
 
 							$dd_rules   =   [
-												'person_document_id'	=> 'exists:persons_documents,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
+												'person_document_id'	=> 'exists:persons_documents,id|'.($is_new ? '' : 'in:'.$pd_data['id']),
 												'template_id'			=> 'exists:tmp_templates,id',
 											];
 
@@ -282,6 +283,11 @@ class EmployeeController extends Controller
 									
 									$param['template_id']			= $template_data['id'];
 									$param['person_document_id']	= $pd_data['id'];
+									
+									if(isset($param['on']))
+									{
+										$param['on']				= date('Y-m-d H:i:s', strtotime($param['on']));
+									}
 
 									$dd_data						= $dd_data->fill($param);
 

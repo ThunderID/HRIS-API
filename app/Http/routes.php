@@ -126,7 +126,7 @@ $app->get('/{org_id}/employee/{employ_id}/documents',
 	]
 );
 
-$app->post('/{org_id}/employee/{employ_id}/document/store',
+$app->get('/{org_id}/employee/{employ_id}/document/store',
 	[
 		'uses'				=> 'EmployeeDocumentController@store'
 	]

@@ -73,10 +73,10 @@ class DocumentDetail extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'person_document_id'			=> 'required|exists:person_documents,id',
+											'person_document_id'			=> 'required|exists:persons_documents,id',
 											'template_id'					=> 'required|exists:tmp_templates,id',
 											'numeric'						=> 'numeric',
-											'on'							=> 'date_format:"Y-m-d"',
+											// 'on'							=> 'date_format:"Y-m-d H:i:s"',
 											'string'						=> 'max:255',
 											// 'text'							=> 'required',
 										];

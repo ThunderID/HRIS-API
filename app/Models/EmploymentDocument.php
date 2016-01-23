@@ -36,8 +36,8 @@ class EmploymentDocument extends PersonDocument
 	 * @var array
 	 */
 	protected $rules				=	[
-											'document_id'					=> 'max:255',
-											'person_id'						=> 'date_format:"Y-m-d H:i:s"',
+											'document_id'					=> 'exists:tmp_documents,id',
+											'person_id'						=> 'exists:persons,id',
 										];
 	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
