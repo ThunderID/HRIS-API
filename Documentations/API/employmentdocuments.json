@@ -1,0 +1,228 @@
+swagger: '2.0'
+info:
+  title: Employeement Document API
+  description: Move your app forward with the Employeement Document API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /org_id/employee/employ_id/documents:
+    get:
+      summary: Employeement Document Lists
+      description: |
+        The employees endpoint returns information about the *HRIS* employees' documents.
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+      tags:
+        - employees
+      responses:
+        '200':
+          description: An array of employees' data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employeementdocuments'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/employee/employ_id/document/store:
+    post:
+      summary: Store an employeement Document
+      description: >
+        Store an employeement Document with details those are contacts, works, private documents, marital statuses
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new employeement Document.
+          required: true
+          type: number
+          format: double
+        - name: document
+          in: query
+          description: look document parameter below.
+          required: true
+          type: string
+          format: string
+        - name: documentdetail
+          in: query
+          description: contain template id of document detail look below.
+          required: true
+          type: string
+          format: string
+      tags:
+        - employees
+      responses:
+        '200':
+          description: An array of employeement Document
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employeement Document'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/employee/employ_id/document/id:
+    get:
+      summary: Employeement Document Detail
+      description: 'Get employeement Document detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: employeement Document id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - employees
+      responses:
+        '200':
+          description: employeement Document rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employeement Document'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/employee/employ_id/document/delete/id:
+    delete:
+      summary: Delete an employeement Document
+      description: 'Get employeement Document detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: employeement Document id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - employees
+      responses:
+        '200':
+          description: employeement Document rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/employeement Document'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  search:
+    properties:
+      name:
+        type: string
+        description: 'Search employeement Document that hath certain name'
+  employeementdocuments:
+    properties:
+      count:
+        type: number
+        description: 'Total employee documents.'
+      data:
+        properties:
+          id:
+            type: string
+          document:
+            type: array
+            items:
+              $ref: '#/definitions/document'
+          details:
+            type: array
+            items:
+              $ref: '#/definitions/documentdetails'
+  document:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      tag:
+        type: string
+      is_required:
+        type: string
+  documentdetails:
+    properties:
+      id:
+        type: string
+      numeric:
+        type: string
+      on:
+        type: string
+      string:
+        type: string
+      text:
+        type: string
+      template:
+        type: array
+        items:
+          $ref: '#/definitions/template'
+  template:
+    properties:
+      id:
+        type: string
+      field:
+        type: string
+      type:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32

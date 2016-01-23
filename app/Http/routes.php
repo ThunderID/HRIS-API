@@ -42,34 +42,6 @@ $app->delete('/organisation/delete/{id}',
 	]
 );
 
-
-// ------------------------------------------------------------------------------------
-// EMPLOYEES
-// ------------------------------------------------------------------------------------
-$app->get('/{org_id}/employees',
-	[
-		'uses'				=> 'EmployeeController@index'
-	]
-);
-
-$app->get('/{org_id}/employee/{id}',
-	[
-		'uses'				=> 'EmployeeController@detail'
-	]
-);
-
-$app->post('/{org_id}/employee/store',
-	[
-		'uses'				=> 'EmployeeController@store'
-	]
-);
-
-$app->delete('/{org_id}/employee/delete/{id}',
-	[
-		'uses'				=> 'EmployeeController@delete'
-	]
-);
-
 // ------------------------------------------------------------------------------------
 // BRANCH
 // ------------------------------------------------------------------------------------
@@ -115,6 +87,33 @@ $app->post('/{org_id}/calendar/{cal_id}/schedule/store',
 $app->delete('/{org_id}/calendar/{cal_id}/schedule/delete/{id}',
 	[
 		'uses'				=> 'ScheduleController@delete'
+	]
+);
+
+// ------------------------------------------------------------------------------------
+// EMPLOYEES
+// ------------------------------------------------------------------------------------
+$app->get('/{org_id}/employees',
+	[
+		'uses'				=> 'EmployeeController@index'
+	]
+);
+
+$app->get('/{org_id}/employee/{id}',
+	[
+		'uses'				=> 'EmployeeController@detail'
+	]
+);
+
+$app->post('/{org_id}/employee/store',
+	[
+		'uses'				=> 'EmployeeController@store'
+	]
+);
+
+$app->delete('/{org_id}/employee/delete/{id}',
+	[
+		'uses'				=> 'EmployeeController@delete'
 	]
 );
 
