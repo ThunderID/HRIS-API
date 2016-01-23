@@ -139,6 +139,27 @@ $app->delete('/{org_id}/employee/{employ_id}/document/delete/{id}',
 );
 
 // ------------------------------------------------------------------------------------
+// EMPLOYEE SCHEDULE
+// ------------------------------------------------------------------------------------
+$app->get('/{org_id}/employee/{employ_id}/schedules',
+	[
+		'uses'				=> 'EmployeeScheduleController@index'
+	]
+);
+
+$app->post('/{org_id}/employee/{employ_id}/schedule/store',
+	[
+		'uses'				=> 'EmployeeScheduleController@store'
+	]
+);
+
+$app->delete('/{org_id}/employee/{employ_id}/schedule/delete/{id}',
+	[
+		'uses'				=> 'EmployeeScheduleController@delete'
+	]
+);
+
+// ------------------------------------------------------------------------------------
 // ME
 // ------------------------------------------------------------------------------------
 
