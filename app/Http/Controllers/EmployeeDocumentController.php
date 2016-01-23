@@ -251,114 +251,19 @@ class EmployeeDocumentController extends Controller
 
 		if(!$employdoc)
 		{
-			return new JSend('error', (array)Input::all(), 'Jadwal tidak ditemukan.');
+			return new JSend('error', (array)Input::all(), 'Document tidak ditemukan.');
 		}
 
-		$errors						= new MessageBag();
-
-		DB::beginTransaction();
-
-		//1. store EmployeeDocument of employee to queue
-		$employdoc					= $employdoc->toArray();
-
-		if(is_null($employdoc['id']))
-		{
-			$is_new					= true;
-		}
-		else
-		{
-			$is_new					= false;
-		}
-
-		$employdoc_rules				=	[
-											'employee_id'					=> 'required|exists:tmp_employees,id',
-											'name'							=> 'required|max:255',
-											'status'						=> 'required|in:DN,CB,UL,HB,L',
-											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
-											'start'							=> 'required|date_format:"H:i:s"',
-											'end'							=> 'required|date_format:"H:i:s"',
-										];
-
-		//1a. Validate Basic EmployeeDocument Parameter
-		$parameter 					= $employdoc;
-		unset($parameter['employee']);
-
-		$validator					= Validator::make($parameter, $employdoc_rules);
-
-		if (!$validator->passes())
-		{
-			$errors->add('EmployeeDocument', $validator->errors());
-		}
-		else
-		{
-			$total 						= \App\Models\Work::personid($employ_id)->count();
-
-			$queue 						= new \App\Models\Queue;
-			$queue->fill([
-					'process_name' 			=> 'hr:EmployeeDocuments',
-					'process_option' 		=> 'delete',
-					'parameter' 			=> json_encode($parameter),
-					'total_process' 		=> $total,
-					'task_per_process' 		=> 1,
-					'process_number' 		=> 0,
-					'total_task' 			=> $total,
-					'message' 				=> 'Initial Commit',
-				]);
-
-			if(!$queue->save())
-			{
-				$errors->add('EmployeeDocument', $queue->getError());
-			}
-		}
-		//End of validate EmployeeDocument
-
-		//2. store EmployeeDocument of employees to queue
-		if(!$errors->count() && isset($employdoc['employee']['employees']) && is_array($employdoc['employee']['employees']))
-		{
-			foreach ($employdoc['employee']['employees'] as $key => $value) 
-			{
-				$cals_data						= \App\Models\Employee::id($value['id'])->personid($employ_id)->first();
-
-				if(!$cals_data)
-				{
-					$errors->add('employee', 'Tidak ada Karyawan '.$value['name']);
-				}
-
-				if(!$errors->count())
-				{
-					$total 						= \App\Models\Work::personid($value['id'])->count();
-					$parameter['employee_id']	= $value['id'];
-
-					$queue 						= new \App\Models\Queue;
-					$queue->fill([
-							'process_name' 			=> 'hr:EmployeeDocuments',
-							'process_option' 		=> 'delete',
-							'parameter' 			=> json_encode($parameter),
-							'total_process' 		=> $total,
-							'task_per_process' 		=> 1,
-							'process_number' 		=> 0,
-							'total_task' 			=> $total,
-							'message' 				=> 'Initial Commit',
-						]);
-
-					if(!$queue->save())
-					{
-						$errors->add('EmployeeDocument', $queue->getError());
-					}
-				}
-			}
-		}
 		//End of validate employee EmployeeDocument
 
-		if($errors->count())
-		{
-			DB::rollback();
+		$result					= $employdoc->toArray();
 
-			return new JSend('error', (array)Input::all(), $errors);
+		if($employdoc->delete())
+		{
+			return new JSend('success', (array)$result);
 		}
 
-		DB::commit();
-		
-		return new JSend('success', (array)$employdoc);
+		return new JSend('error', (array)$result, $employdoc->getError());
+
 	}
 }
