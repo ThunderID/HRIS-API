@@ -246,4 +246,86 @@ class EmployeeScheduleController extends Controller
 		return new JSend('success', (array)Input::all());
 	}
 
+	/**
+	 * Delete a schedule (throw to queue)
+	 *
+	 * @return Response
+	 */
+	public function delete($org_id = null, $employ_id = null, $id = null)
+	{
+		//
+		$schedule					= \App\Models\PersonSchedule::id($id)->personid($employ_id)->first();
+
+		if(!$schedule)
+		{
+			return new JSend('error', (array)Input::all(), 'Jadwal tidak ditemukan.');
+		}
+
+		$errors						= new MessageBag();
+
+		DB::beginTransaction();
+
+		//1. store schedule of calendar to queue
+		$schedule					= $schedule->toArray();
+
+		if(is_null($schedule['id']))
+		{
+			$is_new					= true;
+		}
+		else
+		{
+			$is_new					= false;
+		}
+
+		$schedule_rules				=	[
+											'person_id'						=> 'required|exists:persons,id',
+											'name'							=> 'required|max:255',
+											'status'						=> 'required|in:DN,CB,UL,HB,L',
+											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
+											'start'							=> 'required|date_format:"H:i:s"',
+											'end'							=> 'required|date_format:"H:i:s"',
+											'break_idle'					=> 'required|numeric',
+										];
+
+		//1a. Validate Basic schedule Parameter
+		$parameter 					= $schedule;
+
+		$validator					= Validator::make($parameter, $schedule_rules);
+
+		if (!$validator->passes())
+		{
+			$errors->add('Schedule', $validator->errors());
+		}
+		else
+		{
+			$queue 						= new \App\Models\Queue;
+			$queue->fill([
+					'process_name' 			=> 'hr:personschedule',
+					'process_option' 		=> 'delete',
+					'parameter' 			=> json_encode($parameter),
+					'total_process' 		=> 1,
+					'task_per_process' 		=> 1,
+					'process_number' 		=> 0,
+					'total_task' 			=> 1,
+					'message' 				=> 'Initial Commit',
+				]);
+
+			if(!$queue->save())
+			{
+				$errors->add('Schedule', $queue->getError());
+			}
+		}
+		//End of validate schedule
+
+		if($errors->count())
+		{
+			DB::rollback();
+
+			return new JSend('error', (array)Input::all(), $errors);
+		}
+
+		DB::commit();
+		
+		return new JSend('success', (array)$schedule);
+	}
 }
