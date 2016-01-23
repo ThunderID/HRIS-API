@@ -74,13 +74,13 @@ class PersonSchedule extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'person_id'						=> 'required|exists:persons,id',
-											'created_by'					=> 'required|exists:persons,id',
-											'name'							=> 'required|max:255',
-											'status'						=> 'required|in:DN,SS,SL,CN,CB,CI,UL,HB,L',
-											'on'							=> 'required|date_format:"Y-m-d H:i:s"',
-											'start'							=> 'required',
-											'end'							=> 'required',
+											'person_id'						=> 'exists:persons,id',
+											'created_by'					=> 'exists:persons,id',
+											'name'							=> 'max:255',
+											'status'						=> 'in:DN,SS,SL,CN,CB,CI,UL,HB,L',
+											'on'							=> 'date_format:"Y-m-d H:i:s"',
+											'start'							=> 'date_format:"H:i:s"',
+											'end'							=> 'date_format:"H:i:s"',
 											'break_idle'					=> 'numeric',
 										];
 

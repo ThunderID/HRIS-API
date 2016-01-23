@@ -171,13 +171,12 @@ paths:
           required: true
           type: string
           format: string
-        - name: employees
+        - name: break idle
           in: query
-          description: Must be array of employee's employees that need to be copied schedule (unset this value for single employee).
+          description: Schedule break idle.
           required: true
-          type: array
-          items:
-            type: string
+          type: string
+          format: string
       tags:
         - employee
         - Schedule
@@ -237,19 +236,25 @@ paths:
             $ref: '#/definitions/Error'
 definitions:
   schedules:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      status:
-        type: string
-      on:
-        type: string
-      start:
-        type: string
-      end:
-        type: string
+    count:
+      type: number
+      description: 'Total employee documents.'
+    data:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        on:
+          type: string
+        start:
+          type: string
+        end:
+          type: string
+        break_idle:
+          type: number
   schedule:
     properties:
       id:
@@ -264,6 +269,8 @@ definitions:
         type: string
       end:
         type: string
+      break_idle:
+        type: number
   Error:
     type: object
     properties:
