@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasRequiredTrait;
+use App\Models\Traits\HasDocumentRequiredTrait;
+use App\Models\Traits\HasSelectAllTrait;
 
 /** 
 	* Inheritance PersonDocument Model
@@ -14,7 +15,8 @@ class EmploymentDocument extends PersonDocument
 	 * Global traits used as query builder (global scope).
 	 *
 	 */
-	use HasRequiredTrait;
+	use HasSelectAllTrait;
+	use HasDocumentRequiredTrait;
 
 	public $required 				= false;
 
