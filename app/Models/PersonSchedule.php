@@ -50,7 +50,7 @@ class PersonSchedule extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $hidden 					= [];
+	protected $hidden				=	['created_at', 'updated_at', 'deleted_at', 'created_by'];
 
 	/**
 	 * The attributes that are mass assignable.
@@ -107,4 +107,27 @@ class PersonSchedule extends BaseModel
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
+
+	/**
+	 * find range
+	 * 
+	 * @param array or singular date
+	 */	
+	public function scopeOnDate($query, $variable)
+	{
+		if(is_array($variable))
+		{
+			$started_at 	= date('Y-m-d H:i:s', strtotime($variable[0]));
+			$ended_at		= date('Y-m-d H:i:s', strtotime($variable[1]));
+
+			return $query->where('on', '>=', $started_at)
+						->where('on', '<=', $ended_at)
+						;
+		}
+		
+		$ondate 			= date('Y-m-d', strtotime($variable));
+
+		return $query->where('on', '=', $ondate);
+	}
 }

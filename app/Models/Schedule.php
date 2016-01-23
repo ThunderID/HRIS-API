@@ -51,7 +51,7 @@ class Schedule extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $hidden 				= [];
+	protected $hidden				=	['created_at', 'updated_at', 'deleted_at', 'created_by'];
 
 	/**
 	 * The attributes that are mass assignable.
