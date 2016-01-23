@@ -61,7 +61,7 @@ class ScheduleController extends Controller
 			$result					= $result->take($take);
 		}
 
-		$result						= $result->get()->toArray();
+		$result						= $result->with(['calendar', 'calendar.calendars'])->get()->toArray();
 
 		return new JSend('success', (array)['count' => $count, 'data' => $result]);
 	}

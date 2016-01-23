@@ -42,7 +42,8 @@ paths:
           type: number
           format: integer
       tags:
-        - employees
+        - Employees
+        - Documents
       responses:
         '200':
           description: An array of employees' data
@@ -85,44 +86,15 @@ paths:
           type: string
           format: string
       tags:
-        - employees
+        - Employees
+        - Documents
       responses:
         '200':
           description: An array of employeement Document
           schema:
             type: array
             items:
-              $ref: '#/definitions/employeement Document'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /org_id/employee/employ_id/document/id:
-    get:
-      summary: Employeement Document Detail
-      description: 'Get employeement Document detail information.'
-      parameters:
-        - name: id
-          in: query
-          description: employeement Document id.
-          required: true
-          type: number
-          format: integer
-        - name: access_token
-          in: query
-          description: Access token given by apps.
-          required: true
-          type: number
-          format: integer
-      tags:
-        - employees
-      responses:
-        '200':
-          description: employeement Document rich data
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/employeement Document'
+              $ref: '#/definitions/employeementdocuments'
         default:
           description: Unexpected error
           schema:
@@ -145,14 +117,15 @@ paths:
           type: number
           format: integer
       tags:
-        - employees
+        - Employees
+        - Documents
       responses:
         '200':
           description: employeement Document rich data
           schema:
             type: array
             items:
-              $ref: '#/definitions/employeement Document'
+              $ref: '#/definitions/employeementdocuments'
         default:
           description: Unexpected error
           schema:

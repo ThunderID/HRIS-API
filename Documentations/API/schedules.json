@@ -250,6 +250,10 @@ definitions:
         type: string
       end:
         type: string
+      calendar:
+        type: array
+        items:
+          $ref: '#/definitions/calendar'
   schedule:
     properties:
       id:

@@ -72,11 +72,11 @@ $app->get('/{org_id}/calendar/{cal_id}/schedules',
 	]
 );
 
-$app->get('/{org_id}/calendar/{cal_id}/schedule/{id}',
-	[
-		'uses'				=> 'ScheduleController@detail'
-	]
-);
+// $app->get('/{org_id}/calendar/{cal_id}/schedule/{id}',
+// 	[
+// 		'uses'				=> 'ScheduleController@detail'
+// 	]
+// );
 
 $app->post('/{org_id}/calendar/{cal_id}/schedule/store',
 	[
@@ -114,6 +114,27 @@ $app->post('/{org_id}/employee/store',
 $app->delete('/{org_id}/employee/delete/{id}',
 	[
 		'uses'				=> 'EmployeeController@delete'
+	]
+);
+
+// ------------------------------------------------------------------------------------
+// EMPLOYEE DOCUMENT
+// ------------------------------------------------------------------------------------
+$app->get('/{org_id}/employee/{employ_id}/documents',
+	[
+		'uses'				=> 'EmployeeDocumentController@index'
+	]
+);
+
+$app->post('/{org_id}/employee/{employ_id}/document/store',
+	[
+		'uses'				=> 'EmployeeDocumentController@store'
+	]
+);
+
+$app->delete('/{org_id}/employee/{employ_id}/document/delete/{id}',
+	[
+		'uses'				=> 'EmployeeDocumentController@delete'
 	]
 );
 
