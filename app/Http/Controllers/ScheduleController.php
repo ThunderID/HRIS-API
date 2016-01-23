@@ -205,7 +205,6 @@ class ScheduleController extends Controller
 		return new JSend('success', (array)Input::all());
 	}
 
-
 	/**
 	 * Delete a schedule (throw to queue)
 	 *
