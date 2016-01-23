@@ -2,54 +2,54 @@
 
 namespace App\Models;
 
-/**
- * Used for PersonWorkleave Models
- * 
- * @author cmooy
- */
-class PersonWorkleave extends BaseModel
+use App\Models\Observers\TakenWorkleaveObserver;
+
+/** 
+	* Inheritance Person Model
+	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
+*/
+class TakenWorkleave extends PersonWorkleave
 {
 	/**
-	 * Relationship Traits.
+	 * Global traits used as query builder (global scope).
 	 *
+	 */	
+	use HasTakenWorkleaveTrait;
+
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
 	 */
-	use \App\Models\Traits\belongsTo\HasPersonTrait;
+
+	protected $fillable				=	[
+											'person_id'				,
+											'work_id' 				,
+											'created_by' 			,
+											'name' 					,
+											'start' 				,
+											'end' 					,
+											'quota' 				,
+											'status' 				,
+											'notes'					,
+										];
+
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'person_id'				=> 'exists:persons,id',
+											'work_id' 				=> 'exists:works,id',
+											'created_by' 			=> 'exists:persons,id',
+											'name' 					=> 'max:255',
+											'start' 				=> 'date_format:"Y-m-d H:i:s"',
+											'end' 					=> 'date_format:"Y-m-d H:i:s"',
+											'quota' 				=> 'numeric',
+											'status' 				=> 'in:CB,CN,CI,OFFER,CONFIRMED',
+										];
 	
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table				= 'person_workleaves';
-
-	/**
-	 * Timestamp field
-	 *
-	 * @var array
-	 */
-	// protected $timestamps			= true;
-	
-	/**
-	 * Date will be returned as carbon
-	 *
-	 * @var array
-	 */
-	protected $dates				=	['created_at', 'updated_at', 'deleted_at'];
-
-	/**
-	 * The appends attributes from mutator and accessor
-	 *
-	 * @var array
-	 */
-	protected $appends				=	[];
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden 				= [];
-
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/
@@ -59,15 +59,19 @@ class PersonWorkleave extends BaseModel
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/
-			
+
 	/**
 	 * boot
+	 * observing model
 	 *
-	 */	
+	 */			
 	public static function boot() 
 	{
         parent::boot();
+ 
+        TakenWorkleave::observe(new TakenWorkleaveObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
 }

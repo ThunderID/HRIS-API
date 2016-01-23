@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\PersonScheduleObserver;
+use App\Models\Observers\PersonScheduleObserver;
 
 /**
  * Used for PersonSchedule Models
@@ -103,7 +103,7 @@ class PersonSchedule extends BaseModel
 	{
         parent::boot();
  
-        // PersonSchedule::observe(new PersonScheduleObserver());
+        PersonSchedule::observe(new PersonScheduleObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

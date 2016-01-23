@@ -27,6 +27,7 @@ class QuotaWorkleaveScope implements ScopeInterface
 		->leftjoin('person_workleaves', function ($join) 
 				 {
 	                                    $join->on ( 'persons.id', '=', 'person_workleaves.person_id' )
+	                                    ->whereIn('person_workleaves.status', ['CN', 'CB'])
 	                                    ->where('person_workleaves.start', '>=', 'NOW()')
 	                                    ->where('person_workleaves.end', '<', 'NOW()')
 	                                    ->wherenull('person_workleaves.deleted_at')

@@ -22,7 +22,7 @@ class CreatePersonWorkleavesTable extends Migration {
 			$table->string('name', 255);
 			$table->date('start');
 			$table->date('end')->nullable();
-			$table->datetime('expired_at')->nullable();
+			// $table->datetime('expired_at')->nullable();
 
 			$table->integer('quota');
 			$table->enum('status', ['CB', 'CN', 'CI', 'OFFER', 'CONFIRMED']);
