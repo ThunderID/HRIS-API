@@ -62,7 +62,7 @@ class EmployeeController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
-		$result						= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'careers.calendar', 'careers.chart', 'careers.branch', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
+		$result						= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'careers.calendar', 'careers.chart', 'careers.chart.branch', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
 
 		if($result)
 		{

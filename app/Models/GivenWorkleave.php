@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
-use App\Models\Observers\TakenWorkleaveObserver;
+use App\Models\Observers\GivenWorkleaveObserver;
 
 /** 
 	* Inheritance Person Model
 	* For every inheritance model, allowed to have only $type, fillable, rules, and available function
 */
-class TakenWorkleave extends PersonWorkleave
+class GivenWorkleave extends PersonWorkleave
 {
 	/**
 	 * Global traits used as query builder (global scope).
 	 *
 	 */	
-	use HasTakenWorkleaveTrait;
+	use HasGivenWorkleaveTrait;
 
 	/**
 	 * The attributes that are mass assignable.
@@ -23,7 +23,7 @@ class TakenWorkleave extends PersonWorkleave
 	 */
 
 	protected $fillable				=	[
-											'person_workleave_id'	,
+											'workleave_id'			,
 											'person_id'				,
 											'work_id' 				,
 											'created_by' 			,
@@ -48,7 +48,7 @@ class TakenWorkleave extends PersonWorkleave
 											'start' 				=> 'date_format:"Y-m-d H:i:s"',
 											'end' 					=> 'date_format:"Y-m-d H:i:s"',
 											'quota' 				=> 'numeric',
-											'status' 				=> 'in:CB,CN,CI,OFFER,CONFIRMED',
+											'status' 				=> 'in:CN,CI',
 										];
 	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -70,7 +70,7 @@ class TakenWorkleave extends PersonWorkleave
 	{
         parent::boot();
  
-        TakenWorkleave::observe(new TakenWorkleaveObserver());
+        GivenWorkleave::observe(new GivenWorkleaveObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

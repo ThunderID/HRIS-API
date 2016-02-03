@@ -160,7 +160,7 @@ $app->delete('/{org_id}/employee/{employ_id}/schedule/delete/{id}',
 );
 
 // ------------------------------------------------------------------------------------
-// EMPLOYEE Workleave Log
+// EMPLOYEE WORKLEAVE LOG
 // ------------------------------------------------------------------------------------
 $app->get('/{org_id}/employee/{employ_id}/workleaves',
 	[
