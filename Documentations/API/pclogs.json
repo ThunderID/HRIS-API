@@ -1,0 +1,215 @@
+swagger: '2.0'
+info:
+  title: Log PC API
+  description: Move your app forward with the Log PC API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /api/activity/logs:
+    post:
+      summary: Store PC logs from tracker v.0
+      description: >
+        Store PC logs from tracker version 0.*
+      parameters:
+        - name: application
+          in: query
+          description: Must be array of PC's application (look below).
+          required: true
+          type: array
+          items:
+            type: string
+        - name: log
+          in: query
+          description: Must be array of Log PC's.
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Log
+        - Absent
+      responses:
+        '200':
+          description: Valid code
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/codes'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /api/tracker/setting:
+    post:
+      summary: Admin login for tracker v.0 & v.1
+      description: >
+        Admin login compability for tracker v.0 & v.1
+      parameters:
+        - name: application
+          in: query
+          description: Must be array of PC's application v1 (look below).
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Login
+        - Absent
+      responses:
+        '200':
+          description: Valid code
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/codes'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /api/tracker/test:
+    post:
+      summary: Test connection v.0 & v.1
+      description: >
+        Test connection compability for tracker v.0 & v.1
+      parameters:
+        - name: application
+          in: query
+          description: Must be array of PC's application (look below).
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Test
+        - Absent
+      responses:
+        '200':
+          description: Valid code
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/codes'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /api/time/test:
+    post:
+      summary: Get server time v.1
+      description: >
+        Get server time v.1
+      parameters:
+        - name: application
+          in: query
+          description: Must be array of PC's application (look below).
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Time
+        - Absent
+      responses:
+        '200':
+          description: Sukses|datetime_format
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/codes'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /api/tracker/update:
+    post:
+      summary: Auto update v.1 up
+      description: >
+        Auto update v.1 up
+      parameters:
+        - name: application
+          in: query
+          description: Must be array of PC's application (look below).
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Time
+        - Absent
+      responses:
+        '200':
+          description: Sukses|update_url
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/codes'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  application:
+    properties:
+      api:
+        type: array
+        items:
+          $ref: '#/definitions/api'
+  applicationv1:
+    properties:
+      api:
+        type: array
+        items:
+          $ref: '#/definitions/apiv1'
+  api:
+    properties:
+      client:
+        type: string
+      secret:
+        type: string
+      station_id:
+        type: string
+      tr_ver:
+        type: number
+  apiv1:
+    properties:
+      client:
+        type: string
+      secret:
+        type: string
+      station_id:
+        type: string
+      tr_ver:
+        type: number
+      email:
+        type: string
+      password:
+        type: string
+  log:
+    properties:
+      name:
+        type: string
+      on:
+        type: string
+      pc:
+        type: string
+  codes:
+    properties:
+      code:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32

@@ -202,6 +202,13 @@ $app->group(['namespace' => 'App\Http\Controllers\Tracker'], function ($app)
 		]
 	);
 
+	//sync time v.1.
+	$app->post('/api/time/test',
+		[
+			'uses'				=> 'TestDeviceController@absencetime'
+		]
+	);
+
 	//auto update v.1.
 	$app->post('/api/tracker/update',
 		[
