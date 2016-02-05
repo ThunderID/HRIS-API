@@ -169,8 +169,102 @@ $app->get('/{org_id}/employee/{employ_id}/workleaves',
 );
 
 // ------------------------------------------------------------------------------------
-// ME
+// TRACKER API
 // ------------------------------------------------------------------------------------
+
+$app->group(['namespace' => 'App\Http\Controllers\Tracker'], function ($app) 
+{
+	//save log v.0
+	$app->post('/api/activity/logs',
+		[
+			'uses'				=> 'LogV0Controller@store'
+		]
+	);
+
+	//login admin v.0 & v.1
+	$app->post('/api/tracker/setting',
+		[
+			'uses'				=> 'LoginController@absence'
+		]
+	);
+
+	//test route v.0 & v.1
+	$app->post('/api/tracker/test',
+		[
+			'uses'				=> 'TestDeviceController@absence'
+		]
+	);
+
+	//save log v.1.
+	$app->post('/api/tracker/verse3',
+		[
+			'uses'				=> 'LogV1Controller@store'
+		]
+	);
+
+	//auto update v.1.
+	$app->post('/api/tracker/update',
+		[
+			'uses'				=> 'UpdateController@updateversion'
+		]
+	);
+});
+
+// ------------------------------------------------------------------------------------
+// FP API
+// ------------------------------------------------------------------------------------
+
+$app->group(['namespace' => 'App\Http\Controllers\FP'], function ($app) 
+{
+	//save log v.0
+	$app->post('/api/fp/verse3',
+		[
+			'uses'				=> 'LogV0Controller@store'
+		]
+	);
+
+	//login admin v.0
+	$app->post('/api/fp/setting',
+		[
+			'uses'				=> 'LoginController@fp'
+		]
+	);
+
+	//test route v.0
+	$app->post('/api/fp/test',
+		[
+			'uses'				=> 'TestDeviceController@fp'
+		]
+	);
+
+	//display finger of the day v.0
+	$app->post('/api/fp/oftheday',
+		[
+			'uses'				=> 'FingerController@fingeroftheday'
+		]
+	);
+
+	//sync master data and local databases v.0
+	$app->post('/api/fp/sync',
+		[
+			'uses'				=> 'FingerController@dbsync'
+		]
+	);
+
+	//save persons' finger v.0
+	$app->post('/api/fp/enroll',
+		[
+			'uses'				=> 'FingerController@store'
+		]
+	);
+
+	//remove persons' finger v.0
+	$app->post('/api/fp/delete',
+		[
+			'uses'				=> 'FingerController@destroy'
+		]
+	);
+});
 
 //all organisation it self
 $app->post('/authorized/me',
