@@ -19,7 +19,6 @@ class CreateFingerLogsTable extends Migration {
 			$table->integer('created_by')->unsigned()->index();
 			$table->string('name', 255);
 			$table->datetime('on');
-			$table->datetime('last_input_time')->nullable();
 			$table->string('pc', 255);
 			$table->string('app_version', 255);
 			$table->string('ip', 255);
