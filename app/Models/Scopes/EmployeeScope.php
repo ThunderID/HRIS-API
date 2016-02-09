@@ -31,6 +31,7 @@ class EmployeeScope implements ScopeInterface
 		}
 
     	$builder->selectraw('CONCAT(charts.name, " cabang ", branches.name) as current_job')
+    			->selectraw('works.id as current_work_id')
     			->selectraw('works.calendar_id as current_calendar_id')
     			->selectraw('works.grade as current_grade')
     			->join('works', function ($join) use($end)

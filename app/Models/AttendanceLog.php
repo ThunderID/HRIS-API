@@ -2,36 +2,32 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\FingerLogObserver;
-use App\Models\Traits\HasSelectAllTrait;
-use App\Models\Traits\HasEmployeeScheduleTrait;
+use App\Models\Observers\AttendanceLogObserver;
 
 /**
- * Used for FingerLog Models
+ * Used for AttendanceLog Models
  * 
  * @author cmooy
  */
-class FingerLog extends BaseModel
+class AttendanceLog extends BaseModel
 {
 	/**
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\Models\Traits\belongsTo\HasPersonTrait;
+	use \App\Models\Traits\belongsTo\HasProcessLogTrait;
 
 	/**
 	 * Global traits used as query builder (plugged scope).
 	 *
 	 */
-	use HasSelectAllTrait;
-	use HasEmployeeScheduleTrait;
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table					= 'Fingerlogs';
+	protected $table					= 'attendance_logs';
 
 	/**
 	 * Timestamp field
@@ -45,7 +41,7 @@ class FingerLog extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at', 'on', 'last_input_time'];
+	protected $dates					=	['created_at', 'updated_at', 'deleted_at', 'modified_at', 'settlement_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
@@ -67,13 +63,18 @@ class FingerLog extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'person_id'						,
-											'created_by'					,
-											'name'							,
-											'on'							,
-											'pc'							,
-											'app_version'					,
-											'ip'							,
+											'process_log_id'				,
+											'settlement_by'					,
+											'modified_by'					,
+											'actual_status'					,
+											'modified_status'				,
+											'margin_start'					,
+											'margin_end'					,
+											'tolerance_time'				,
+											'count_status'					,
+											'notes'							,
+											'modified_at'					,
+											'settlement_at'					,
 										];
 										
 	/**
@@ -82,13 +83,17 @@ class FingerLog extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'person_id'						=> 'exists:persons,id',
-											'created_by'					=> 'exists:persons,id',
-											'name'							=> 'max:255',
-											'on'							=> 'date_format:"Y-m-d H:i:s"',
-											'pc'							=> 'max:255',
-											'app_version'					=> 'max:255',
-											'ip'							=> 'max:255',
+											'process_log_id'					=> 'exists:process_logs,id',
+											'settlement_by'						=> 'exists:persons,id',
+											'modified_by'						=> 'exists:persons,id',
+											'actual_status'						=> 'in:AS,HC,HB',
+											'modified_status'					=> 'in:DN,SS,SL,CN,CB,CI,UL,HB,L,AS,HC,HD,HT,HP',
+											'margin_start'						=> 'numeric',
+											'margin_end'						=> 'numeric',
+											'tolerance_time'					=> 'numeric',
+											'count_status'						=> 'numeric',
+											'modified_at'						=> 'date_format:"Y-m-d H:i:s"',
+											'settlement_at'						=> 'date_format:"Y-m-d H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -110,32 +115,9 @@ class FingerLog extends BaseModel
 	{
         parent::boot();
  
-        // FingerLog::observe(new FingerLogObserver());
+        AttendanceLog::observe(new AttendanceLogObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
 
-
-	/**
-	 * find range
-	 * 
-	 * @param array or singular date
-	 */	
-	public function scopeOnDate($query, $variable)
-	{
-		if(is_array($variable))
-		{
-			$started_at 	= date('Y-m-d H:i:s', strtotime($variable[0]));
-			$ended_at		= date('Y-m-d H:i:s', strtotime($variable[1]));
-		}
-		else
-		{
-			$started_at		= date('Y-m-d H:i:s', strtotime($variable));
-			$ended_at		= date('Y-m-d H:i:s', strtotime($variable.' + 1 day'));
-		}
-		
-		return $query->where($this->getTable().'.on', '>=', $started_at)
-						->where($this->getTable().'.on', '<=', $ended_at)
-						;
-	}
 }
