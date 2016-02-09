@@ -21,16 +21,25 @@ class EmployeeScope implements ScopeInterface
 	 */
 	public function apply(Builder $builder, Model $model)
 	{
+		if(isset($model->workend))
+		{
+			$end 				= $model->workend;
+		}
+		else
+		{
+			$end 				= 'now';
+		}
+
     	$builder->selectraw('CONCAT(charts.name, " cabang ", branches.name) as current_job')
     			->selectraw('works.calendar_id as current_calendar_id')
     			->selectraw('works.grade as current_grade')
-    			->join('works', function ($join) 
+    			->join('works', function ($join) use($end)
 				 {
 	                                    $join->on ( 'persons.id', '=', 'works.person_id' )
-	                                    ->where(function ($query)
+	                                    ->where(function ($query)use($end)
 									    	{
 											    $query->wherenull('works.end')
-											    ->orwhere('works.end', '>=', date('Y-m-d H:i:s'));
+											    ->orwhere('works.end', '>=', date('Y-m-d H:i:s', strtotime($end)));
 											})
 	                                    ;
 				})

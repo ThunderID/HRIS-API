@@ -17,6 +17,7 @@ class EmployeeController extends Controller
 	 */
 	public function index($org_id = null)
 	{
+
 		$result						= new \App\Models\Employee;
 
 		$result						= $result->organisationid($org_id);
@@ -36,7 +37,7 @@ class EmployeeController extends Controller
 			}
 		}
 
-		$count						= $result->count();
+		$count						= count($result->get(['id']));
 
 		if(Input::has('skip'))
 		{

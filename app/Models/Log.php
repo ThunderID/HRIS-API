@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\LogObserver;
+use App\Models\Observers\LogObserver;
 use App\Models\Traits\HasSelectAllTrait;
 use App\Models\Traits\HasEmployeeScheduleTrait;
 
@@ -112,7 +112,7 @@ class Log extends BaseModel
 	{
         parent::boot();
  
-        // Log::observe(new LogObserver());
+        Log::observe(new LogObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
