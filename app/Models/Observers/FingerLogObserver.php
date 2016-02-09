@@ -2,20 +2,20 @@
 
 use App\Models\Policy;
 use App\Models\Queue;
-use App\Models\Log;
+use App\Models\FingerLog;
 use App\Models\ProcessLog;
 use App\Models\Employee;
 use Carbon\Carbon;
 
 /**
- * Used in Log model
+ * Used in FingerLog model
  *
  * @author cmooy
  */
-class LogObserver 
+class FingerLogObserver 
 {
 	/** 
-     * observe Lumen event saved
+     * observe FingerLog event saved
      * 1. check if prev day
      * 2. save into queue
      * 3. act, accept or refuse
@@ -99,9 +99,9 @@ class LogObserver
 	}
 
 	/** 
-     * observe Lumen event deleting
+     * observe FingerLog event deleting
      * 1. check if prev day
-     * 2. delete logs and process logs
+     * 2. delete FingerLogs and process FingerLogs
      * 3. act, accept or refuse
      * 
      * @param $model
@@ -112,15 +112,15 @@ class LogObserver
 		//1. check if prev day
 		if($model->on->format('Y-m-d') <= Carbon::now()->format('Y-m-d'))
 		{
-			$model['errors'] 					= ['Tidak dapat menghapus log yang sudah lewat dari tanggal hari ini.'];
+			$model['errors'] 					= ['Tidak dapat menghapus FingerLog yang sudah lewat dari tanggal hari ini.'];
 
 			return false;
 		}
 
-		//2. delete logs and process logs
-		$logs 									= Log::personid($model->person_id)->ondate([$model->on->startOfDay()->format('Y-m-d H:i:s'), $model->on->endOfDay()->format('Y-m-d H:i:s')])->get();
+		//2. delete FingerLogs and process FingerLogs
+		$FingerLogs 									= FingerLog::personid($model->person_id)->ondate([$model->on->startOfDay()->format('Y-m-d H:i:s'), $model->on->endOfDay()->format('Y-m-d H:i:s')])->get();
 
-		if($logs->count() && $logs->count() <= 1)
+		if($FingerLogs->count() && $FingerLogs->count() <= 1)
 		{
 			$processes 							= ProcessLog::personid($model->person_id)->ondate([$model->on->startOfDay()->format('Y-m-d H:i:s'), $model->on->endOfDay()->format('Y-m-d H:i:s')])->get();
 

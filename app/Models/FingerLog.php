@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use App\Models\Observers\FingerLogObserver;
+use App\Models\Observers\FingerLogObserver;
 use App\Models\Traits\HasSelectAllTrait;
 use App\Models\Traits\HasEmployeeScheduleTrait;
 
@@ -31,7 +31,7 @@ class FingerLog extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'Fingerlogs';
+	protected $table					= 'finger_logs';
 
 	/**
 	 * Timestamp field
@@ -110,7 +110,7 @@ class FingerLog extends BaseModel
 	{
         parent::boot();
  
-        // FingerLog::observe(new FingerLogObserver());
+        FingerLog::observe(new FingerLogObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
