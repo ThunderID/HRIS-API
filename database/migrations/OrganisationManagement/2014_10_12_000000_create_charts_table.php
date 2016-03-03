@@ -20,16 +20,12 @@ class CreateChartsTable extends Migration
 			$table->integer('chart_id')->unsigned()->index();
 			$table->string('name', 255);
 			$table->string('path', 255);
-			$table->string('tag', 255);
-			$table->integer('min_employee');
-			$table->integer('ideal_employee');
-			$table->integer('max_employee');
-			$table->integer('current_employee');
+			$table->string('department', 255);
 			$table->timestamps();
 			$table->softDeletes();
 
 			$table->index(['deleted_at', 'branch_id' ,'path']);
-			$table->index(['deleted_at', 'branch_id' ,'tag']);
+			$table->index(['deleted_at', 'branch_id' ,'department']);
 		});
 	}
 
