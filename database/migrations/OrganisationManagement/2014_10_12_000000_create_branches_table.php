@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFollowsTable extends Migration {
+class CreateBranchesTable extends Migration 
+{
 
 	/**
 	 * Run the migrations.
@@ -12,17 +13,18 @@ class CreateFollowsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('follows', function(Blueprint $table)
+		Schema::connection(env('DB_CONNECTION_ORGANISATION', 'mysql_hr_organisations'))->create('branches', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('calendar_id')->unsigned()->index();
-			$table->integer('chart_id')->unsigned()->index();
+			$table->integer('organisation_id')->unsigned()->index();
+			$table->string('name', 255);
 			$table->timestamps();
 			$table->softDeletes();
-			
-			$table->index(['deleted_at']);
+
+			$table->index(['deleted_at', 'organisation_id']);
 		});
 	}
+
 
 	/**
 	 * Reverse the migrations.
@@ -31,7 +33,7 @@ class CreateFollowsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('follows');
+		Schema::drop('branches');
 	}
 
 }

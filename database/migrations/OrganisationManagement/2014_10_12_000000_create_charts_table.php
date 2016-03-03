@@ -3,7 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateChartsTable extends Migration {
+class CreateChartsTable extends Migration 
+{
 
 	/**
 	 * Run the migrations.
@@ -12,7 +13,8 @@ class CreateChartsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('charts', function(Blueprint $table) {
+		Schema::connection(env('DB_CONNECTION_ORGANISATION', 'mysql_hr_organisations'))->create('charts', function(Blueprint $table)
+		{
 			$table->increments('id');
 			$table->integer('branch_id')->unsigned()->index();
 			$table->integer('chart_id')->unsigned()->index();
