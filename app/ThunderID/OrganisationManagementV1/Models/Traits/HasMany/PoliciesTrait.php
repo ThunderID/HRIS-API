@@ -1,6 +1,6 @@
 <?php 
 
-namespace \App\OrganisationManagementV1\Models\Traits\HasMany;
+namespace App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany;
 
 /**
  * Trait for models has many Policies.
@@ -26,6 +26,6 @@ trait PoliciesTrait
 	 **/
 	public function Policies()
 	{
-		return $this->hasMany('\App\OrganisationManagementV1\Models\Policy');
+		return $this->hasMany('\App\ThunderID\OrganisationManagementV1\Models\Policy');
 	}
 }

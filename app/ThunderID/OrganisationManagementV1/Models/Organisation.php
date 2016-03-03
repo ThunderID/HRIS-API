@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\OrganisationManagementV1\Models;
+namespace App\ThunderID\OrganisationManagementV1\Models;
 
 // use App\Models\Observers\OrganisationObserver;
 
@@ -15,8 +15,8 @@ class Organisation extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\OrganisationManagementV1\Models\Traits\HasMany\BranchesTrait;
-	use \App\OrganisationManagementV1\Models\Traits\HasMany\PoliciesTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\BranchesTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\PoliciesTrait;
 
 	/**
 	 * The database table used by the model.

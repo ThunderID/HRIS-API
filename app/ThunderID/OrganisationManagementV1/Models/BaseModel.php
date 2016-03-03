@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\OrganisationManagementV1\Models;
+namespace App\ThunderID\OrganisationManagementV1\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -22,7 +22,7 @@ abstract class BaseModel extends Eloquent
 	 */
 	use SoftDeletes;
 
-	protected $connection 			= env('DB_CONNECTION_ORGANISATION', 'mysql_hr_organisations');
+	protected $connection 			= 'mysql_hr_organisations';
 	
 	protected $errors;
 

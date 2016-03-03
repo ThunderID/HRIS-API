@@ -1,6 +1,6 @@
 <?php
 
-namespace App\OrganisationManagementV1\Models;
+namespace App\ThunderID\OrganisationManagementV1\Models;
 
 // use App\Models\Observers\PolicyObserver;
 
@@ -15,7 +15,7 @@ class Policy extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
 
 	/**
 	 * The database table used by the model.

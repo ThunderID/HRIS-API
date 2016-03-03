@@ -1,6 +1,6 @@
 <?php 
 
-namespace \App\OrganisationManagementV1\Models\Traits\HasMany;
+namespace App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany;
 
 /**
  * Trait for models has many Charts.
@@ -26,6 +26,6 @@ trait ChartsTrait
 	 **/
 	public function Charts()
 	{
-		return $this->hasMany('\App\OrganisationManagementV1\Models\Chart');
+		return $this->hasMany('\App\ThunderID\OrganisationManagementV1\Models\Chart');
 	}
 }

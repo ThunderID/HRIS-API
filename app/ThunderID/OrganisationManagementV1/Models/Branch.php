@@ -1,9 +1,9 @@
 <?php
 
-namespace App\OrganisationManagementV1\Models;
+namespace App\ThunderID\OrganisationManagementV1\Models;
 
 use App\Models\Traits\HasSelectAllTrait;
-use App\OrganisationManagementV1\Models\Traits\Global\HasContactTrait;
+use App\ThunderID\OrganisationManagementV1\Models\Scopes\GlobalScope\ContactScope;
 
 // use App\Models\Observers\BranchObserver;
 
@@ -18,16 +18,15 @@ class Branch extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
-	use \App\OrganisationManagementV1\Models\Traits\HasMany\ChartsTrait;
-	use \App\OrganisationManagementV1\Models\Traits\HasMany\ContactsTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\ChartsTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\MorphMany\ContactsTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
 	 *
 	 */
 	use HasSelectAllTrait;
-	use HasContactTrait;
 
 	/**
 	 * The database table used by the model.
@@ -103,6 +102,8 @@ class Branch extends BaseModel
 	{
         parent::boot();
  
+        static::addGlobalScope(new ContactScope);
+
         // Branch::observe(new BranchObserver());
     }
 

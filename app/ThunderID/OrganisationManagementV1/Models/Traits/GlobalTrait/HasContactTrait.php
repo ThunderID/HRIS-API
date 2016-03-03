@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\OrganisationManagementV1\Models\Traits\Global;
+namespace App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait;
 
-use App\OrganisationManagementV1\Models\Scopes\Global\ContactScope;
+use App\ThunderID\OrganisationManagementV1\Models\Scopes\GlobalScope\ContactScope;
 
 /**
  * Apply scope to get contact of person who work here

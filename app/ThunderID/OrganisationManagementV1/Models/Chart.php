@@ -1,6 +1,6 @@
 <?php
 
-namespace App\OrganisationManagementV1\Models;
+namespace App\ThunderID\OrganisationManagementV1\Models;
 
 // use App\Models\Observers\ChartObserver;
 
@@ -15,8 +15,8 @@ class Chart extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\OrganisationManagementV1\Models\Traits\BelongsTo\HasBranchTrait;
-	use \App\OrganisationManagementV1\Models\Traits\HasMany\HasChartsTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\BranchTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\ChartsTrait;
 
 	/**
 	 * The database table used by the model.

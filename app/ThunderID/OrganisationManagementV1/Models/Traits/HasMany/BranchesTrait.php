@@ -1,6 +1,6 @@
 <?php 
 
-namespace \App\OrganisationManagementV1\Models\Traits\HasMany;
+namespace App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany;
 
 /**
  * Trait for models has many Branches.
@@ -26,6 +26,6 @@ trait BranchesTrait
 	 **/
 	public function Branches()
 	{
-		return $this->hasMany('\App\OrganisationManagementV1\Models\Branch');
+		return $this->hasMany('\App\ThunderID\OrganisationManagementV1\Models\Branch');
 	}
 }

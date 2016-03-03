@@ -1,6 +1,6 @@
 <?php
 
-namespace App\OrganisationManagementV1\Models;
+namespace App\ThunderID\OrganisationManagementV1\Models;
 
 // use App\Models\Observers\ContactObserver;
 
@@ -15,7 +15,7 @@ class Contact extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
-	use \App\OrganisationManagementV1\Models\Traits\BelongsTo\HasBranchTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\MorphTo\ContactableTrait;
 
 	/**
 	 * The database table used by the model.
@@ -72,7 +72,7 @@ class Contact extends BaseModel
 	 */
 	protected $rules				=	[
 											'contactable_id'				=> 'exists:branches,id',
-											'contactable_type'				=> 'max:255|in:App\OrganisationManagementV1\Models\Branch',
+											'contactable_type'				=> 'max:255|in:App\ThunderID\OrganisationManagementV1\Models\Branch',
 											'item'							=> 'max:255',
 											'is_default'					=> 'boolean',
 										];

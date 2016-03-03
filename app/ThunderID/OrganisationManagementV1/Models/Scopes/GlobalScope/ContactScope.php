@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\OrganisationManagementV1\Models\Scopes\Global;
+namespace App\ThunderID\OrganisationManagementV1\Models\Scopes\GlobalScope;
 
 use Illuminate\Database\Eloquent\ScopeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,13 +23,13 @@ class ContactScope implements ScopeInterface
 	 */
 	public function apply(Builder $builder, Model $model)
 	{
-    	$builder->selectraw('IFNULL(if(item="phone", value, ""), "not available") as phone')
-    			->selectraw('IFNULL(if(item="address", value, ""), "not available") as address')
-    			->selectraw('IFNULL(if(item="email", value, ""), "not available") as email')
-    			->leftjoin('contacts', function ($join) 
+    	$builder->selectraw('IFNULL(if(item="phone", value, "not available"), "not available") as phone')
+    			->selectraw('IFNULL(if(item="address", value, "not available"), "not available") as address')
+    			->selectraw('IFNULL(if(item="email", value, "not available"), "not available") as email')
+    			->leftjoin('contacts', function ($join) use($model)
 				 {
 	                                    $join->on ( $model->getTable().'.id', '=', 'contacts.contactable_id' )
-	                                    ->whereIn('contacts.contactable_type', $model->getName())
+	                                    ->where('contacts.contactable_type', '=', get_class($model))
 	                                    ->where('contacts.is_default', '=', true)
 	                                    ->wherenull('contacts.deleted_at')
 	                                    ;

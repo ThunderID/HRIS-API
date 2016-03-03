@@ -1,6 +1,6 @@
 <?php 
 
-namespace \App\OrganisationManagementV1\Models\Traits\BelongsTo;
+namespace App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo;
 
 /**
  * Trait for models belongs To Organisation.
@@ -25,7 +25,7 @@ trait OrganisationTrait
 	 **/
 	public function Organisation()
 	{
-		return $this->belongsTo('App\OrganisationManagementV1\Models\Organisation');
+		return $this->belongsTo('App\ThunderID\OrganisationManagementV1\Models\Organisation');
 	}
 
 	/**
