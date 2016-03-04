@@ -11,3 +11,6 @@ REPORT Organisation Management Sub System
 - Field value to action @policies table
 - Add Field code @policies table
 - Add Field parameter @policies table
+5. Structure of route : inside packages, called in bootstrap
+6. Problems : Observing model @the point where code of organisation is unique, ignore deleted organisation or not
+7. Readable swagger

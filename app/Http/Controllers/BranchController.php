@@ -17,7 +17,7 @@ class BranchController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
-		$result						= \App\Models\Branch::id($id)->organisationid($org_id)->with(['charts', 'charts.calendars', 'charts.workleaves', 'contacts', 'apis', 'fingerprint'])->first();
+		$result						= \App\ThunderID\OrganisationManagementV1\Models\Branch::id($id)->organisationid($org_id)->with(['charts', 'contacts'])->first();
 
 		if($result)
 		{

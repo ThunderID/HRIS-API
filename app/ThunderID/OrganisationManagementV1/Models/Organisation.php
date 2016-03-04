@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\OrganisationManagementV1\Models;
 
-// use App\Models\Observers\OrganisationObserver;
+use App\ThunderID\OrganisationManagementV1\Models\Observers\OrganisationObserver;
 
 /**
  * Used for Organisation Models
@@ -18,6 +18,12 @@ class Organisation extends BaseModel
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\BranchesTrait;
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\PoliciesTrait;
 
+	/**
+	 * Global traits used as scope (plugged scope).
+	 *
+	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	
 	/**
 	 * The database table used by the model.
 	 *
@@ -92,7 +98,7 @@ class Organisation extends BaseModel
 	{
         parent::boot();
  
-        // Organisation::observe(new OrganisationObserver());
+        Organisation::observe(new OrganisationObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

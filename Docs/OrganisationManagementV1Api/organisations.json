@@ -1,0 +1,290 @@
+swagger: '2.0'
+info:
+  title: Organisation API
+  description: Move your app forward with the Organisation API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /organisations:
+    get:
+      summary: Organisation Lists
+      description: |
+        The organisations endpoint returns information about the *HRIS* organisations.
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: sort parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+      tags:
+        - Organisations
+      responses:
+        '200':
+          description: An array of organisations' data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/organisations'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/store:
+    post:
+      summary: Store an organisation
+      description: >
+        Store an organisation with details those are branches, policies
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new organisation.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: organisation name.
+          required: true
+          type: string
+          format: string
+        - name: code
+          in: query
+          description: Must be unique.
+          required: true
+          type: string
+          format: string
+        - name: branches
+          in: query
+          description: Must be array of organisations' branch.
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Organisations
+      responses:
+        '200':
+          description: An array of organisation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/organisation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/id/:
+    get:
+      summary: Organisation Detail
+      description: 'Get Organisation detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: organisation id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Organisations
+      responses:
+        '200':
+          description: organisation rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/organisation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/delete/id/:
+    delete:
+      summary: Delete an organisation
+      description: 'Get organisation detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: organisation id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Organisations
+      responses:
+        '200':
+          description: organisation rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/organisation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  search:
+    properties:
+      name:
+        type: string
+        description: 'Search organisation that hath certain name'
+      code:
+        type: string
+        description: 'Search organisation that hath certain code'
+      branches:
+        type: string
+        description: 'Sent with branches` data'
+      charts:
+        type: string
+        description: 'Sent with branches` and charts` data'
+      policies:
+        type: string
+        description: 'Sent with policies` data'
+  organisations:
+    properties:
+      count:
+        type: number
+        description: 'Total organisations.'
+      data:
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          code:
+            type: string
+          branches:
+            type: array
+            items:
+              $ref: '#/definitions/branches'
+          policies:
+            type: array
+            items:
+              $ref: '#/definitions/policies'
+  organisation:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      code:
+        type: string
+      branches:
+        type: array
+        items:
+          $ref: '#/definitions/branch'
+      policies:
+        type: array
+        items:
+          $ref: '#/definitions/policies'
+  branch:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+  branches:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      charts:
+        type: array
+        items:
+          $ref: '#/definitions/charts'
+  charts:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      grade:
+        type: number
+      department:
+        type: string
+  policies:
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      value:
+        type: string
+      started_at:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32
