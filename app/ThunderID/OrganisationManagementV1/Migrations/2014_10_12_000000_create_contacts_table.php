@@ -17,13 +17,13 @@ class CreateContactsTable extends Migration
 			$table->increments('id');
 			$table->integer('contactable_id')->unsigned()->index();
 			$table->string('contactable_type', 255);
-			$table->string('item', 255);
+			$table->string('type', 255);
 			$table->text('value');
 			$table->boolean('is_default');
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(['deleted_at' ,'contactable_type', 'item', 'is_default']);
+			$table->index(['deleted_at' ,'contactable_type', 'type', 'is_default']);
 			$table->index(['deleted_at' ,'contactable_type', 'is_default']);
 		});
 	}

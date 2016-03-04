@@ -26,3 +26,24 @@ $app->delete('/organisation/delete/{id}',
 		'uses'				=> 'OrganisationController@delete'
 	]
 );
+
+// ------------------------------------------------------------------------------------
+// BRANCHES
+// ------------------------------------------------------------------------------------
+$app->get('organisation/{org_id}/branch/{id}',
+	[
+		'uses'				=> 'BranchController@detail'
+	]
+);
+
+$app->post('organisation/{org_id}/branch/store',
+	[
+		'uses'				=> 'BranchController@store'
+	]
+);
+
+$app->delete('organisation/{org_id}/branch/delete/{id}',
+	[
+		'uses'				=> 'BranchController@delete'
+	]
+);

@@ -5,7 +5,7 @@ namespace App\ThunderID\OrganisationManagementV1\Models;
 use App\Models\Traits\HasSelectAllTrait;
 use App\ThunderID\OrganisationManagementV1\Models\Scopes\GlobalScope\ContactScope;
 
-// use App\Models\Observers\BranchObserver;
+use App\ThunderID\OrganisationManagementV1\Models\Observers\BranchObserver;
 
 /**
  * Used for Branch Models
@@ -104,7 +104,7 @@ class Branch extends BaseModel
  
         static::addGlobalScope(new ContactScope);
 
-        // Branch::observe(new BranchObserver());
+        Branch::observe(new BranchObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

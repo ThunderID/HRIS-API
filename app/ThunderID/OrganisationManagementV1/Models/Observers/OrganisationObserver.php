@@ -96,30 +96,24 @@ class OrganisationObserver
 			//2. delete chart
 			foreach ($value->charts as $key2 => $value2) 
 			{
-				$chart 	 					= new Chart;
-				$delete 					= $chart->id($value2->id)->first();
-				if($delete && !$delete->delete())
+				if(!$value2->delete())
 				{
-					$errors->add('Organisation', $delete->getError());
+					$errors->add('Organisation', $value2->getError());
 				}
 			}
 
-			$branch 	 					= new Branch;
-			$delete 						= $branch->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Organisation', $delete->getError());
+				$errors->add('Organisation', $value->getError());
 			}
 		}
 
 		//3. delete policy
 		foreach ($model->policies as $key => $value) 
 		{
-			$policy 	 					= new Policy;
-			$delete 						= $policy->id($value->id)->first();
-			if($delete && !$delete->delete())
+			if(!$value->delete())
 			{
-				$errors->add('Organisation', $delete->getError());
+				$errors->add('Organisation', $value->getError());
 			}
 		}
 

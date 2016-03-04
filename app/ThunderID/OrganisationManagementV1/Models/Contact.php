@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\OrganisationManagementV1\Models;
 
-// use App\Models\Observers\ContactObserver;
+use App\ThunderID\OrganisationManagementV1\Models\Observers\ContactObserver;
 
 /**
  * Used for personcontact and branchcontact
@@ -16,6 +16,13 @@ class Contact extends BaseModel
 	 *
 	 */
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\MorphTo\ContactableTrait;
+
+	/**
+	 * Global traits used as scope (plugged scope).
+	 *
+	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasDefaultTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasTypeTrait;
 
 	/**
 	 * The database table used by the model.
@@ -60,7 +67,7 @@ class Contact extends BaseModel
 	protected $fillable				=	[
 											'contactable_id'				,
 											'contactable_type'				,
-											'item'							,
+											'type'							,
 											'value'							,
 											'is_default'					,
 										];
@@ -73,7 +80,7 @@ class Contact extends BaseModel
 	protected $rules				=	[
 											'contactable_id'				=> 'exists:branches,id',
 											'contactable_type'				=> 'max:255|in:App\ThunderID\OrganisationManagementV1\Models\Branch',
-											'item'							=> 'max:255',
+											'type'							=> 'max:255|in:email,phone,address,whatsapp,line,facebook,twitter,linkedin',
 											'is_default'					=> 'boolean',
 										];
 
@@ -91,7 +98,7 @@ class Contact extends BaseModel
 	{
         parent::boot();
  
-        // Contact::observe(new ContactObserver());
+        Contact::observe(new ContactObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

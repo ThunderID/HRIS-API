@@ -1,0 +1,186 @@
+swagger: '2.0'
+info:
+  title: Branch API
+  description: Move your app forward with the Branch API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /organisation/org_id/branch/id:
+    get:
+      summary: Branch Detail
+      description: 'Get Branch detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Branch id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Branches
+      responses:
+        '200':
+          description: Branch rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/branch'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/org_id/branch/store:
+    post:
+      summary: Store a Branch
+      description: >
+        Store a Branch with details those are charts
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new Branch.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: Branch name.
+          required: true
+          type: string
+          format: string
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+        - name: address
+          in: query
+          description: Address.
+          required: true
+          type: string
+          format: string
+        - name: phone
+          in: query
+          description: Phone number.
+          required: true
+          type: string
+          format: string
+        - name: email
+          in: query
+          description: Email.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Branches
+      responses:
+        '200':
+          description: An array of Branch
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/branch'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/org_id/branch/delete/id:
+    delete:
+      summary: Delete a Branch
+      description: 'Get Branch detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Branch id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Branches
+      responses:
+        '200':
+          description: Branch rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/branch'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  branch:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      charts:
+        type: array
+        items:
+          $ref: '#/definitions/charts'
+  charts:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      grade:
+        type: number
+      department:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32
