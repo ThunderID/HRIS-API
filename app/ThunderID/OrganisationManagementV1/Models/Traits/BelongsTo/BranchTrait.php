@@ -25,7 +25,7 @@ trait BranchTrait
 	 **/
 	public function Branch()
 	{
-		return $this->belongsTo('App\BranchManagementV1\Models\Branch');
+		return $this->belongsTo('App\ThunderID\OrganisationManagementV1\Models\Branch');
 	}
 
 	/**

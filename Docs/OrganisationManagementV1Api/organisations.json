@@ -189,6 +189,14 @@ definitions:
       policies:
         type: string
         description: 'Sent with policies` data'
+  sort:
+    properties:
+      name:
+        type: string
+        description: 'must be asc or desc'
+      code:
+        type: string
+        description: 'must be asc or desc'
   organisations:
     properties:
       count:

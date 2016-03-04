@@ -23,7 +23,7 @@ trait HasNameTrait
 	/**
 	 * scope to get condition where name
 	 *
-	 * @param string or array of products' name
+	 * @param string or array of name
 	 **/
 	public function scopeName($query, $variable)
 	{

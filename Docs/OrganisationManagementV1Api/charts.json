@@ -1,0 +1,211 @@
+swagger: '2.0'
+info:
+  title: Organisation Chart API
+  description: Move your app forward with the Organisation Chart API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /organisation/org_id/branch/branch_id/charts:
+    get:
+      summary: Organisation Chart Lists
+      description: |
+        The organisation Charts endpoint returns information about the *HRIS* organisation Charts.
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: sort parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+      tags:
+        - Organisation Charts
+      responses:
+        '200':
+          description: An array of organisation Charts' data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/charts'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/org_id/branch/branch_id/chart/store:
+    post:
+      summary: Store an organisation Chart
+      description: >
+        Store an organisation Chart
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: chart_id
+          in: query
+          description: Will be chart parent id.
+          required: true
+          type: number
+          format: double
+        - name: id
+          in: query
+          description: Let it null for new organisation Chart.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: organisation Chart name.
+          required: true
+          type: string
+          format: string
+        - name: department
+          in: query
+          description: Work likes tags.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Organisation Charts
+      responses:
+        '200':
+          description: An array of organisation Chart
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/chart'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/org_id/branch/branch_id/chart/delete/id:
+    delete:
+      summary: Delete an organisation Chart
+      description: 'Get organisation Chart detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: organisation Chart id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Organisation Charts
+      responses:
+        '200':
+          description: organisation Chart rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/chart'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  search:
+    properties:
+      name:
+        type: string
+        description: 'Search organisation Chart that hath certain name'
+      department:
+        type: string
+        description: 'Search organisation Chart that hath certain department'
+  sort:
+    properties:
+      path:
+        type: string
+        description: 'must be asc or desc'
+      name:
+        type: string
+        description: 'must be asc or desc'
+      department:
+        type: string
+        description: 'must be asc or desc'
+  charts:
+    properties:
+      count:
+        type: number
+        description: 'Total organisation Charts.'
+      data:
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          department:
+            type: string
+          chart:
+            type: array
+            items:
+              $ref: '#/definitions/orgchart'
+  orgchart:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      department:
+        type: string
+  chart:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      department:
+        type: string
+      chart:
+        type: array
+        items:
+          $ref: '#/definitions/orgchart'
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32

@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\OrganisationManagementV1\Models;
 
-// use App\Models\Observers\ChartObserver;
+use App\ThunderID\OrganisationManagementV1\Models\Observers\ChartObserver;
 
 /**
  * Used for Chart Models
@@ -15,8 +15,15 @@ class Chart extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\ChartTrait;
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\BranchTrait;
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany\ChartsTrait;
+
+	/**
+	 * Global traits used as scope (plugged scope).
+	 *
+	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
 
 	/**
 	 * The database table used by the model.
@@ -63,7 +70,6 @@ class Chart extends BaseModel
 											'chart_id'						,
 											'name'							,
 											'path'							,
-											'grade'							,
 											'department'					,
 										];
 										
@@ -77,7 +83,6 @@ class Chart extends BaseModel
 											// 'chart_id'						=> 'exists:charts,id',
 											'name'							=> 'max:255',
 											'path'							=> 'max:255',
-											'grade'							=> 'numeric',
 											'department'					=> 'max:255',
 										];
 
@@ -100,8 +105,23 @@ class Chart extends BaseModel
 	{
         parent::boot();
  
-        // Chart::observe(new ChartObserver());
+        Chart::observe(new ChartObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
+	/**
+	 * scope to get condition where department
+	 *
+	 * @param string or array of products' department
+	 **/
+	public function scopeDepartment($query, $variable)
+	{
+		if(is_array($variable))
+		{
+			return 	$query->whereIn($query->getModel()->table.'.department', $variable);
+		}
+		
+		return 	$query->where($query->getModel()->table.'.department', $variable);
+	}
 }

@@ -29,6 +29,12 @@ class Branch extends BaseModel
 	use HasSelectAllTrait;
 
 	/**
+	 * Global traits used as scope (plugged scope).
+	 *
+	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	
+	/**
 	 * The database table used by the model.
 	 *
 	 * @var string

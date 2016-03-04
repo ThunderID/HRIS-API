@@ -47,3 +47,25 @@ $app->delete('organisation/{org_id}/branch/delete/{id}',
 		'uses'				=> 'BranchController@delete'
 	]
 );
+
+
+// ------------------------------------------------------------------------------------
+// CHARTS
+// ------------------------------------------------------------------------------------
+$app->get('organisation/{org_id}/branch/{branch_id}/charts',
+	[
+		'uses'				=> 'ChartController@index'
+	]
+);
+
+$app->post('organisation/{org_id}/branch/{branch_id}/chart/store',
+	[
+		'uses'				=> 'ChartController@store'
+	]
+);
+
+$app->delete('organisation/{org_id}/branch/{branch_id}/chart/delete/{id}',
+	[
+		'uses'				=> 'ChartController@delete'
+	]
+);

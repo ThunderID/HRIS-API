@@ -1,9 +1,11 @@
-<?php namespace App\Models\Observers;
+<?php 
+
+namespace App\ThunderID\OrganisationManagementV1\Models\Observers;
 
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
-use App\Models\Chart;
+use App\ThunderID\OrganisationManagementV1\Models\Chart;
 
 /**
  * Used in Chart model
@@ -43,6 +45,66 @@ class ChartObserver
 	}
 
 	/** 
+	 * observe Chart event saving
+	 * 1. check parent
+	 * 2. act, accept or refuse
+	 * 
+	 * @param $model
+	 * @return bool
+	 */
+	public function saving($model)
+	{
+		$errors							= new MessageBag();
+
+		if(is_null($model->id))
+		{
+			$id 						= 0;
+		}
+		else
+		{
+			$id 						= $model->id;
+		}
+
+		//1. check parent
+		if($model->chart()->count())
+		{
+			//1a. check if parent is me
+			if($model->chart_id == $id)
+			{
+				$errors->add('Chart', 'Parent tidak boleh sama dengan chart');
+			}
+			else
+			{
+				//1b. check if parent is my child
+				$child							= Chart::orderBy('path','asc')
+													->where('path','like',$model->path . ',%')
+													->id($model->chart_id)
+													->notid($id)
+													->first();
+
+				if($child)
+				{
+					$errors->add('Chart', 'Parent tidak boleh sama dengan turunan chart');
+				}
+			}
+		}
+		else
+		{
+			$model->chart_id 		= 0;
+		}
+
+		if($errors->count())
+		{
+			$model['errors'] 		= $errors;
+
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/** 
 	 * observe Chart event updating
 	 * 1. updated parent + child path
 	 * 2. act, accept or refuse
@@ -53,7 +115,7 @@ class ChartObserver
 	public function updating($model)
 	{
 		//1. check parent
-		if(isset($model->getDirty()['category_id']) || !isset($model ->getDirty()['path']))
+		if(isset($model->getDirty()['chart_id']) || !isset($model ->getDirty()['path']))
 		{
 			//1a. mengganti path
 			if($model->chart()->count())
@@ -68,7 +130,7 @@ class ChartObserver
 			if(isset($model ->getOriginal()['path']))
 			{
 				//1b. mengganti semua path child
-				$childs                         = Chart::orderBy('path','asc')
+				$childs							= Chart::orderBy('path','asc')
 													->where('path','like',$model->getOriginal()['path'] . ',%')
 													->get();
 
@@ -84,10 +146,8 @@ class ChartObserver
 
 	/** 
 	 * observe Chart event deleting
-	 * 1. Delete Follow workleave
-	 * 2. Delete Follow calendar
-	 * 3. Delete Child
-	 * 4. act, accept or refuse
+	 * 1. Delete Child
+	 * 2. act, accept or refuse
 	 * 
 	 * @param $model
 	 * @return bool
@@ -95,25 +155,8 @@ class ChartObserver
 	public function deleting($model)
 	{
 		$errors							= new MessageBag();
-		//1. Delete Follow workleave
-		foreach ($model->chartworkleaves as $key => $value) 
-		{
-			if(!$value->delete())
-			{
-				$errors->add('Chart', $value->getError());
-			}
-		}
-
-		//2. Delete Follow calendar
-		foreach ($model->follows as $key => $value) 
-		{
-			if(!$value->delete())
-			{
-				$errors->add('Chart', $value->getError());
-			}
-		}
 		
-		//3. Delete Child
+		//1. Delete Child
 		$childs							= Chart::orderBy('path','desc')
 											->where('path','like',$model->path . ',%')
 											->get();
