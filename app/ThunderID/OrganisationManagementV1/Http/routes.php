@@ -69,3 +69,25 @@ $app->delete('organisation/{org_id}/branch/{branch_id}/chart/delete/{id}',
 		'uses'				=> 'ChartController@delete'
 	]
 );
+
+// ------------------------------------------------------------------------------------
+// POLICIES
+// ------------------------------------------------------------------------------------
+$app->get('organisation/{org_id}/policies',
+	[
+		'uses'				=> 'PolicyController@index'
+	]
+);
+
+$app->post('organisation/{org_id}/policy/store',
+	[
+		'uses'				=> 'PolicyController@store'
+	]
+);
+
+$app->delete('organisation/{org_id}/policy/delete/{id}',
+	[
+		'uses'				=> 'PolicyController@delete'
+	]
+);
+

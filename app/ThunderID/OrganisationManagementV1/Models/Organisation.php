@@ -23,6 +23,7 @@ class Organisation extends BaseModel
 	 *
 	 */
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasCodeTrait;
 	
 	/**
 	 * The database table used by the model.
@@ -102,14 +103,4 @@ class Organisation extends BaseModel
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
-	
-	/**
-	 * scope to find code of organisation
-	 *
-	 * @param string of code
-	 */
-	public function scopeCode($query, $variable)
-	{
-		return 	$query->where('code', $variable);
-	}
 }

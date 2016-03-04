@@ -278,9 +278,15 @@ definitions:
     properties:
       id:
         type: string
-      type:
+      code:
         type: string
-      value:
+      name:
+        type: string
+      parameter:
+        type: string
+      action:
+        type: string
+      description:
         type: string
       started_at:
         type: string

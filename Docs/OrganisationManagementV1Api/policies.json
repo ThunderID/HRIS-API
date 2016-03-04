@@ -1,0 +1,201 @@
+swagger: '2.0'
+info:
+  title: Policy API
+  description: Move your app forward with the Policy API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /organisation/org_id/policies:
+    get:
+      summary: Policy Detail
+      description: 'Get Policy detail information.'
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: sort
+          in: query
+          description: sort parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+      tags:
+        - Policies
+      responses:
+        '200':
+          description: Policy rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/policy'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/org_id/policy/store:
+    post:
+      summary: Store a Policy
+      description: >
+        Store a Policy with details those are charts
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new Policy.
+          required: true
+          type: number
+          format: double
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+        - name: code
+          in: query
+          description: Code of parameter.
+          required: true
+          type: string
+          format: string
+        - name: parameter
+          in: query
+          description: Require Parameter.
+          required: true
+          type: string
+          format: string
+        - name: started_at
+          in: query
+          description: Date of started.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Policies
+      responses:
+        '200':
+          description: An array of Policy
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/policy'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /organisation/org_id/policy/delete/id:
+    delete:
+      summary: Delete a Policy
+      description: 'Get Policy detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Policy id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: org_id
+          in: query
+          description: Must be valid organisation id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Policies
+      responses:
+        '200':
+          description: Policy rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/policy'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  search:
+    properties:
+      code:
+        type: string
+        description: 'Search policy of an org that hath certain code'
+      ondate:
+        type: string
+        description: 'Search policy of an org that started on date'
+  sort:
+    properties:
+      name:
+        type: string
+        description: 'must be asc or desc'
+      code:
+        type: string
+        description: 'must be asc or desc'
+      newest:
+        type: string
+        description: 'must be asc or desc'
+  policy:
+   properties:
+      id:
+        type: string
+      code:
+        type: string
+      name:
+        type: string
+      parameter:
+        type: string
+      action:
+        type: string
+      description:
+        type: string
+      started_at:
+        type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32

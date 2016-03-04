@@ -18,6 +18,13 @@ class Policy extends BaseModel
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
 
 	/**
+	 * Global traits used as scope (plugged scope).
+	 *
+	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasCodeTrait;
+	
+	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
@@ -102,4 +109,30 @@ class Policy extends BaseModel
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
+
+	/**
+	 * find range
+	 * 
+	 * @param array or singular date
+	 */	
+	public function scopeOnDate($query, $variable)
+	{
+		if(is_array($variable))
+		{
+			if(!is_null($variable[1]))
+			{
+				return $query->where('started_at', '<=', date('Y-m-d H:i:s', strtotime($variable[1])))
+							 ->where('started_at', '>=', date('Y-m-d H:i:s', strtotime($variable[0])));
+			}
+			elseif(!is_null($variable[0]))
+			{
+				return $query->where('started_at', '>=', date('Y-m-d H:i:s', strtotime($variable[0])));
+			}
+			else
+			{
+				return $query->where('started_at', '>=', date('Y-m-d H:i:s'));
+			}
+		}
+		return $query->where('started_at', '<=', date('Y-m-d H:i:s', strtotime($variable)));
+	}
 }
