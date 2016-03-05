@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\OrganisationManagementV1\Models;
 
-// use App\Models\Observers\PolicyObserver;
+use App\ThunderID\OrganisationManagementV1\Models\Observers\PolicyObserver;
 
 /**
  * Used for Policy Models
@@ -105,7 +105,7 @@ class Policy extends BaseModel
 	{
         parent::boot();
  
-        // Policy::observe(new PolicyObserver());
+        Policy::observe(new PolicyObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

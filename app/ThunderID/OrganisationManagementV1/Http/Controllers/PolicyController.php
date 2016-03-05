@@ -127,6 +127,8 @@ class PolicyController extends Controller
 											'code'				=> 'required',
 										];
 
+		//1a. Get original data
+		$policy_data				= \App\ThunderID\OrganisationManagementV1\Models\Policy::findornew($policy['id']);
 
 		//1b. Validate Basic Policy Parameter
 		$validator					= Validator::make($policy, $policy_rules);
@@ -137,16 +139,17 @@ class PolicyController extends Controller
 		}
 		else
 		{
-			$validating_policy 		= POO::validate($policy);
+			$validating_policy 		= new POO;
 
-			if(!$validating_policy)
+			if(!$validating_policy->validate($policy))
 			{
-				$errors->add('Policy', $validated_policy->getError());
+				$errors->add('Policy', $validating_policy->getError());
 			}
 			else
 			{
 				//if validator passed, save Policy
-				$validated_policy 				= POO::parse($policy);
+				$validated_policy 				= new POO;
+				$validated_policy 				= $validated_policy->parse($policy);
 
 				$policy_data['organisation_id']	= $org_id;
 				$policy_data					= $policy_data->fill($validated_policy);
