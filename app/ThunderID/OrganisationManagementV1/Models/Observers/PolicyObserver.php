@@ -7,7 +7,7 @@ use App\Libraries\PolicyOfOrganisation as POO;
 use Illuminate\Support\MessageBag;
 
 /**
- * Used in Policy model
+ * Used in Policy model, require library of organisation
  *
  * @author cmooy
  */

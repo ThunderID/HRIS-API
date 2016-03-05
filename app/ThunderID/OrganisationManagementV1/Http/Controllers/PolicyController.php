@@ -11,6 +11,11 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Handle Protected Resource of policy
+ * 
+ * @author cmooy
+ */
 class PolicyController extends Controller
 {
 	/**

@@ -7,7 +7,6 @@ namespace App\ThunderID\OrganisationManagementV1\Models\Traits\HasMany;
  *
  * @author cmooy
  */
-
 trait BranchesTrait 
 {
 	/**
