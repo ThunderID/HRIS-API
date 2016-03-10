@@ -80,7 +80,7 @@ class OrganisationController extends Controller
 			}
 		}
 
-		$count						= $result->count();
+		$count						= count($result->get());
 
 		if(Input::has('skip'))
 		{

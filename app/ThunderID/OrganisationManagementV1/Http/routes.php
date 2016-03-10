@@ -1,5 +1,14 @@
 <?php
 
+/**
+*
+* Routes For Protected Organisation Management Sub System
+*
+* Here is where you can register all of the routes for protected resources in organisation management sub system.
+*
+*/
+
+
 // ------------------------------------------------------------------------------------
 // ORGANISATIONS
 // ------------------------------------------------------------------------------------
@@ -30,6 +39,11 @@ $app->delete('/organisation/delete/{id}',
 // ------------------------------------------------------------------------------------
 // BRANCHES
 // ------------------------------------------------------------------------------------
+$app->get('organisation/{org_id}/branches',
+	[
+		'uses'				=> 'BranchController@index'
+	]
+);
 $app->get('organisation/{org_id}/branch/{id}',
 	[
 		'uses'				=> 'BranchController@detail'
