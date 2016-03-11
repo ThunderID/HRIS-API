@@ -1,13 +1,13 @@
 <?php
 
-namespace App\ThunderID\PersonSystemV1\Models;
+namespace App\ThunderID\EmploymentSystemV1\Models;
 
 /**
- * Used for MaritalStatus Models
+ * Used for Work Models
  * 
  * @author cmooy
  */
-class MaritalStatus extends BaseModel
+class Work extends BaseModel
 {
 	/**
 	 * Relationship Traits.
@@ -29,7 +29,7 @@ class MaritalStatus extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'marital_statuses';
+	protected $table					= 'works';
 
 	/**
 	 * Timestamp field
@@ -43,7 +43,7 @@ class MaritalStatus extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at', 'ondate'];
+	protected $dates					=	['created_at', 'updated_at', 'deleted_at', 'start', 'end'];
 
 	/**
 	 * The appends attributes from mutator and accessor
@@ -65,9 +65,13 @@ class MaritalStatus extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
+											'chart_id'						,
 											'person_id'						,
+											'nik'							,
 											'status'						,
-											'ondate'						,
+											'start'							,
+											'end'							,
+											'reason_end_job'				,
 										];
 										
 	/**
@@ -76,8 +80,10 @@ class MaritalStatus extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
+											'nik'							=> 'required|max:255',
 											'status'						=> 'required|max:255',
-											'ondate'						=> 'date_format:"Y-m-d"',
+											'start'							=> 'required|date_format:"Y-m-d H:i:s"',
+											'end'							=> 'date_format:"Y-m-d H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

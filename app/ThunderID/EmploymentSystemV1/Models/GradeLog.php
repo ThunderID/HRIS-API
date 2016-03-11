@@ -1,13 +1,13 @@
 <?php
 
-namespace App\ThunderID\PersonSystemV1\Models;
+namespace App\ThunderID\EmploymentSystemV1\Models;
 
 /**
- * Used for MaritalStatus Models
+ * Used for GradeLog Models
  * 
  * @author cmooy
  */
-class MaritalStatus extends BaseModel
+class GradeLog extends BaseModel
 {
 	/**
 	 * Relationship Traits.
@@ -29,7 +29,7 @@ class MaritalStatus extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'marital_statuses';
+	protected $table					= 'grade_logs';
 
 	/**
 	 * Timestamp field
@@ -43,7 +43,7 @@ class MaritalStatus extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $dates					=	['created_at', 'updated_at', 'deleted_at', 'ondate'];
+	protected $dates					=	['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * The appends attributes from mutator and accessor
@@ -65,9 +65,8 @@ class MaritalStatus extends BaseModel
 	 * @var array
 	 */
 	protected $fillable				=	[
-											'person_id'						,
-											'status'						,
-											'ondate'						,
+											'work_id'						,
+											'grade'							,
 										];
 										
 	/**
@@ -76,8 +75,7 @@ class MaritalStatus extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'status'						=> 'required|max:255',
-											'ondate'						=> 'date_format:"Y-m-d"',
+											'grade'							=> 'required|numeric',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
