@@ -88,6 +88,7 @@ class BranchController extends Controller
 
 		return new JSend('success', (array)['count' => $count, 'data' => $result]);
 	}
+	
 	/**
 	 * Display a branch of an org
 	 *
