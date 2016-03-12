@@ -13,6 +13,7 @@ class GradeLog extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\BelongsTo\WorkTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).

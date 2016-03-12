@@ -10,6 +10,9 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
+use App\Models\Traits\HasSelectAllTrait;
+use App\ThunderID\OrganisationManagementV1\Models\Scopes\GlobalScope\ContactScope;
+
 /**
  * Used for Person Models
  * 
@@ -23,12 +26,24 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\RelativesTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\MaritalStatusesTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\PersonDocumentsTrait;
+
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\MorphMany\ContactsTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
 	 *
 	 */
+	use HasSelectAllTrait;
 
+	/**
+	 * Global traits used as scope (plugged scope).
+	 *
+	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	
 	/**
 	 * The database table used by the model.
 	 *
@@ -81,6 +96,8 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	public static function boot() 
 	{
         parent::boot();
+
+        static::addGlobalScope(new ContactScope);
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

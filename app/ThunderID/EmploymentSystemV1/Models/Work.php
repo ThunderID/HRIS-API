@@ -13,6 +13,9 @@ class Work extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\ChartTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\BelongsTo\PersonTrait;
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\ContactWorksTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).

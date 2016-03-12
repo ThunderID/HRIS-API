@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\Models\Traits;
+namespace App\ThunderID\PersonSystemV1\Models\Traits\GlobalTrait;
 
-use App\Models\Scopes\CurrentMaritalStatusScope;
+use App\ThunderID\PersonSystemV1\Models\Scopes\GlobalScope\CurrentMaritalStatusScope;
 
 /**
  * Apply scope to get current marital status of employee

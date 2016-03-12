@@ -109,6 +109,23 @@ class ChartController extends Controller
 	}
 
 	/**
+	 * Display a branch of an org
+	 *
+	 * @return Response
+	 */
+	public function detail($org_id = null, $branch_id = null, $id = null)
+	{
+		$result						= \App\ThunderID\OrganisationManagementV1\Models\Chart::id($id)->branchid($branch_id)->with(['branch'])->first();
+
+		if($result)
+		{
+			return new JSend('success', (array)$result->toArray());
+		}
+
+		return new JSend('error', (array)Input::all(), 'ID Tidak Valid.');
+	}
+
+	/**
 	 * Store a Chart
 	 * 1. store Chart
 	 *

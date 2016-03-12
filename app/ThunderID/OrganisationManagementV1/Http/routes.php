@@ -78,6 +78,12 @@ $app->post('organisation/{org_id}/branch/{branch_id}/chart/store',
 	]
 );
 
+$app->get('organisation/{org_id}/branch/{branch_id}/chart/{id}',
+	[
+		'uses'				=> 'ChartController@detail'
+	]
+);
+
 $app->delete('organisation/{org_id}/branch/{branch_id}/chart/delete/{id}',
 	[
 		'uses'				=> 'ChartController@delete'

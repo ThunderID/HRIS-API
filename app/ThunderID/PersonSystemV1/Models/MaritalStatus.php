@@ -13,6 +13,7 @@ class MaritalStatus extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\ThunderID\PersonSystemV1\Models\Traits\BelongsTo\PersonTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
