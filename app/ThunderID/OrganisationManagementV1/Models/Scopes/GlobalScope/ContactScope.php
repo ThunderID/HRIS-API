@@ -23,12 +23,21 @@ class ContactScope implements ScopeInterface
 	 */
 	public function apply(Builder $builder, Model $model)
 	{
-		$prefix 	= \DB::getTablePrefix();
+		// if(!is_null($model::custom_prefix))
+		// {
+		// 	$prefix		= $model::custom_prefix;
+		// }
+		// else
+		// {
+			$prefix 	= \DB::getTablePrefix();
+		// }
+
+		$prefix_contact	= \DB::getTablePrefix();
 
 		$builder
-				->selectraw('(SELECT IFNULL(value, "not available") from '.$prefix.'contacts as contacts where contacts.contactable_id = '.$prefix.$model->getTable().'.id and contacts.contactable_type like "%'.class_basename($model).'" and type = "address" and is_default = 1 and contacts.deleted_at is null) as address')
-				->selectraw('(SELECT IFNULL(value, "not available") from '.$prefix.'contacts as contacts where contacts.contactable_id = '.$prefix.$model->getTable().'.id and contacts.contactable_type like "%'.class_basename($model).'" and type = "phone" and is_default = 1 and contacts.deleted_at is null) as phone')
-				->selectraw('(SELECT IFNULL(value, "not available") from '.$prefix.'contacts as contacts where contacts.contactable_id = '.$prefix.$model->getTable().'.id and contacts.contactable_type like "%'.class_basename($model).'" and type = "email" and is_default = 1 and contacts.deleted_at is null) as email')
+				->selectraw('(SELECT IFNULL(value, "not available") from '.$prefix_contact.'contacts as contacts where contacts.contactable_id = '.$prefix.$model->getTable().'.id and contacts.contactable_type like "%'.class_basename($model).'" and type = "address" and is_default = 1 and contacts.deleted_at is null) as address')
+				->selectraw('(SELECT IFNULL(value, "not available") from '.$prefix_contact.'contacts as contacts where contacts.contactable_id = '.$prefix.$model->getTable().'.id and contacts.contactable_type like "%'.class_basename($model).'" and type = "phone" and is_default = 1 and contacts.deleted_at is null) as phone')
+				->selectraw('(SELECT IFNULL(value, "not available") from '.$prefix_contact.'contacts as contacts where contacts.contactable_id = '.$prefix.$model->getTable().'.id and contacts.contactable_type like "%'.class_basename($model).'" and type = "email" and is_default = 1 and contacts.deleted_at is null) as email')
 				->groupby($model->getTable().'.id')
 				;
 	}
