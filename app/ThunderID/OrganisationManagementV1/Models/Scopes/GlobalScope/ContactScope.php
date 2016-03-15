@@ -23,14 +23,14 @@ class ContactScope implements ScopeInterface
 	 */
 	public function apply(Builder $builder, Model $model)
 	{
-		// if(!is_null($model::custom_prefix))
-		// {
-		// 	$prefix		= $model::custom_prefix;
-		// }
-		// else
-		// {
+		if(!is_null($model::custom_prefix))
+		{
+			$prefix		= $model::custom_prefix;
+		}
+		else
+		{
 			$prefix 	= \DB::getTablePrefix();
-		// }
+		}
 
 		$prefix_contact	= \DB::getTablePrefix();
 
