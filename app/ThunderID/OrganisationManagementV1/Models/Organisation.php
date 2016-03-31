@@ -51,7 +51,7 @@ class Organisation extends BaseModel
 	 *
 	 * @var array
 	 */
-	protected $appends				=	[];
+	protected $appends				=	['logo'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -68,6 +68,7 @@ class Organisation extends BaseModel
 	protected $fillable				=	[
 											'name'							,
 											'code'							,
+											// 'logo'							,
 										];
 										
 	/**
@@ -78,6 +79,7 @@ class Organisation extends BaseModel
 	protected $rules				=	[
 											'name'							=> 'max:255',
 											'code'							=> 'max:255',
+											// 'logo'							=> 'max:255',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
@@ -86,6 +88,17 @@ class Organisation extends BaseModel
 	
 	/* ---------------------------------------------------------------------------- MUTATOR ----------------------------------------------------------------------------*/
 	
+	/**
+     * Get the organisations' logo
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getLogoAttribute($value)
+    {
+        return 'http://madina.cefib.com/wp-content/uploads/2014/02/enterprise-icon1.png';
+    }
+
 	/* ---------------------------------------------------------------------------- ACCESSOR ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- FUNCTIONS ----------------------------------------------------------------------------*/

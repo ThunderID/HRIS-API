@@ -17,6 +17,7 @@ class CreateOrganisationsTable extends Migration {
 			$table->increments('id');
 			$table->string('name', 255);
 			$table->string('code', 255);
+			$table->string('logo', 255);
 			$table->timestamps();
 			$table->softDeletes();
 		});
