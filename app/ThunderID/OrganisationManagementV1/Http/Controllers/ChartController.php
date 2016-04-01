@@ -86,7 +86,7 @@ class ChartController extends Controller
 		}
 		else
 		{
-			$result     			= $result->orderby('path', 'desc');
+			$result     			= $result->orderby('path', 'asc');
 		}
 
 		$count						= $result->count();
