@@ -13,7 +13,7 @@ use App\ThunderID\PersonSystemV1\Models\Person;
 */
 class Employee extends Person
 {
-	const custom_prefix 		= 'hrps_';
+	public $custom_prefix		= 'hrps_';
 
 	/**
 	 * Relationship Traits.

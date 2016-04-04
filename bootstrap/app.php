@@ -92,10 +92,14 @@ $app->singleton(
 |
 */
 
-
 $app->group(['namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
 {
     require __DIR__.'/../app/ThunderID/OrganisationManagementV1/Http/routes.php';
+});
+
+$app->group(['namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers'], function ($app) 
+{   
+	require __DIR__.'/../app/ThunderID/EmploymentSystemV1/Http/routes.php';
 });
 
 // $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
