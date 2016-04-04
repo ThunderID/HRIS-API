@@ -39,7 +39,7 @@ class Branch extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'branches';
+	protected $table					= 'hrom_branches';
 
 	/**
 	 * Timestamp field

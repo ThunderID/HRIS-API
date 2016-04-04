@@ -33,11 +33,19 @@ class EmployeeScope implements ScopeInterface
 			$end 				= 'now';
 		}
 
-		$prefix_person			= env('DB_PREFIX_HR_PERSON');
-		$prefix_empl			= env('DB_PREFIX_HR_EMPLOYMENT');
-		$prefix_org				= env('DB_PREFIX_HR_ORGANISATION');
+		$prefix_person			= 'hrps_';//env('DB_PREFIX_HR_PERSON');
+		$prefix_empl			= 'hres_';//env('DB_PREFIX_HR_EMPLOYMENT');
+		$prefix_org				= 'hrom_';//env('DB_PREFIX_HR_ORGANISATION');
 
-    	$builder->join(DB::raw($prefix_empl.'works'), function ($join) use($end, $prefix_empl, $prefix_person)
+    	$builder->selectraw('CONCAT('.$prefix_org.'charts.name, " cabang ", '.$prefix_org.'branches.name) as current_position')
+    			->selectraw($prefix_org.'charts.department as current_department')
+    			->selectraw($prefix_empl.'works.id as current_work_id')
+    			->selectraw($prefix_empl.'works.nik as current_nik')
+    			->selectraw($prefix_empl.'works.status as current_status')
+    			->selectraw($prefix_empl.'works.start as current_work_start')
+    			->selectraw($prefix_empl.'works.end as current_work_end')
+
+    			->join(DB::raw($prefix_empl.'works'), function ($join) use($end, $prefix_empl, $prefix_person)
 				 {
 	                                    $join->on ( DB::raw($prefix_person.'persons.id'), '=', DB::raw($prefix_empl.'works.person_id') )
 	                                    ->where(function ($query)use($end, $prefix_empl)

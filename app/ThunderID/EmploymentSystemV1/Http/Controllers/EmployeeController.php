@@ -21,7 +21,7 @@ class EmployeeController extends Controller
 
 		$result						= new \App\ThunderID\EmploymentSystemV1\Models\Employee;
 
-		$result						= $result;/*->organisationid($org_id);*/
+		$result						= $result->organisationid($org_id);
 		
 		if(Input::has('search'))
 		{
@@ -31,6 +31,33 @@ class EmployeeController extends Controller
 			{
 				switch (strtolower($key)) 
 				{
+					case 'name' :
+						$result 		= $result->name($value);
+						break;
+					case 'email' :
+						$result 		= $result->email($value);
+						break;
+					case 'nik' :
+						$result 		= $result->nik($value);
+						break;
+					case 'workstatus' :
+						$result 		= $result->workstatus($value);
+						break;
+					case 'workstart' :
+						$result 		= $result->workstart($value);
+						break;
+					case 'workend' :
+						$result 		= $result->workend($value);
+						break;
+					case 'department' :
+						$result 		= $result->department($value);
+						break;
+					case 'position' :
+						$result 		= $result->chartname($value);
+						break;
+					case 'branchname' :
+						$result 		= $result->branchname($value);
+						break;
 					default:
 						# code...
 						break;
@@ -52,7 +79,7 @@ class EmployeeController extends Controller
 			$result					= $result->take($take);
 		}
 
-		$result						= $result/*->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template'])*/->get()->toArray();
+		$result						= $result->get()->toArray();
 
 		return new JSend('success', (array)$result);
 	}

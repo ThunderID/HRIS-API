@@ -30,7 +30,7 @@ class PersonDocument extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'person_documents';
+	protected $table					= 'hrps_person_documents';
 
 	/**
 	 * Timestamp field

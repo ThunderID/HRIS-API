@@ -30,7 +30,7 @@ class MaritalStatus extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'marital_statuses';
+	protected $table					= 'hrps_marital_statuses';
 
 	/**
 	 * Timestamp field

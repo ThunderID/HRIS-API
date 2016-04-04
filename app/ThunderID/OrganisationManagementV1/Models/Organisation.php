@@ -30,7 +30,7 @@ class Organisation extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table				= 'organisations';
+	protected $table				= 'hrom_organisations';
 
 	/**
 	 * Timestamp field

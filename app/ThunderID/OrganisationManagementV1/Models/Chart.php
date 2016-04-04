@@ -30,7 +30,7 @@ class Chart extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table				= 'charts';
+	protected $table				= 'hrom_charts';
 
 	/**
 	 * Timestamp field

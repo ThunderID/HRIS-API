@@ -13,19 +13,27 @@ use App\ThunderID\PersonSystemV1\Models\Person;
 */
 class Employee extends Person
 {
-	public $custom_prefix		= 'hrps_';
-
 	/**
 	 * Relationship Traits.
 	 *
 	 */
 	// use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\WorksTrait;
-
+	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\RelativesTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\MaritalStatusesTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\PersonDocumentsTrait;
+	
 	/**
 	 * Global traits used as query builder (global scope).
 	 *
 	 */	
 	use HasEmployeeTrait;
+
+	/**
+	 * Global traits used as query builder (plugged scope).
+	 *
+	 */	
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\GlobalTrait\HasOrganisationTrait;
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\GlobalTrait\HasWorkTrait;
 	
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	

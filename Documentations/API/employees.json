@@ -249,8 +249,6 @@ definitions:
         properties:
           id:
             type: string
-          uniqid:
-            type: string
           name:
             type: string
           prefix_title:
@@ -273,18 +271,22 @@ definitions:
             type: string
           email:
             type: string
-          quota_workleave:
-            type: number
-          current_job:
+          current_position:
             type: string
-          current_grade:
-            type: number
-          marital_status:
+          current_department:
             type: string
-          privatedocuments:
-            type: array
-            items:
-              $ref: '#/definitions/persondocuments'
+          current_department:
+            type: string
+          current_status:
+            type: string
+          current_work_start:
+            type: string
+          current_work_end:
+            type: string
+          current_work_id:
+            type: number
+          current_nik:
+            type: string
   employee:
     properties:
       id:

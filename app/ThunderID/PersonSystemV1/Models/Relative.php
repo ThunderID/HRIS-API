@@ -30,7 +30,7 @@ class Relative extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'relatives';
+	protected $table					= 'hrps_relatives';
 
 	/**
 	 * Timestamp field

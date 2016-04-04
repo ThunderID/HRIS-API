@@ -29,7 +29,7 @@ class Policy extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'tmp_policies';
+	protected $table					= 'hrom_tmp_policies';
 
 	/**
 	 * Timestamp field

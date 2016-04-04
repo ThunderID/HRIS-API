@@ -29,7 +29,7 @@ class Contact extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table				= 'contacts';
+	protected $table				= 'hrom_contacts';
 
 	/**
 	 * Timestamp field

@@ -43,13 +43,14 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 *
 	 */
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\GlobalTrait\HasContactTrait;
 	
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table				= 'persons';
+	protected $table				= 'hrps_persons';
 
 	/**
 	 * Timestamp field

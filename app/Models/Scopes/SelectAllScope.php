@@ -23,18 +23,9 @@ class SelectAllScope implements ScopeInterface
 	 */
 	public function apply(Builder $builder, Model $model)
 	{
-		if(isset($model->custom_prefix))
-		{
-			$builder
-			->selectraw($model->custom_prefix.$model->getTable().'.*')
-			;
-		}
-		else
-		{
-			$builder
-			->selectraw(\DB::getTablePrefix().$model->getTable().'.*')
-			;
-		}
+		$builder
+		->selectraw($model->getTable().'.*')
+		;
 	}
 
 	/**
