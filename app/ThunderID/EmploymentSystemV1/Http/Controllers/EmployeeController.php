@@ -65,6 +65,34 @@ class EmployeeController extends Controller
 			}
 		}
 
+		if(Input::has('sort'))
+		{
+			$sort                 = Input::get('sort');
+
+			foreach ($sort as $key => $value) 
+			{
+				if(!in_array($value, ['asc', 'desc']))
+				{
+					return new JSend('error', (array)Input::all(), $key.' harus bernilai asc atau desc.');
+				}
+				switch (strtolower($key)) 
+				{
+					case 'name':
+						$result     = $result->orderby($key, $value);
+						break;
+					case 'startwork':
+						$result     = $result->orderby('start', $value);
+						break;
+					case 'endwork':
+						$result     = $result->orderby('end', $value);
+						break;
+					default:
+						# code...
+						break;
+				}
+			}
+		}
+
 		$count						= count($result->get(['id']));
 
 		if(Input::has('skip'))
