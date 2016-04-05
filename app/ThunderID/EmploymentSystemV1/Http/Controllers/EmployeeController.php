@@ -83,10 +83,10 @@ class EmployeeController extends Controller
 						$result 		= $result->with(['contacts']);
 						break;
 					case 'works' :
-						$result 		= $result->with(['works']);
+						$result 		= $result->with(['works', 'works.chart', 'works.chart.branch']);
 						break;
 					case 'contractworks' :
-						$result 		= $result->with(['works', 'works.contractworks', 'works.contractworks.contractelement']);
+						$result 		= $result->with(['works', 'works.chart', 'works.chart.branch', 'works.contractworks', 'works.contractworks.contractelement']);
 						break;
 					default:
 						# code...
@@ -110,10 +110,10 @@ class EmployeeController extends Controller
 					case 'name':
 						$result     = $result->orderby($key, $value);
 						break;
-					case 'startwork':
+					case 'workstart':
 						$result     = $result->orderby('start', $value);
 						break;
-					case 'endwork':
+					case 'workend':
 						$result     = $result->orderby('end', $value);
 						break;
 					default:
@@ -149,6 +149,9 @@ class EmployeeController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
+		$startwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->orderby('start', 'desc')->first();
+		$endwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->orderby('end', 'esc')->first();
+
 		$result						= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first();
 
 		if($result)
