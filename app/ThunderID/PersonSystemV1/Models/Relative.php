@@ -14,6 +14,7 @@ class Relative extends BaseModel
 	 *
 	 */
 	use \App\ThunderID\PersonSystemV1\Models\Traits\BelongsTo\PersonTrait;
+	use \App\ThunderID\PersonSystemV1\Models\Traits\BelongsTo\RelativeTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).

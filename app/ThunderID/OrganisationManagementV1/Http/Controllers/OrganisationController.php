@@ -42,6 +42,7 @@ class OrganisationController extends Controller
 						break;
 					case 'branches' :
 						$result 		= $result->with(['branches']);
+						break;
 					case 'charts' :
 						$result 		= $result->with(['branches', 'branches.charts']);
 						break;

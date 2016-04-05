@@ -30,7 +30,7 @@ class GradeLog extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'grade_logs';
+	protected $table					= 'hres_grade_logs';
 
 	/**
 	 * Timestamp field

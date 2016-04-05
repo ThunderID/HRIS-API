@@ -15,7 +15,7 @@ class Work extends BaseModel
 	 */
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\ChartTrait;
 	use \App\ThunderID\PersonSystemV1\Models\Traits\BelongsTo\PersonTrait;
-	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\ContactWorksTrait;
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\ContractWorksTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
@@ -32,7 +32,7 @@ class Work extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'works';
+	protected $table					= 'hres_works';
 
 	/**
 	 * Timestamp field

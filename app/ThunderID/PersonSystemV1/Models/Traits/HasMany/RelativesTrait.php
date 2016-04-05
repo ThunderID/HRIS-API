@@ -25,6 +25,6 @@ trait RelativesTrait
 	 **/
 	public function Relatives()
 	{
-		return $this->hasMany('\App\ThunderID\PersonSystemV1\Models\Relative');
+		return $this->hasMany('\App\ThunderID\PersonSystemV1\Models\Relative', 'person_id');
 	}
 }

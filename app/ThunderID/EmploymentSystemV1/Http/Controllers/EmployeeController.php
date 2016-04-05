@@ -58,6 +58,36 @@ class EmployeeController extends Controller
 					case 'branchname' :
 						$result 		= $result->branchname($value);
 						break;
+					case 'grade' :
+						$result 		= $result->grade($value);
+						break;
+					case 'currentgrade' :
+						$result 		= $result->currentgrade($value);
+						break;
+					case 'maritalstatus' :
+						$result 		= $result->maritalstatus($value);
+						break;
+					case 'currentmaritalstatus' :
+						$result 		= $result->currentmaritalstatus($value);
+						break;
+					case 'documents' :
+						$result 		= $result->with(['persondocuments']);
+						break;
+					case 'maritalstatuses' :
+						$result 		= $result->with(['maritalstatuses']);
+						break;
+					case 'relatives' :
+						$result 		= $result->with(['relatives', 'relatives.person']);
+						break;
+					case 'contacts' :
+						$result 		= $result->with(['contacts']);
+						break;
+					case 'works' :
+						$result 		= $result->with(['works']);
+						break;
+					case 'contractworks' :
+						$result 		= $result->with(['works', 'works.contractworks', 'works.contractworks.contractelement']);
+						break;
 					default:
 						# code...
 						break;

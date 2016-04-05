@@ -31,7 +31,7 @@ class ContractElement extends BaseModel
 	 *
 	 * @var string
 	 */
-	protected $table					= 'contract_elements';
+	protected $table					= 'hres_contract_elements';
 
 	/**
 	 * Timestamp field

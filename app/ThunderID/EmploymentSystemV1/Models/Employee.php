@@ -17,7 +17,7 @@ class Employee extends Person
 	 * Relationship Traits.
 	 *
 	 */
-	// use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\WorksTrait;
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\WorksTrait;
 	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\RelativesTrait;
 	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\MaritalStatusesTrait;
 	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\PersonDocumentsTrait;

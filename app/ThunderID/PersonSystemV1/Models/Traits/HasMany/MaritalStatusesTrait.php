@@ -25,6 +25,6 @@ trait MaritalStatusesTrait
 	 **/
 	public function MaritalStatuses()
 	{
-		return $this->hasMany('\App\ThunderID\PersonSystemV1\Models\MaritalStatus');
+		return $this->hasMany('\App\ThunderID\PersonSystemV1\Models\MaritalStatus', 'person_id');
 	}
 }
