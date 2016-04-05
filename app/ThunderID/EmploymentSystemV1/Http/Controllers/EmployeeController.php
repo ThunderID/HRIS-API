@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -149,14 +150,25 @@ class EmployeeController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
-		$startwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->orderby('start', 'desc')->first();
-		$endwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->orderby('end', 'esc')->first();
+		$startwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->chartorganisationid($org_id)->orderby('start', 'desc')->first();
+		$endwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->chartorganisationid($org_id)->orderby('end', 'asc')->first();
 
 		$result						= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first();
 
 		if($result)
 		{
-			return new JSend('success', (array)$result->toArray());
+			$result 				= $result->toArray();
+			
+			if($endwork['end']->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00')
+			{
+				$result['work_period'] 	= [$startwork['start']->format('Y-m-d H:i:s'), $endwork['end']->format('Y-m-d H:i:s')];
+			}
+			else
+			{
+				$result['work_period'] 	= [$startwork['start']->format('Y-m-d H:i:s'), Carbon::now()->format('Y-m-d H:i:s')];
+			}
+
+			return new JSend('success', (array)$result);
 		}
 
 		return new JSend('error', (array)Input::all(), 'ID Tidak Valid.');

@@ -37,4 +37,14 @@ trait ChartTrait
 	{
 		return $query->where($this->getTable().'.chart_id', $variable);
 	}
+
+	/**
+	 * check if model has organisation id of chart
+	 *
+	 * @var array or singular id
+	 **/
+	public function scopeChartOrganisationID($query, $variable)
+	{
+		return $query->whereHas('chart', function($q)use($variable){$q->branchorganisationid($variable);});
+	}
 }
