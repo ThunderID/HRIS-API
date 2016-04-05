@@ -30,6 +30,7 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\MaritalStatusesTrait;
 	use \App\ThunderID\PersonSystemV1\Models\Traits\HasMany\PersonDocumentsTrait;
 
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\WorksTrait;
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\MorphMany\ContactsTrait;
 
 	/**

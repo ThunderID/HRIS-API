@@ -733,4 +733,15 @@ class EmployeeController extends Controller
 		return new JSend('success', (array)$result->toArray());
 	}
 
+	/**
+	 * Display distinct maritalstatus
+	 *
+	 * @return Response
+	 */
+	public function MaritalStatuses($org_id = null)
+	{
+		$result						= \App\ThunderID\PersonSystemV1\Models\MaritalStatus::wherehas('person.works', function($q)use($org_id){$q->chartorganisationid($org_id);})->groupby('status')->distinct()->get(['status']);
+
+		return new JSend('success', (array)$result->toArray());
+	}
 }
