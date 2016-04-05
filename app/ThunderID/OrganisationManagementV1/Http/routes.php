@@ -62,6 +62,11 @@ $app->delete('organisation/{org_id}/branch/delete/{id}',
 	]
 );
 
+$app->get('organisation/{org_id}/departments',
+	[
+		'uses'				=> 'ChartController@departments'
+	]
+);
 
 // ------------------------------------------------------------------------------------
 // CHARTS

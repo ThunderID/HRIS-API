@@ -243,4 +243,16 @@ class ChartController extends Controller
 
 		return new JSend('error', (array)$result, $chart->getError());
 	}
+
+	/**
+	 * Display distinct department
+	 *
+	 * @return Response
+	 */
+	public function departments($org_id = null)
+	{
+		$result						= \App\ThunderID\OrganisationManagementV1\Models\Chart::branchorganisationid($org_id)->groupby('department')->distinct()->get(['department']);
+
+		return new JSend('success', (array)$result->toArray());
+	}
 }

@@ -140,6 +140,36 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /organisation/org_id/departments:
+    delete:
+      summary: Get distinct departments
+      description: 'Get distinct departments of an organisation.'
+      parameters:
+        - name: org_id
+          in: query
+          description: organisation Chart id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Organisation Charts
+      responses:
+        '200':
+          description: organisation Chart rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/departments'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   search:
     properties:
@@ -197,6 +227,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/orgchart'
+  departments:
+    properties:
+      department:
+        type: string
   Error:
     type: object
     properties:
