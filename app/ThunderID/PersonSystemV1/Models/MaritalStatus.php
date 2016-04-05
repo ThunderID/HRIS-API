@@ -78,7 +78,7 @@ class MaritalStatus extends BaseModel
 	 */
 	protected $rules				=	[
 											'status'						=> 'required|max:255',
-											'ondate'						=> 'date_format:"Y-m-d"',
+											'ondate'						=> 'date_format:"Y-m-d H:i:s',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

@@ -36,6 +36,41 @@ class Employee extends Person
 	use \App\ThunderID\EmploymentSystemV1\Models\Traits\GlobalTrait\HasOrganisationTrait;
 	use \App\ThunderID\EmploymentSystemV1\Models\Traits\GlobalTrait\HasWorkTrait;
 	
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $fillable				=	[
+											'username' 						,
+											'name' 							,
+											'prefix_title' 					,
+											'suffix_title' 					,
+											'place_of_birth' 				,
+											'date_of_birth' 				,
+											'gender' 						,
+											'password'						,
+											'avatar'						,
+											'last_password_updated_at'		,
+										];
+
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'username' 						=> 'max:255',
+											'name' 							=> 'max:255',
+											'prefix_title' 					=> 'max:255',
+											'suffix_title' 					=> 'max:255',
+											'place_of_birth' 				=> 'max:255',
+											'date_of_birth' 				=> 'date_format:"Y-m-d H:i:s"',
+											'gender' 						=> 'in:female,male',
+											'password'						=> 'max:255',
+											'last_password_updated_at'		=> 'date_format:"Y-m-d H:i:s"|before:tomorrow',
+										];
+
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/

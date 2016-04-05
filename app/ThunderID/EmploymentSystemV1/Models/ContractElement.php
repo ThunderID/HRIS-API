@@ -14,7 +14,7 @@ class ContractElement extends BaseModel
 	 *
 	 */
 	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
-	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\ContactWorksTrait;
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\HasMany\ContractWorksTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).

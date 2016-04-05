@@ -88,7 +88,7 @@ class Work extends BaseModel
 											'nik'							=> 'required|max:255',
 											'status'						=> 'required|max:255',
 											'start'							=> 'required|date_format:"Y-m-d H:i:s"',
-											'end'							=> 'date_format:"Y-m-d H:i:s"',
+											// 'end'							=> 'date_format:"Y-m-d H:i:s"',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

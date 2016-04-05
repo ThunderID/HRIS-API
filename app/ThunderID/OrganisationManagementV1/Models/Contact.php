@@ -78,8 +78,8 @@ class Contact extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'contactable_id'				=> 'exists:branches,id',
-											'contactable_type'				=> 'max:255|in:App\ThunderID\OrganisationManagementV1\Models\Branch',
+											// 'contactable_id'				=> 'exists:branches,id',
+											// 'contactable_type'				=> 'max:255|in:App\ThunderID\OrganisationManagementV1\Models\Branch,App\ThunderID\EmploymentSystemV1\Models\Employee',
 											'type'							=> 'max:255|in:email,phone,address,whatsapp,line,facebook,twitter,linkedin',
 											'is_default'					=> 'boolean',
 										];
@@ -96,10 +96,10 @@ class Contact extends BaseModel
 	
 	public static function boot() 
 	{
-        parent::boot();
+		parent::boot();
  
-        Contact::observe(new ContactObserver());
-    }
+		Contact::observe(new ContactObserver());
+	}
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
 }

@@ -241,7 +241,7 @@ paths:
       parameters:
         - name: org_id
           in: query
-          description: organisation Chart id.
+          description: organisation id.
           required: true
           type: number
           format: integer
@@ -252,14 +252,46 @@ paths:
           type: number
           format: integer
       tags:
-        - Organisation Charts
+        - Employee
+        - Grade
       responses:
         '200':
-          description: organisation Chart rich data
+          description: grades rich data
           schema:
             type: array
             items:
               $ref: '#/definitions/grades'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/marital/statuses:
+    delete:
+      summary: Get distinct marital statuses
+      description: 'Get distinct marital statuses of an organisation.'
+      parameters:
+        - name: org_id
+          in: query
+          description: organisation id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Employee
+        - Grade
+      responses:
+        '200':
+          description: marital statuses rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/statuses'
         default:
           description: Unexpected error
           schema:
