@@ -8,8 +8,6 @@
 *
 */
 
-
-
 // ------------------------------------------------------------------------------------
 // EMPLOYEES
 // ------------------------------------------------------------------------------------
@@ -34,6 +32,12 @@ $app->post('/{org_id}/employee/store',
 $app->delete('/{org_id}/employee/delete/{id}',
 	[
 		'uses'				=> 'EmployeeController@delete'
+	]
+);
+
+$app->get('/{org_id}/grades',
+	[
+		'uses'				=> 'EmployeeController@grades'
 	]
 );
 

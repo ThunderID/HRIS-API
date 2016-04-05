@@ -720,4 +720,17 @@ class EmployeeController extends Controller
 
 		return new JSend('error', (array)$result, $employee->getError());
 	}
+
+	/**
+	 * Display distinct grade
+	 *
+	 * @return Response
+	 */
+	public function grades($org_id = null)
+	{
+		$result						= \App\ThunderID\EmploymentSystemV1\Models\GradeLog::wherehas('work', function($q)use($org_id){$q->chartorganisationid($org_id);})->groupby('grade')->distinct()->get(['grade']);
+
+		return new JSend('success', (array)$result->toArray());
+	}
+
 }
