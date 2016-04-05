@@ -3,6 +3,7 @@
 namespace App\ThunderID\EmploymentSystemV1\Models;
 
 use App\ThunderID\EmploymentSystemV1\Models\Traits\GlobalTrait\HasEmployeeTrait;
+use App\ThunderID\EmploymentSystemV1\Models\Observers\EmployeeObserver;
 use App\ThunderID\PersonSystemV1\Models\Person;
 // use App\Models\Traits\HasQuotaWorkleaveTrait;
 
@@ -52,5 +53,7 @@ class Employee extends Person
 	public static function boot() 
 	{
         parent::boot();
+
+        Employee::observe(new EmployeeObserver());
     }
 }

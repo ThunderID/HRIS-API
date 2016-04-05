@@ -2,6 +2,8 @@
 
 namespace App\ThunderID\EmploymentSystemV1\Models;
 
+use App\ThunderID\EmploymentSystemV1\Models\Observers\WorkObserver;
+
 /**
  * Used for Work Models
  * 
@@ -106,6 +108,8 @@ class Work extends BaseModel
 	public static function boot() 
 	{
         parent::boot();
+
+        Work::observe(new WorkObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

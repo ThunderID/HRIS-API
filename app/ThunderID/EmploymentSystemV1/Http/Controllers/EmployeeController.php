@@ -704,7 +704,7 @@ class EmployeeController extends Controller
 	public function delete($org_id = null, $id = null)
 	{
 		//
-		$employee				= \App\Models\Employee::id($id)->organisationid($org_id)->with(['privatedocuments', 'privatedocuments.document', 'privatedocuments.documentdetails', 'privatedocuments.documentdetails.template', 'careers', 'careers.calendar', 'careers.chart', 'careers.branch', 'workexperiences', 'maritalstatuses', 'contacts'])->first();
+		$employee				= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first();
 
 		if(!$employee)
 		{
