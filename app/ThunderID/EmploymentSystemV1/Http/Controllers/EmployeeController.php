@@ -182,9 +182,9 @@ class EmployeeController extends Controller
 	 *
 	 * 1. Save Employee
 	 * 2. Save Contacts
-	 * 3. Save Private Documents
-	 * 4. Save Careers
-	 * 5. Save Work Experience
+	 * 3. Save Person Documents
+	 * 4. Save Works
+	 * 5. Save Relatives
 	 * 6. Save Marital Status
 	 * @return Response
 	 */
@@ -317,7 +317,7 @@ class EmployeeController extends Controller
 		}
 		//End of validate employee contact
 
-		//3. Validate Employee privatedocument Parameter
+		//3. Validate Employee document Parameter
 		if(!$errors->count() && isset($employee['persondocuments']) && is_array($employee['persondocuments']))
 		{
 			$document_current_ids		= [];

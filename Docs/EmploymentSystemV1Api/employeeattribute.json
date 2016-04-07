@@ -1,0 +1,148 @@
+swagger: '2.0'
+info:
+  title: Employment Attribute API
+  description: Move your app forward with the Employment Attribute API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /nik/code/id/join_year:
+    get:
+      summary: Auto Generate NIK
+      description: 'Get NIK automatically based on policy.'
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: code
+          in: query
+          description: code of organisation
+          required: true
+          type: array
+          items:
+            type: string
+        - name: id
+          in: query
+          description: id of employee, 0 for new employee.
+          required: true
+          type: array
+          items:
+            type: string
+        - name: join_year
+          in: query
+          description: 2 last digit of join year
+          required: true
+          type: number
+          format: integer
+      tags:
+        - NIK
+        - Generate
+      responses:
+        '200':
+          description: Employment Attribute rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/nik'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /username/code/name:
+    get:
+      summary: Auto Generate Username
+      description: 'Get Username automatically based on policy.'
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: code
+          in: query
+          description: code of organisation
+          required: true
+          type: array
+          items:
+            type: string
+        - name: name
+          in: query
+          description: full name of employee.
+          required: true
+          type: array
+          items:
+            type: string
+      tags:
+        - Username
+        - Generate
+      responses:
+        '200':
+          description: Employment Attribute rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/username'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /document/templates:
+    get:
+      summary: Document basic templates
+      description: 'Get Document basic templates that available.'
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Document
+        - Template
+      responses:
+        '200':
+          description: Document Template rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/templates'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  nik:
+    type: string
+  username:
+    type: string
+  templates:
+    properties:
+      document :
+        description: based on document name, ex ; ktp, npwp, etc. Using underscore as delimiter
+        type: array
+        items:
+          $ref: '#/definitions/template'
+  template:
+    description: based on template name, ex ; nomor_ktp, etc. Using underscore as delimiter
+    type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32

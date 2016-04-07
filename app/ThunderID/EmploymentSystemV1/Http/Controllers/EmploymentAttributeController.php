@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use \App\ThunderID\EmploymentSystemV1\Models\Work;
 use \App\ThunderID\EmploymentSystemV1\Models\Employee;
 
-class EmploymentPolicyController extends Controller
+class EmploymentAttributeController extends Controller
 {
 	/**
 	 * auto generate nik

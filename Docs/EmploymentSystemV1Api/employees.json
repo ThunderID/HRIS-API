@@ -114,33 +114,18 @@ paths:
           required: true
           type: string
           format: string
+        - name: password
+          in: query
+          description: min 8 char.
+          required: false
+          type: string
+          format: string
         - name: avatar
           in: query
           description: url of avatar.
           required: false
           type: string
           format: string
-        - name: maritalstatuses
-          in: query
-          description: Must be array of employees' marital status.
-          required: false
-          type: array
-          items:
-            type: string
-        - name: careers
-          in: query
-          description: Must be array of employees' career.
-          required: true
-          type: array
-          items:
-            type: string
-        - name: workexperiences
-          in: query
-          description: Must be array of employees' work experience from other company.
-          required: false
-          type: array
-          items:
-            type: string
         - name: contacts
           in: query
           description: Must be array of employees' contact.
@@ -148,9 +133,30 @@ paths:
           type: array
           items:
             type: string
-        - name: privatedocuments
+        - name: persondocuments
           in: query
-          description: Must be array of employees' private document and detail (look below).
+          description: Must be array of employees' document and detail (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: works
+          in: query
+          description: Must be array of employees' career.
+          required: true
+          type: array
+          items:
+            type: string
+        - name: relatives
+          in: query
+          description: Must be array of employees' relative.
+          required: false
+          type: array
+          items:
+            type: string
+        - name: maritalstatuses
+          in: query
+          description: Must be array of employees' marital status.
           required: false
           type: array
           items:

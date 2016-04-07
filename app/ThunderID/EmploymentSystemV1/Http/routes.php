@@ -53,18 +53,18 @@ $app->get('/{org_id}/marital/statuses',
 
 $app->get('/nik/{code}/{id}/{join_year}',
 	[
-		'uses'				=> 'EmploymentPolicyController@generateNIK'
+		'uses'				=> 'EmploymentAttributeController@generateNIK'
 	]
 );
 
 $app->get('/username/{code}/{name}',
 	[
-		'uses'				=> 'EmploymentPolicyController@generateUsername'
+		'uses'				=> 'EmploymentAttributeController@generateUsername'
 	]
 );
 
 $app->get('/document/templates',
 	[
-		'uses'				=> 'EmploymentPolicyController@getDocumentTemplate'
+		'uses'				=> 'EmploymentAttributeController@getDocumentTemplate'
 	]
 );
