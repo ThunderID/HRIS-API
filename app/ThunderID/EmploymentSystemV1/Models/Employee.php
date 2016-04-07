@@ -91,4 +91,15 @@ class Employee extends Person
 
         Employee::observe(new EmployeeObserver());
     }
+
+
+	/**
+	 * scope to get condition where username
+	 *
+	 * @param string or array of username
+	 **/
+	public function scopeUsername($query, $variable)
+	{
+		return 	$query->where($query->getModel()->table.'.username', $variable);
+	}
 }
