@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use \App\ThunderID\EmploymentSystemV1\Models\Work;
+use \App\ThunderID\EmploymentSystemV1\Models\Employee;
 
 class EmploymentPolicyController extends Controller
 {
@@ -65,5 +66,50 @@ class EmploymentPolicyController extends Controller
 		return new JSend('success', ['nik' => $generated_nik]);
     }
 
+	/**
+	 * auto generate username
+	 *
+	 * 1. get firstname
+	 * @param code and employee name
+	 * @return $username
+	 */			
+	public function generateUsername($code, $name) 
+	{
+		//1. get firstname
+		$original		= explode(' ', strtolower($name));
+		$modify			= $original[0];
+		$countog		= count($original)-1;
 
+		foreach ($original as $keyx => $valuex) 
+		{
+			if(is_array($valuex) || $valuex!='')
+			{
+				$countog 				= $keyx;
+			}
+		}
+
+		$idxuname						= 0;
+		
+		do
+		{
+			$uname						= Employee::username($modify.'.'.$code)->first();
+
+			if($uname)
+			{
+				if(isset($original[$countog]))
+				{
+					$modify 			= $modify.$original[$countog][$idxuname];
+				}
+				else
+				{
+					$modify 			= $modify.$modify;
+				}
+
+				$idxuname++;
+			}
+		}
+		while($uname);
+
+		return $modify.'.'.$code;
+    }
 }

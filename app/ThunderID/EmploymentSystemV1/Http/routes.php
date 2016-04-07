@@ -56,3 +56,9 @@ $app->get('/nik/{code}/{id}/{join_year}',
 		'uses'				=> 'EmploymentPolicyController@generateNIK'
 	]
 );
+
+$app->get('/username/{code}/{name}',
+	[
+		'uses'				=> 'EmploymentPolicyController@generateUsername'
+	]
+);
