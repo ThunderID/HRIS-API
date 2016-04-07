@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class libraries to validate and parse policy
@@ -26,6 +27,8 @@ class ValidatorOfDocument
 	 */
 	public function validate($array_of_document)
 	{
+		$rules  				= [];
+
 		switch ($array_of_document['code']) 
 		{
 			case 'ktp':
@@ -97,6 +100,15 @@ class ValidatorOfDocument
 			return false;
 		}
 	
+		$validator					= Validator::make($array_of_document, $rules);
+
+		if (!$validator->passes())
+		{
+			$this->errors->add('Code', $validator->errors());
+			
+			return false;
+		}
+
 		return true;
 	}
 
