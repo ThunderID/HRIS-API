@@ -37,4 +37,14 @@ trait OrganisationTrait
 	{
 		return $query->where($this->getTable().'.organisation_id', $variable);
 	}
+
+	/**
+	 * check if model has organisation in certain code
+	 *
+	 * @var array or singular code
+	 **/
+	public function scopeOrganisationCode($query, $variable)
+	{
+		return $query->whereHas('organisation', function($q)use($variable){$q->code($variable);});
+	}
 }

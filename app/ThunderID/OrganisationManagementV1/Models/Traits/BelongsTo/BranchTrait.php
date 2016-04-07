@@ -47,4 +47,14 @@ trait BranchTrait
 	{
 		return $query->whereHas('branch', function($q)use($variable){$q->organisationid($variable);});
 	}
+
+	/**
+	 * check if model has organisation code of branch
+	 *
+	 * @var array or singular code
+	 **/
+	public function scopeBranchOrganisationCode($query, $variable)
+	{
+		return $query->whereHas('branch', function($q)use($variable){$q->organisationcode($variable);});
+	}
 }

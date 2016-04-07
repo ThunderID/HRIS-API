@@ -37,4 +37,14 @@ trait PersonTrait
 	{
 		return $query->where($this->getTable().'.person_id', $variable);
 	}
+
+	/**
+	 * check if model has Person in certain id
+	 *
+	 * @var array or singular id
+	 **/
+	public function scopeNotPersonID($query, $variable)
+	{
+		return $query->where($this->getTable().'.person_id', '<>', $variable);
+	}
 }

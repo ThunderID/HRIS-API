@@ -48,22 +48,11 @@ $app->get('/{org_id}/marital/statuses',
 );
 
 // ------------------------------------------------------------------------------------
-// EMPLOYEE DOCUMENT
+// EMPLOYEE ATTRIBUTE
 // ------------------------------------------------------------------------------------
-$app->get('/{org_id}/employee/{employ_id}/documents',
-	[
-		'uses'				=> 'EmployeeDocumentController@index'
-	]
-);
 
-$app->post('/{org_id}/employee/{employ_id}/document/store',
+$app->get('/nik/{code}/{id}',
 	[
-		'uses'				=> 'EmployeeDocumentController@store'
-	]
-);
-
-$app->delete('/{org_id}/employee/{employ_id}/document/delete/{id}',
-	[
-		'uses'				=> 'EmployeeDocumentController@delete'
+		'uses'				=> 'EmploymentPolicyController@generateNIK'
 	]
 );
