@@ -3,6 +3,7 @@
 namespace App\ThunderID\EmploymentSystemV1\Http\Controllers;
 
 use App\Libraries\JSend;
+use App\Libraries\ValidatorOfDocument as VOD;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\MessageBag;
@@ -339,17 +340,26 @@ class EmployeeController extends Controller
 					}
 					else
 					{
-						$value['person_id']			= $employee_data['id'];
-
-						$document_data				= $document_data->fill($value);
-
-						if(!$document_data->save())
+						$validating_document 		= new VOD;
+			
+						if(!$validating_document->validate(json_decode($value['documents'], true)))
 						{
-							$errors->add('contact', $document_data->getError());
+							$errors->add('PersonDocument', $validating_document->getError());
 						}
 						else
 						{
-							$document_current_ids[]	= $document_data['id'];
+							$value['person_id']			= $employee_data['id'];
+
+							$document_data				= $document_data->fill($value);
+
+							if(!$document_data->save())
+							{
+								$errors->add('PersonDocument', $document_data->getError());
+							}
+							else
+							{
+								$document_current_ids[]	= $document_data['id'];
+							}
 						}
 					}
 				}

@@ -60,8 +60,8 @@ class Employee extends Person
 	 * @var array
 	 */
 	protected $rules				=	[
-											'username' 						=> 'max:255',
-											'name' 							=> 'max:255',
+											'username' 						=> 'required|max:255',
+											'name' 							=> 'required|max:255',
 											'prefix_title' 					=> 'max:255',
 											'suffix_title' 					=> 'max:255',
 											'place_of_birth' 				=> 'max:255',
