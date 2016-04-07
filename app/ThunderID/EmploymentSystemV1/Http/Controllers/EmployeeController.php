@@ -33,6 +33,9 @@ class EmployeeController extends Controller
 			{
 				switch (strtolower($key)) 
 				{
+					case 'nameornik' :
+						$result 		= $result->nameornik($value);
+						break;
 					case 'name' :
 						$result 		= $result->name($value);
 						break;
@@ -771,7 +774,7 @@ class EmployeeController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function MaritalStatuses($org_id = null)
+	public function maritalstatuses($org_id = null)
 	{
 		$result						= \App\ThunderID\PersonSystemV1\Models\MaritalStatus::wherehas('person.works', function($q)use($org_id){$q->chartorganisationid($org_id);})->groupby('status')->distinct()->get(['status']);
 

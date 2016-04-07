@@ -20,6 +20,20 @@ trait HasWorkTrait
 	}
 
 	/**
+	 * name or nik
+	 *
+	 **/
+	public function scopeNameorNIK($query, $variable)
+	{
+		return $query
+				->where(function ($query) use($variable) {
+					$query->where('nik', 'like', '%'.$variable.'%')
+							->orwhere('hrps_persons.name', 'like', '%'.$variable.'%');
+					})
+				;
+	}
+
+	/**
 	 * nik
 	 *
 	 **/
