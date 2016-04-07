@@ -175,7 +175,7 @@ class ContractElementController extends Controller
 
 		if(!$contract_element)
 		{
-			return new JSend('error', (array)Input::all(), 'ContractElement tidak ditemukan.');
+			return new JSend('error', (array)Input::all(), 'Contract Element tidak ditemukan.');
 		}
 
 		$result					= $contract_element->toArray();

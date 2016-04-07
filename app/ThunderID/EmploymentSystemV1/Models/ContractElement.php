@@ -2,6 +2,8 @@
 
 namespace App\ThunderID\EmploymentSystemV1\Models;
 
+use App\ThunderID\EmploymentSystemV1\Models\Observers\ContractElementObserver;
+
 /**
  * Used for ContractElement Models
  * 
@@ -98,6 +100,8 @@ class ContractElement extends BaseModel
 	public static function boot() 
 	{
         parent::boot();
+
+        ContractElement::observe(new ContractElementObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
