@@ -50,7 +50,6 @@ $app->get('/{org_id}/marital/statuses',
 // ------------------------------------------------------------------------------------
 // EMPLOYEE ATTRIBUTE
 // ------------------------------------------------------------------------------------
-
 $app->get('/nik/{code}/{id}/{join_year}',
 	[
 		'uses'				=> 'EmploymentAttributeController@generateNIK'
@@ -68,3 +67,25 @@ $app->get('/document/templates',
 		'uses'				=> 'EmploymentAttributeController@getDocumentTemplate'
 	]
 );
+
+// ------------------------------------------------------------------------------------
+// CONTRACT ELEMENT
+// ------------------------------------------------------------------------------------
+$app->get('{org_id}/contract/elements',
+	[
+		'uses'				=> 'ContractElementController@index'
+	]
+);
+
+$app->post('{org_id}/contract/element/store',
+	[
+		'uses'				=> 'ContractElementController@store'
+	]
+);
+
+$app->delete('{org_id}/contract/element/delete/{id}',
+	[
+		'uses'				=> 'ContractElementController@delete'
+	]
+);
+
