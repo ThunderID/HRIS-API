@@ -138,7 +138,7 @@ class BranchController extends Controller
 		}
 
 		$branch_rules				=	[
-											'organisation_id'	=> 'exists:organisations,id|'.($is_new ? '' : 'in:'.$org_id),
+											'organisation_id'	=> 'exists:hrom_organisations,id|'.($is_new ? '' : 'in:'.$org_id),
 											'name'				=> 'required|max:255',
 											'phone'				=> 'max:20',
 											'email'				=> 'max:255',

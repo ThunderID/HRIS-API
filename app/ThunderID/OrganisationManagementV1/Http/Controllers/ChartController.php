@@ -164,7 +164,7 @@ class ChartController extends Controller
 		}
 
 		$chart_rules				=	[
-											'branch_id'			=> 'exists:branches,id|'.($is_new ? '' : 'in:'.$branch_id),
+											'branch_id'			=> 'exists:hrom_branches,id|'.($is_new ? '' : 'in:'.$branch_id),
 											'name'				=> 'required|max:255',
 											'department'		=> 'required|max:255',
 										];

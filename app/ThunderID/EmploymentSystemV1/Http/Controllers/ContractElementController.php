@@ -99,9 +99,9 @@ class ContractElementController extends Controller
 	 */
 	public function store($org_id = null)
 	{
-		if(!Input::has('ContractElement'))
+		if(!Input::has('contractelement'))
 		{
-			return new JSend('error', (array)Input::all(), 'Tidak ada data ContractElement.');
+			return new JSend('error', (array)Input::all(), 'Tidak ada data contractelement.');
 		}
 
 		$errors						= new MessageBag();
@@ -109,10 +109,10 @@ class ContractElementController extends Controller
 
 		DB::beginTransaction();
 
-		//1. Validate ContractElement Parameter
-		$ContractElement						= Input::get('ContractElement');
+		//1. Validate contract_element Parameter
+		$contract_element						= Input::get('contractelement');
 
-		if(is_null($ContractElement['id']))
+		if(is_null($contract_element['id']))
 		{
 			$is_new					= true;
 		}
@@ -121,44 +121,32 @@ class ContractElementController extends Controller
 			$is_new					= false;
 		}
 
-		$ContractElement_rules				=	[
-											'code'				=> 'required',
+		$contract_element_rules		=	[
+											'organisation_id'	=> 'exists:hrom_organisations,id|'.($is_new ? '' : 'in:'.$org_id),
+											'name'				=> 'required|max:255',
 										];
 
 		//1a. Get original data
-		$ContractElement_data				= \App\ThunderID\OrganisationManagementV1\Models\ContractElement::findornew($ContractElement['id']);
+		$contract_element_data				= \App\ThunderID\EmploymentSystemV1\Models\ContractElement::findornew($contract_element['id']);
 
-		//1b. Validate Basic ContractElement Parameter
-		$validator					= Validator::make($ContractElement, $ContractElement_rules);
+		//1b. Validate Basic contract_element Parameter
+		$validator					= Validator::make($contract_element, $contract_element_rules);
 
 		if (!$validator->passes())
 		{
-			$errors->add('ContractElement', $validator->errors());
+			$errors->add('contract_element', $validator->errors());
 		}
 		else
 		{
-			$validating_ContractElement 		= new POO;
+			$contract_element_data['organisation_id']	= $org_id;
+			$contract_element_data						= $contract_element_data->fill($contract_element);
 
-			if(!$validating_ContractElement->validate($ContractElement))
+			if(!$contract_element_data->save())
 			{
-				$errors->add('ContractElement', $validating_ContractElement->getError());
-			}
-			else
-			{
-				//if validator passed, save ContractElement
-				$validated_ContractElement 				= new POO;
-				$validated_ContractElement 				= $validated_ContractElement->parse($ContractElement);
-
-				$ContractElement_data['organisation_id']	= $org_id;
-				$ContractElement_data					= $ContractElement_data->fill($validated_ContractElement);
-
-				if(!$ContractElement_data->save())
-				{
-					$errors->add('ContractElement', $ContractElement_data->getError());
-				}
+				$errors->add('contract_element', $contract_element_data->getError());
 			}
 		}
-		//End of validate ContractElement
+		//End of validate contract_element
 
 		if($errors->count())
 		{
@@ -169,7 +157,7 @@ class ContractElementController extends Controller
 
 		DB::commit();
 		
-		$final_ContractElement			= \App\ThunderID\OrganisationManagementV1\Models\ContractElement::id($ContractElement_data['id'])->organisationid($org_id)->first()->toArray();
+		$final_ContractElement			= \App\ThunderID\EmploymentSystemV1\Models\ContractElement::id($contract_element_data['id'])->organisationid($org_id)->first()->toArray();
 
 		return new JSend('success', (array)$final_ContractElement);
 	}
@@ -183,20 +171,20 @@ class ContractElementController extends Controller
 	public function delete($org_id = null, $id = null)
 	{
 		//
-		$ContractElement					= \App\ThunderID\OrganisationManagementV1\Models\ContractElement::id($id)->organisationid($org_id)->first();
+		$contract_element					= \App\ThunderID\EmploymentSystemV1\Models\ContractElement::id($id)->organisationid($org_id)->first();
 
-		if(!$ContractElement)
+		if(!$contract_element)
 		{
 			return new JSend('error', (array)Input::all(), 'ContractElement tidak ditemukan.');
 		}
 
-		$result					= $ContractElement->toArray();
+		$result					= $contract_element->toArray();
 
-		if($ContractElement->delete())
+		if($contract_element->delete())
 		{
 			return new JSend('success', (array)$result);
 		}
 
-		return new JSend('error', (array)$result, $ContractElement->getError());
+		return new JSend('error', (array)$result, $contract_element->getError());
 	}
 }
