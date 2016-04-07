@@ -1,0 +1,157 @@
+swagger: '2.0'
+info:
+  title: Contract Element API
+  description: Move your app forward with the Contract Element API
+  version: 1.0.0
+host: localhost:9000
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /org_id/contract/elements:
+    get:
+      summary: Contract Element Lists
+      description: |
+        The Contract Elements endpoint returns information about the *HRIS* Contract Elements.
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: string
+          format: string
+        - name: search
+          in: query
+          description: search parameter (look below).
+          required: false
+          type: array
+          items:
+            type: string
+        - name: skip
+          in: query
+          description: How many records are going to be skipped
+          required: false
+          type: number
+          format: integer
+        - name: take
+          in: query
+          description: How many records are going to be taken from resource
+          required: false
+          type: number
+          format: integer
+      tags:
+        - Contract Elements
+      responses:
+        '200':
+          description: An array of Contract Elements' data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/contract'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/contract/element/store:
+    post:
+      summary: Store a Contract Element
+      description: >
+        Store an Contract Element used in contract works
+      parameters:
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+        - name: id
+          in: query
+          description: Let it null for new Contract Element.
+          required: true
+          type: number
+          format: double
+        - name: name
+          in: query
+          description: Contract Element name.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Contract Elements
+      responses:
+        '200':
+          description: An array of Contract Element
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/contract'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /org_id/contract/element/delete/id/:
+    delete:
+      summary: Delete a Contract Element
+      description: 'Get Contract Element detail information.'
+      parameters:
+        - name: id
+          in: query
+          description: Contract Element id.
+          required: true
+          type: number
+          format: integer
+        - name: access_token
+          in: query
+          description: Access token given by apps.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Contract Elements
+      responses:
+        '200':
+          description: Contract Element rich data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/contract'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  search:
+    properties:
+      name:
+        type: string
+        description: 'Search Contract Element that hath certain name'
+  sort:
+    properties:
+      name:
+        type: string
+        description: 'must be asc or desc'
+  contract:
+    properties:
+      count:
+        type: number
+        description: 'Total Contract Elements.'
+      data:
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+  Error:
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: string
+      message:
+        type: string
+      code:
+        type: integer
+        format: int32
