@@ -51,7 +51,7 @@ $app->get('/{org_id}/marital/statuses',
 // EMPLOYEE ATTRIBUTE
 // ------------------------------------------------------------------------------------
 
-$app->get('/nik/{code}/{id}',
+$app->get('/nik/{code}/{id}/{join_year}',
 	[
 		'uses'				=> 'EmploymentPolicyController@generateNIK'
 	]
