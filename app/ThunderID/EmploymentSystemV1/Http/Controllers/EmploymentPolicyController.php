@@ -110,6 +110,68 @@ class EmploymentPolicyController extends Controller
 		}
 		while($uname);
 
-		return $modify.'.'.$code;
+		return new JSend('success', ['username' => $modify.'.'.$code]);
+    }
+
+	/**
+	 * auto generate template document
+	 *
+	 * @return $array of document
+	 */			
+	public function getDocumentTemplate() 
+	{
+		$templates	= 	[
+							'ktp' 					=> 	[
+															'nomor_ktp',
+															'berlaku_hingga',
+													  	],
+				
+							'pendidikan_terakhir' 	=> [
+															'sekolah',
+															'jenjang',
+															'jurusan',
+													  	],
+				
+							'sertifikasi' 			=> 	[
+															'nama',
+															'penyelenggara',
+															'tempat',
+															'tanggal_mulai',
+															'tanggal_selesai',
+															'is_certified',
+														],
+				
+			 				'npwp' 					=> 	[
+															'npwp',
+														],
+				
+							'bpjs_kesehatan'			=> 	[
+															'nomor_peserta',
+														],
+				
+							'bpjs_ketenagakerjaan' 	=>	[
+															'nomor_peserta',
+														],
+				
+			 				'info_medis'			=> 	[
+															'golongan_darah',
+															'tanggal_checkup',
+															'hasil_checkup',
+														],
+				
+							'akun_bank' 			=> 	[
+															'jenis_rekening',
+															'nama_bank',
+															'nomor_rekening',
+													  	],
+				
+							'reksa_dana' 			=>	[
+															'jenis_rekening',
+															'nama_reksadana',
+															'nomor_rekening',
+														],
+						];
+
+	return new JSend('success', ['templates' => $templates]);
     }
 }

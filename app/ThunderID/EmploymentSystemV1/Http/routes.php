@@ -62,3 +62,9 @@ $app->get('/username/{code}/{name}',
 		'uses'				=> 'EmploymentPolicyController@generateUsername'
 	]
 );
+
+$app->get('/document/templates',
+	[
+		'uses'				=> 'EmploymentPolicyController@getDocumentTemplate'
+	]
+);

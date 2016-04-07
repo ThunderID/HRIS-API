@@ -33,11 +33,11 @@ class ValidatorOfDocument
 		{
 			case 'ktp':
 					$rules 		= [
-									'nomorktp' 		=> 'required|max:255',
-									'berlakuhingga' => 'date_format:"Y-m-d H:i:s"',
+									'nomor_ktp' 	=> 'required|max:255',
+									'berlaku_hingga' => 'date_format:"Y-m-d H:i:s"',
 								  ];
 				break;
-			case 'pendidikanterakhir':
+			case 'pendidikan_terakhir':
 					$rules 		= [
 									'sekolah' 		=> 'required|max:255',
 									'jenjang' 		=> 'max:255',
@@ -49,45 +49,45 @@ class ValidatorOfDocument
 									'nama'				=> 'required|max:255',
 									'penyelenggara'		=> 'required|max:255',
 									'tempat' 			=> 'max:255',
-									'tanggalmulai'		=> 'date_format:"Y-m-d H:i:s"',
-									'tanggalselesai'	=> 'date_format:"Y-m-d H:i:s"',
+									'tanggal_mulai'		=> 'date_format:"Y-m-d H:i:s"',
+									'tanggal_selesai'	=> 'date_format:"Y-m-d H:i:s"',
 									'is_certified'		=> 'boolean',
 								  ];
 				break;
 			case 'npwp':
 					$rules 		= [
-									'npwp'			=> 'required|max:255',
+									'npwp'				=> 'required|max:255',
 								  ];
 				break;
-			case 'bpjskesehatan':
+			case 'bpjs_kesehatan':
 					$rules 		= [
-									'nomorpeserta'	=> 'required|max:255',
+									'nomor_peserta'		=> 'required|max:255',
 								  ];
 				break;
-			case 'bpjsketenagakerjaan':
+			case 'bpjs_ketenagakerjaan':
 					$rules 		= [
-									'nomorpeserta'	=> 'required|max:255',
+									'nomor_peserta'		=> 'required|max:255',
 								  ];
 				break;
-			case 'infomedis':
+			case 'info_medis':
 					$rules 		= [
-									'golongandarah'	=> 'required|max:2',
-									'tanggalcheckup'=> 'date_format:"Y-m-d H:i:s"',
-									'hasilcheckup'	=> 'required"',
+									'golongan_darah'	=> 'required|max:2',
+									'tanggal_checkup'	=> 'date_format:"Y-m-d H:i:s"',
+									'hasil_checkup'		=> 'required"',
 								  ];
 				break;
-			case 'akunbank':
+			case 'akun_bank':
 					$rules 		= [
-									'jenisrekening'	=> 'required|max:255',
-									'namabank'		=> 'required|max:255',
-									'nomorrekening'	=> 'required|max:255',
+									'jenis_rekening'	=> 'required|max:255',
+									'nama_bank'			=> 'required|max:255',
+									'nomor_rekening'	=> 'required|max:255',
 								  ];
 				break;
-			case 'reksadana':
+			case 'reksa_dana':
 					$rules 		= [
-									'jenisrekening'	=> 'required|max:255',
-									'namareksadana'	=> 'required|max:255',
-									'nomorrekening'	=> 'required|max:255',
+									'jenis_rekening'	=> 'required|max:255',
+									'nama_reksadana'	=> 'required|max:255',
+									'nomor_rekening'	=> 'required|max:255',
 								  ];
 				break;
 			default:
