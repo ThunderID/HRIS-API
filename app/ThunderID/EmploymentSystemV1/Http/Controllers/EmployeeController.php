@@ -212,7 +212,7 @@ class EmployeeController extends Controller
 		}
 
 		$employee_rules				=   [
-											'username'					=> 'max:255|unique:persons,username,'.(!is_null($employee['id']) ? $employee['id'] : ''),
+											'username'					=> 'max:255|unique:hrps_persons,username,'.(!is_null($employee['id']) ? $employee['id'] : ''),
 											'name'						=> 'required|max:255',
 											'prefix_title'				=> 'max:255',
 											'suffix_title'				=> 'max:255',
@@ -571,7 +571,7 @@ class EmployeeController extends Controller
 												'person.prefix_title'		=> 'max:255',
 												'person.suffix_title'		=> 'max:255',
 												'person.place_of_birth'		=> 'max:255',
-												'person.date_of_birth'		=> 'date_format:"Y-m-d H:i:s"',
+												'person.date_of_birth'		=> 'required|date_format:"Y-m-d H:i:s"',
 												'person.gender'				=> 'in:female,male',
 											];
 

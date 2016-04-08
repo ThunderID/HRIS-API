@@ -52,6 +52,7 @@ class Employee extends Person
 											'password'						,
 											'avatar'						,
 											'last_password_updated_at'		,
+											'activation_link'				,
 										];
 
 	/**
@@ -60,7 +61,7 @@ class Employee extends Person
 	 * @var array
 	 */
 	protected $rules				=	[
-											'username' 						=> 'required|max:255',
+											'username' 						=> 'max:255',
 											'name' 							=> 'required|max:255',
 											'prefix_title' 					=> 'max:255',
 											'suffix_title' 					=> 'max:255',
@@ -69,6 +70,7 @@ class Employee extends Person
 											'gender' 						=> 'in:female,male',
 											'password'						=> 'max:255',
 											'last_password_updated_at'		=> 'date_format:"Y-m-d H:i:s"|before:tomorrow',
+											'activation_link'				=> 'max:255',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

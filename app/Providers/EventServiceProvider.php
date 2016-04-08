@@ -12,8 +12,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SomeEvent' => [
-            'App\Listeners\EventListener',
+        'App\ThunderID\EmploymentSystemV1\Events\EmployeeCreated' => [
+            'App\ThunderID\EmploymentSystemV1\Listeners\SendActivationLink',
         ],
     ];
 }

@@ -172,6 +172,6 @@ class EmploymentAttributeController extends Controller
 														],
 						];
 
-	return new JSend('success', ['templates' => $templates]);
+		return new JSend('success', ['templates' => $templates]);
     }
 }

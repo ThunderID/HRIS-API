@@ -25,6 +25,7 @@ class CreatePersonsTable extends Migration
 			$table->enum('gender', ['male', 'female']);
 			$table->string('password', 60);
 			$table->text('avatar');
+			$table->string('activation_link', 255);
 			$table->datetime('last_logged_at');
 			$table->datetime('last_password_updated_at');
 			$table->timestamps();
