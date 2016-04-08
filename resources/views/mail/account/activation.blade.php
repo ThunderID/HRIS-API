@@ -20,7 +20,7 @@
 				<p>@if($data['employee']['gender']=='male') Bpk @else Ibu @endif <strong>{{$data['employee']['name']}},</strong></p>
 
 				<p>
-					Anda telah terdaftar dalam sistem Human Resource. Silahkan Klik link <a href="{{route('employee.activate.link', $data['employee']['activation_link'])}}"> <strong>berikut</strong></a> untuk aktivasi password anda.
+					Anda telah terdaftar dalam sistem Human Resource. Silahkan Klik link <a href="{{route('employee.activate.link', ['activation_link' => $data['employee']['activation_link']])}}"> <strong>berikut</strong></a> untuk aktivasi password anda.
 				</p>
 			</td>
 			<td width="10%"></td>

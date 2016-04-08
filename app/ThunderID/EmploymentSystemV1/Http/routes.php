@@ -74,7 +74,8 @@ $app->get('/document/templates',
 $app->get('/employee/activation/{activation_link}',
 	[
 		'uses'				=> 'EmploymentAccountController@getByActivationLink',
-		'as'				=> 'employee.activate.link'
+		'as'				=> 'employee.activate.link', function ($id) {
+		}
 	]
 );
 
