@@ -731,7 +731,7 @@ class EmployeeController extends Controller
 		
 		$final_employee			= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($employee_data['id'])->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first()->toArray();
 
-		if($is_new)
+		if($is_new && $final_employee['email']!='not available')
 		{
 			Event::fire(new EmployeeCreated($final_employee));
 		}
