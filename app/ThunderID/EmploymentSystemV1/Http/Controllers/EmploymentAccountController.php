@@ -50,7 +50,7 @@ class EmploymentAccountController extends Controller
 	 * @param employee id
 	 * @return array of employee
 	 */			
-	public function resendByActivationLink($id) 
+	public function resendActivationLink($id) 
 	{
 		//1. get activation link
 		$employee		= Employee::id($id)->first();
@@ -60,8 +60,10 @@ class EmploymentAccountController extends Controller
 			return new JSend('error', Input::all(), ['Akun tidak valid']);
 		}
 
-		Event::fire(new EmployeeCreated($final_employee));
+		$employee 		= $employee->toArray();
+		
+		Event::fire(new EmployeeCreated($employee));
 
-		return new JSend('success', ['employee' => $employee->toArray()]);
+		return new JSend('success', ['employee' => $employee]);
     }
 }
