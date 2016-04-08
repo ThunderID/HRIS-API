@@ -79,6 +79,14 @@ $app->get('/employee/activation/{activation_link}',
 	]
 );
 
+$app->post('/employee/activated/{activation_link}',
+	[
+		'uses'				=> 'EmploymentAccountController@setPassword',
+		'as'				=> 'employee.activated.link', function ($id) {
+		}
+	]
+);
+
 $app->get('/employee/resend/activation/{id}',
 	[
 		'uses'				=> 'EmploymentAccountController@resendActivationLink'

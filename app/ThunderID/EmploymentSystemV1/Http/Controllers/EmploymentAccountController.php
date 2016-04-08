@@ -33,12 +33,12 @@ class EmploymentAccountController extends Controller
 		}
 
 		//2. restrain activation link
-		$employee->activation_link 	= '';
+		// $employee->activation_link 	= '';
 
-		if(!$employee->save())
-		{
-			return new JSend('error', Input::all(), $employee->getError());
-		}
+		// if(!$employee->save())
+		// {
+		// 	return new JSend('error', Input::all(), $employee->getError());
+		// }
 
 		return new JSend('success', ['employee' => $employee->toArray()]);
     }
@@ -66,4 +66,69 @@ class EmploymentAccountController extends Controller
 
 		return new JSend('success', ['employee' => $employee]);
     }
+
+	/**
+	 * set pasword
+	 *
+	 * 1. get activation link
+	 * 2. validate activation
+	 * @param activation link
+	 * @return array of employee
+	 */			
+	public function setPassword($activation_link) 
+	{
+		if(!Input::has('activation'))
+		{
+			return new JSend('error', (array)Input::all(), 'Tidak ada data activation.');
+		}
+
+		$errors						= new MessageBag();
+
+		DB::beginTransaction();
+
+		//1. Validate activation Parameter
+		$activation					= Input::get('activation');
+
+		//1. get activation link
+		$employee					= Employee::activationlink($activation_link)->first();
+
+		if(!$employee)
+		{
+			$errors->add('Activation', 'Invalid activation link');
+		}
+
+		//2. validate activation
+		$rules 			= 	[
+								'password'	=> 'required|min:8|confirmed',
+							];
+
+		$validator 		= Validator::make($activation, $rules);
+
+		if($validator->passes())
+		{
+			$employee->password 		= $activation['password'];
+			$employee->activation_link 	= '';
+
+			if(!$employee->save())
+			{
+				$errors->add('Activation', $employee->getError());
+			}
+		}
+		else
+		{
+			$errors->add('Activation', $validator->errors());
+		}
+		
+		if($errors->count())
+		{
+			DB::rollback();
+
+			return new JSend('error', (array)Input::all(), $errors);
+		}
+
+		DB::commit();
+
+		return new JSend('success', ['employee' => $employee->toArray()]);
+    }
+
 }
