@@ -13,7 +13,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\ThunderID\EmploymentSystemV1\Events\EmployeeCreated' => [
-            'App\ThunderID\EmploymentSystemV1\Listeners\SendActivationLink',
+            'App\ThunderID\EmploymentSystemV1\Listeners\SendActivationMail',
         ],
     ];
 }

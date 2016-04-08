@@ -5,6 +5,8 @@ namespace App\ThunderID\EmploymentSystemV1\Listeners;
 use App\ThunderID\EmploymentSystemV1\Events\EmployeeCreated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Mail;
+use Illuminate\Support\Facades\View;
 
 /**
  * Listener for Product Viewed

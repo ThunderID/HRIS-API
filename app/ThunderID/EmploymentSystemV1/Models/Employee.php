@@ -94,7 +94,6 @@ class Employee extends Person
         Employee::observe(new EmployeeObserver());
     }
 
-
 	/**
 	 * scope to get condition where username
 	 *
@@ -103,5 +102,15 @@ class Employee extends Person
 	public function scopeUsername($query, $variable)
 	{
 		return 	$query->where($query->getModel()->table.'.username', $variable);
+	}
+
+	/**
+	 * scope to get condition where activation link
+	 *
+	 * @param string or array of activation link
+	 **/
+	public function scopeActivationLink($query, $variable)
+	{
+		return 	$query->where($query->getModel()->table.'.activation_link', $variable);
 	}
 }

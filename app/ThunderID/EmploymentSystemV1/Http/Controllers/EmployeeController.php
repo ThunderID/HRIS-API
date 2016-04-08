@@ -10,6 +10,8 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\ThunderID\EmploymentSystemV1\Events\EmployeeCreated;
+use Event;
 
 class EmployeeController extends Controller
 {
@@ -202,7 +204,7 @@ class EmployeeController extends Controller
 		//1. Validate employee Parameter
 		$employee					= Input::get('employee');
 
-		if(is_null($employee['id']))
+		if(empty($employee['id']) || is_null($employee['id']) || $employee['id']=='' || $employee['id']=='null')
 		{
 			$is_new					= true;
 		}
@@ -728,6 +730,11 @@ class EmployeeController extends Controller
 		DB::commit();
 		
 		$final_employee			= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($employee_data['id'])->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first()->toArray();
+
+		if($is_new)
+		{
+			Event::fire(new EmployeeCreated($final_employee));
+		}
 
 		return new JSend('success', (array)$final_employee);
 	}
