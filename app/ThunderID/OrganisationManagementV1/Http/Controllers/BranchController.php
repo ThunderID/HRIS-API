@@ -69,6 +69,10 @@ class BranchController extends Controller
 				}
 			}
 		}
+		else
+		{
+			$result->orderby('name', 'asc');
+		}
 
 		$count						= count($result->get());
 

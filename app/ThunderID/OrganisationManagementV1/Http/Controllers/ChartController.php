@@ -255,4 +255,17 @@ class ChartController extends Controller
 
 		return new JSend('success', (array)$result->toArray());
 	}
+
+
+	/**
+	 * Display distinct position
+	 *
+	 * @return Response
+	 */
+	public function positions($org_id = null)
+	{
+		$result						= \App\ThunderID\OrganisationManagementV1\Models\Chart::branchorganisationid($org_id)->groupby('name')->distinct()->get(['name as position']);
+
+		return new JSend('success', (array)$result->toArray());
+	}
 }

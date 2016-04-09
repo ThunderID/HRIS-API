@@ -265,7 +265,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /org_id/marital/statuses:
+  /org_id/marital/statuses/:
     delete:
       summary: Get distinct marital statuses
       description: 'Get distinct marital statuses of an organisation.'
@@ -291,7 +291,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/statuses'
+              $ref: '#/definitions/maritalstatuses'
         default:
           description: Unexpected error
           schema:
@@ -587,15 +587,7 @@ definitions:
         type: string
       path:
         type: string
-      tag:
-        type: string
-      min_employee:
-        type: string
-      ideal_employee:
-        type: string
-      max_employee:
-        type: string
-      current_employee:
+      department:
         type: string
       branch:
         type: array

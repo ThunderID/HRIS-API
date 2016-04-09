@@ -37,41 +37,44 @@ class EmployeeScope implements ScopeInterface
 		$prefix_empl			= 'hres_';//env('DB_PREFIX_HR_EMPLOYMENT');
 		$prefix_org				= 'hrom_';//env('DB_PREFIX_HR_ORGANISATION');
 
-		$builder->selectraw('CONCAT('.$prefix_org.'charts.name, " cabang ", '.$prefix_org.'branches.name) as current_position')
-				->selectraw($prefix_org.'charts.department as current_department')
-				->selectraw($prefix_empl.'works.id as current_work_id')
-				->selectraw($prefix_empl.'works.nik as current_nik')
-				->selectraw($prefix_empl.'works.status as current_status')
-				->selectraw($prefix_empl.'works.start as current_work_start')
-				->selectraw($prefix_empl.'works.end as current_work_end')
+		$builder->selectraw('CONCAT('.$prefix_org.'charts.name, " cabang ", '.$prefix_org.'branches.name) as newest_position')
+				->selectraw($prefix_org.'branches.organisation_id as organisation_id')
+				->selectraw($prefix_org.'charts.department as newest_department')
+				->selectraw($prefix_empl.'works.id as newest_work_id')
+				->selectraw($prefix_empl.'works.nik as newest_nik')
+				->selectraw($prefix_empl.'works.status as newest_status')
+				->selectraw($prefix_empl.'works.start as newest_work_start')
+				->selectraw($prefix_empl.'works.end as newest_work_end')
 
 				->join(DB::raw($prefix_empl.'works'), function ($join) use($end, $prefix_empl, $prefix_person)
 				 {
-										$join->on ( DB::raw($prefix_person.'persons.id'), '=', DB::raw($prefix_empl.'works.person_id') )
-										->where(function ($query)use($end, $prefix_empl)
-											{
-												$query->where(function ($query) use($end, $prefix_empl) {
-															$query->wherenull( DB::raw($prefix_empl.'works.end'))
-															  ->orwhere( DB::raw($prefix_empl.'works.end'), '>=', date('Y-m-d H:i:s', strtotime($end)));
-															})
-														->wherenull( DB::raw($prefix_empl.'works.deleted_at'));
-											})
-										;
+					$join->on ( DB::raw($prefix_person.'persons.id'), '=', DB::raw($prefix_empl.'works.person_id') )
+					->where(function ($query)use($end, $prefix_empl)
+						{
+							$query->where(function ($query) use($end, $prefix_empl) {
+											$query;
+										// $query->wherenull( DB::raw($prefix_empl.'works.end'))
+										  // ->orwhere( DB::raw($prefix_empl.'works.end'), '>=', date('Y-m-d H:i:s', strtotime($end)));
+										})
+									->wherenull( DB::raw($prefix_empl.'works.deleted_at'));
+						})
+					;
 				})
 				->join(DB::raw($prefix_org.'charts'), function ($join) use ($prefix_empl, $prefix_org)
 				 {
-										$join->on ( DB::raw($prefix_empl.'works.chart_id'), '=', DB::raw($prefix_org.'charts.id'))
-										->wherenull(DB::raw($prefix_org.'charts.deleted_at'))
-										;
+					$join->on ( DB::raw($prefix_empl.'works.chart_id'), '=', DB::raw($prefix_org.'charts.id'))
+					->wherenull(DB::raw($prefix_org.'charts.deleted_at'))
+					;
 				})
 				->join(DB::raw($prefix_org.'branches'), function ($join) use ($prefix_org)
 				 {
-										$join->on ( DB::raw($prefix_org.'charts.branch_id'), '=', DB::raw($prefix_org.'branches.id') )
-										->wherenull(DB::raw($prefix_org.'branches.deleted_at'))
-										;
+					$join->on ( DB::raw($prefix_org.'charts.branch_id'), '=', DB::raw($prefix_org.'branches.id') )
+					->wherenull(DB::raw($prefix_org.'branches.deleted_at'))
+					;
 				})
 			
-				->groupby(DB::raw($prefix_person.'persons.id'))
+				// ->orderby($prefix_empl.'works.start', 'desc')
+				->groupby(DB::raw($prefix_person.'persons.id'));
 		;
 	}
 

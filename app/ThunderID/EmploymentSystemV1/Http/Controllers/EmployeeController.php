@@ -146,7 +146,7 @@ class EmployeeController extends Controller
 
 		$result						= $result->get()->toArray();
 
-		return new JSend('success', (array)$result);
+		return new JSend('success', (array)['count' => $count, 'data' => $result]);
 	}
 
 	/**
