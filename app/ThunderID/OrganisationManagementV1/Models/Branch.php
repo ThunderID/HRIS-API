@@ -85,7 +85,7 @@ class Branch extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'organisation_id'				=> 'exists:organisations,id',
+											'organisation_id'				=> 'exists:hrom_organisations,id',
 											'name'							=> 'max:255',
 										];
 
