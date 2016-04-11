@@ -76,7 +76,7 @@ class PersonDocument extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'documents'						=> 'required|json',
+											'documents'						=> 'required',
 										];
 
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/

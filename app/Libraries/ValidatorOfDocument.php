@@ -100,7 +100,7 @@ class ValidatorOfDocument
 			return false;
 		}
 	
-		$validator					= Validator::make($array_of_document, $rules);
+		$validator					= Validator::make($array_of_document['document'], $rules);
 
 		if (!$validator->passes())
 		{

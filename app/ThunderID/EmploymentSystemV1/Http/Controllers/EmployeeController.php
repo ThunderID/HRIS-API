@@ -84,7 +84,7 @@ class EmployeeController extends Controller
 						$result 		= $result->with(['maritalstatuses']);
 						break;
 					case 'relatives' :
-						$result 		= $result->with(['relatives', 'relatives.person']);
+						$result 		= $result->with(['relatives', 'relatives.relative']);
 						break;
 					case 'contacts' :
 						$result 		= $result->with(['contacts']);
@@ -159,10 +159,13 @@ class EmployeeController extends Controller
 		$startwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->chartorganisationid($org_id)->orderby('start', 'desc')->first();
 		$endwork					= \App\ThunderID\EmploymentSystemV1\Models\Work::personid($id)->chartorganisationid($org_id)->orderby('end', 'asc')->first();
 
-		$result						= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first();
-
+		$result						= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.relative', 'contacts', 'works', 'works.chart', 'works.chart.branch', 'works.contractworks', 'works.contractworks.contractelement'])->first();
+		
 		if($result)
 		{
+			$gradework				= \App\ThunderID\EmploymentSystemV1\Models\GradeLog::workid($result['newest_work_id'])->orderby('updated_at', 'desc')->first();
+			$contractwork			= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::workid($result['newest_work_id'])->with(['contractelement'])->get();
+			
 			$result 				= $result->toArray();
 			
 			if($endwork['end']->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00')
@@ -173,6 +176,17 @@ class EmployeeController extends Controller
 			{
 				$result['work_period'] 	= [$startwork['start']->format('Y-m-d H:i:s'), Carbon::now()->format('Y-m-d H:i:s')];
 			}
+
+			if($gradework)
+			{
+				$result['newest_grade']	= $gradework['grade'];
+			}
+			else
+			{
+				$result['newest_grade']	= 'not available';
+			}
+
+			$result['newest_contract']	= $contractwork->toArray();
 
 			return new JSend('success', (array)$result);
 		}
@@ -332,7 +346,7 @@ class EmployeeController extends Controller
 					
 					$document_rules		=	[
 												'person_id'			=> 'exists:hrps_persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
-												'documents'			=> 'required|json',
+												'documents'			=> 'required',
 											];
 
 					$validator			= Validator::make($value, $document_rules);
@@ -346,7 +360,7 @@ class EmployeeController extends Controller
 					else
 					{
 						$validating_document 		= new VOD;
-			
+
 						if(!$validating_document->validate(json_decode($value['documents'], true)))
 						{
 							$errors->add('PersonDocument', $validating_document->getError());
@@ -607,6 +621,7 @@ class EmployeeController extends Controller
 						if(!$errors->count())
 						{
 							$value['person_id']			= $employee_data['id'];
+							$value['relative_id']		= $employee_relative_data['id'];
 							$relative_data				= $relative_data->fill($value);
 
 							if(!$relative_data->save())
@@ -729,7 +744,7 @@ class EmployeeController extends Controller
 
 		DB::commit();
 		
-		$final_employee			= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($employee_data['id'])->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first()->toArray();
+		$final_employee			= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($employee_data['id'])->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.relative', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first()->toArray();
 
 		if($is_new && $final_employee['email']!='not available')
 		{
@@ -747,7 +762,7 @@ class EmployeeController extends Controller
 	public function delete($org_id = null, $id = null)
 	{
 		//
-		$employee				= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.person', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first();
+		$employee				= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($id)->organisationid($org_id)->currentgrade(true)->currentmaritalstatus(true)->with(['persondocuments', 'maritalstatuses', 'relatives', 'relatives.relative', 'contacts', 'works', 'works.contractworks', 'works.contractworks.contractelement'])->first();
 
 		if(!$employee)
 		{

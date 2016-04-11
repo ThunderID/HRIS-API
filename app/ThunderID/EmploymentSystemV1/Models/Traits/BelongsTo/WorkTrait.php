@@ -37,4 +37,14 @@ trait WorkTrait
 	{
 		return $query->where($this->getTable().'.work_id', $variable);
 	}
+
+	/**
+	 * check if model has person in certain id
+	 *
+	 * @var array or singular id
+	 **/
+	public function scopeWorkPersonID($query, $variable)
+	{
+		return $query->wherehas('work', function($q) use($variable){$q->personid($variable);});
+	}
 }
