@@ -3,6 +3,7 @@
 namespace App\ThunderID\EmploymentSystemV1\Models;
 
 use App\ThunderID\EmploymentSystemV1\Models\Observers\WorkObserver;
+use App\Models\Traits\HasSelectAllTrait;
 
 /**
  * Used for Work Models
@@ -23,6 +24,8 @@ class Work extends BaseModel
 	 * Global traits used as query builder (global scope).
 	 *
 	 */
+	use HasSelectAllTrait;
+	use \App\ThunderID\EmploymentSystemV1\Models\Traits\GlobalTrait\HasGradeTrait;
 
 	/**
 	 * Global traits used as scope (plugged scope).
