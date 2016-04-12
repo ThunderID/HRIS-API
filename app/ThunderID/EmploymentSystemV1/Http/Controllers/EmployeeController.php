@@ -261,8 +261,13 @@ class EmployeeController extends Controller
 		//End of validate Employee
 
 		//2. Validate Employee contact Parameter
-		if(!$errors->count() && isset($employee['contacts']) && is_array($employee['contacts']))
+		if(!$errors->count() && isset($employee['contacts']))
 		{
+			if(!is_array($employee['contacts']))
+			{
+				$employee['contacts']		= [];
+			}
+
 			$contact_current_ids		= [];
 			foreach ($employee['contacts'] as $key => $value) 
 			{
@@ -334,8 +339,13 @@ class EmployeeController extends Controller
 		//End of validate employee contact
 
 		//3. Validate Employee document Parameter
-		if(!$errors->count() && isset($employee['persondocuments']) && is_array($employee['persondocuments']))
+		if(!$errors->count() && isset($employee['persondocuments']))
 		{
+			if(!is_array($employee['persondocuments']))
+			{
+				$employee['persondocuments']		= [];
+			}
+
 			$document_current_ids		= [];
 			foreach ($employee['persondocuments'] as $key => $value) 
 			{
@@ -413,8 +423,13 @@ class EmployeeController extends Controller
 		//End of validate employee privatedocument
 
 		//4. Validate Employee Work Parameter
-		if(!$errors->count() && isset($employee['works']) && is_array($employee['works']))
+		if(!$errors->count() && isset($employee['works']))
 		{
+			if(!is_array($employee['works']))
+			{
+				$employee['works']		= [];
+			}
+
 			$work_current_ids			= [];
 			foreach ($employee['works'] as $key => $value) 
 			{
@@ -425,11 +440,11 @@ class EmployeeController extends Controller
 					$work_rules		=   [
 												'person_id'			=> 'exists:hrps_persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
 												'chart_id'			=> 'exists:hrom_charts,id',
-												'grade'				=> 'required|numeric',
+												'grade'				=> 'numeric',
 												'status'			=> 'required|in:contract,probation,internship,permanent,others,admin',
 												'start'				=> 'required|date_format:"Y-m-d H:i:s"',
 												// 'end'				=> 'date_format:"Y-m-d H:i:s"',
-												'reason_end_job'	=> 'required_with:end',
+												// 'reason_end_job'	=> 'required_with:end',
 											];
 
 					$validator		= Validator::make($value, $work_rules);
@@ -441,7 +456,12 @@ class EmployeeController extends Controller
 					}
 					else
 					{
-						$value['person_id']			= $employee_data['id'];
+						$value['person_id']		= $employee_data['id'];
+
+						if(!strtotime($value['end']))
+						{
+							unset($value['end']);
+						}
 
 						$work_data				= $work_data->fill($value);
 
@@ -449,7 +469,7 @@ class EmployeeController extends Controller
 						{
 							$errors->add('Work', $work_data->getError());
 						}
-						else
+						elseif(isset($value['grade']))
 						{
 							$grade_data			= \App\ThunderID\EmploymentSystemV1\Models\GradeLog::workid($value['id'])->orderby('updated_at', 'asc')->first();
 							
@@ -457,84 +477,84 @@ class EmployeeController extends Controller
 							{
 								$grade_data 	= new \App\ThunderID\EmploymentSystemV1\Models\GradeLog;
 
-								$grade_data->fill(['grade' => $value['grade'], 'work_id' => $value['id']]);
+								$grade_data->fill(['grade' => $value['grade'], 'work_id' => $work_data['id']]);
 		
 								if(!$grade_data->save())
 								{
 									$errors->add('Work', $grade_data->getError());
 								}
 							}
+						}
 
-							if(!$errors->count() && isset($value['contractworks']) && is_array($value['contractworks']))
+						if(!$errors->count() && isset($value['contractworks']) && is_array($value['contractworks']))
+						{
+							$contract_current_ids		= [];
+							foreach ($value['contractworks'] as $key => $value2) 
 							{
-								$contract_current_ids		= [];
-								foreach ($value['contractworks'] as $key => $value2) 
+								if(!$errors->count())
 								{
-									if(!$errors->count())
+									$contract_data		= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::findornew($value2['id']);
+
+									
+									$contract_rules		=	[
+																'work_id'				=> 'exists:hres_contracts_works,id|'.($is_new ? '' : 'in:'.$work_data['id']),
+																'contract_element_id'	=> 'exists:hres_contract_elements,id|'.(($contract_data!=null) ? '' : 'in:'.$contract_data['contract_element_id']),
+																'value'					=> 'required|max:255',
+															];
+
+									$validator			= Validator::make($value2, $contract_rules);
+									
+
+									//if there was contract and validator false
+									if (!$validator->passes())
 									{
-										$contract_data		= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::findornew($value2['id']);
+										$errors->add('contract', $validator->errors());
+									}
+									else
+									{
+										$value2['work_id']			= $work_data['id'];
 
-										
-										$contract_rules		=	[
-																	'work_id'				=> 'exists:hres_contracts_works,id|'.($is_new ? '' : 'in:'.$work_data['id']),
-																	'contract_element_id'	=> 'exists:hres_contract_elements,id|'.(($contract_data!=null) ? '' : 'in:'.$contract_data['contract_element_id']),
-																	'value'					=> 'required|max:255',
-																];
+										$contract_data				= $contract_data->fill($value2);
 
-										$validator			= Validator::make($value2, $contract_rules);
-										
-
-										//if there was contract and validator false
-										if (!$validator->passes())
+										if(!$contract_data->save())
 										{
-											$errors->add('contract', $validator->errors());
+											$errors->add('contract', $contract_data->getError());
 										}
 										else
 										{
-											$value2['work_id']			= $work_data['id'];
-
-											$contract_data				= $contract_data->fill($value2);
-
-											if(!$contract_data->save())
-											{
-												$errors->add('contract', $contract_data->getError());
-											}
-											else
-											{
-												$contract_current_ids[]	= $contract_data['id'];
-											}
-										}
-									}
-								}
-								//if there was no error, check if there were things need to be delete
-								if(!$errors->count())
-								{
-									$contractworks							= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::workid($value['id'])->get(['id'])->toArray();
-									
-									$contract_should_be_ids				= [];
-									foreach ($contractworks as $key => $value2) 
-									{
-										$contract_should_be_ids[]		= $value2['id'];
-									}
-
-									$difference_contract_ids				= array_diff($contract_should_be_ids, $contract_current_ids);
-
-									if($difference_contract_ids)
-									{
-										foreach ($difference_contract_ids as $key => $value2) 
-										{
-											$contract_data				= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::find($value2);
-
-											if(!$contract_data->delete())
-											{
-												$errors->add('contract', $contract_data->getError());
-											}
+											$contract_current_ids[]	= $contract_data['id'];
 										}
 									}
 								}
 							}
-							$work_current_ids[]	= $work_data['id'];
+							//if there was no error, check if there were things need to be delete
+							if(!$errors->count())
+							{
+								$contractworks							= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::workid($value['id'])->get(['id'])->toArray();
+								
+								$contract_should_be_ids				= [];
+								foreach ($contractworks as $key => $value2) 
+								{
+									$contract_should_be_ids[]		= $value2['id'];
+								}
+
+								$difference_contract_ids				= array_diff($contract_should_be_ids, $contract_current_ids);
+
+								if($difference_contract_ids)
+								{
+									foreach ($difference_contract_ids as $key => $value2) 
+									{
+										$contract_data				= \App\ThunderID\EmploymentSystemV1\Models\ContractWork::find($value2);
+
+										if(!$contract_data->delete())
+										{
+											$errors->add('contract', $contract_data->getError());
+										}
+									}
+								}
+							}
 						}
+						$work_current_ids[]	= $work_data['id'];
 					}
 				}
 			}
@@ -569,8 +589,13 @@ class EmployeeController extends Controller
 		//End of validate employee career
 
 		//5. Validate Employee relatives Parameter
-		if(!$errors->count() && isset($employee['relatives']) && is_array($employee['relatives']))
+		if(!$errors->count() && isset($employee['relatives']))
 		{
+			if(!is_array($employee['relatives']))
+			{
+				$employee['relatives']		= [];
+			}
+
 			$relative_current_ids			= [];
 
 			foreach ($employee['relatives'] as $key => $value) 
@@ -583,12 +608,12 @@ class EmployeeController extends Controller
 												'person_id'					=> 'exists:hrps_persons,id|'.($is_new ? '' : 'in:'.$employee_data['id']),
 												'relative_id'				=> 'exists:hrps_persons,id|'.(($relative_data['relative_id']==null) ? '' : 'in:'.$relative_data['relative_id']),
 												'relationship'				=> 'required|max:255',
-												'person.name'				=> 'required|max:255',
-												'person.prefix_title'		=> 'max:255',
-												'person.suffix_title'		=> 'max:255',
-												'person.place_of_birth'		=> 'max:255',
-												'person.date_of_birth'		=> 'required|date_format:"Y-m-d H:i:s"',
-												'person.gender'				=> 'in:female,male',
+												'relative.name'				=> 'required|max:255',
+												'relative.prefix_title'		=> 'max:255',
+												'relative.suffix_title'		=> 'max:255',
+												'relative.place_of_birth'	=> 'max:255',
+												'relative.date_of_birth'	=> 'required|date_format:"Y-m-d H:i:s"',
+												'relative.gender'			=> 'in:female,male',
 											];
 
 					$validator					= Validator::make($value, $relative_rules);
@@ -600,7 +625,7 @@ class EmployeeController extends Controller
 					}
 					else
 					{
-						$employee_relative_data		= \App\ThunderID\EmploymentSystemV1\Models\Employee::findornew($relative_data['person']['id']);
+						$employee_relative_data		= \App\ThunderID\EmploymentSystemV1\Models\Employee::findornew($relative_data['relative']['id']);
 						$validator					= Validator::make($employee, $employee_rules);
 
 						if (!$validator->passes())
@@ -610,7 +635,7 @@ class EmployeeController extends Controller
 						else
 						{
 							//if validator passed, save Employee
-							$employee_relative_data	= $employee_relative_data->fill($value['person']);
+							$employee_relative_data	= $employee_relative_data->fill($value['relative']);
 
 							if(!$employee_relative_data->save())
 							{
@@ -626,7 +651,7 @@ class EmployeeController extends Controller
 
 							if(!$relative_data->save())
 							{
-								$errors->add('workexperience', $relative_data->getError());
+								$errors->add('Relative', $relative_data->getError());
 							}
 							else
 							{
@@ -640,25 +665,25 @@ class EmployeeController extends Controller
 			//if there was no error, check if there were things need to be delete
 			if(!$errors->count())
 			{
-				$relatives								= \App\ThunderID\PersonSystemV1\Models\Relative::personid($employee['id'])->get(['id'])->toArray();
+				$relatives								= \App\ThunderID\PersonSystemV1\Models\Relative::personid($employee_data['id'])->get(['id'])->toArray();
 				
-				$relative_should_be_ids				= [];
+				$relative_should_be_ids					= [];
 				foreach ($relatives as $key => $value) 
 				{
 					$relative_should_be_ids[]			= $value['id'];
 				}
 
-				$difference_workexperience_ids				= array_diff($relative_should_be_ids, $relative_current_ids);
+				$difference_relative_ids				= array_diff($relative_should_be_ids, $relative_current_ids);
 
-				if($difference_workexperience_ids)
+				if($difference_relative_ids)
 				{
-					foreach ($difference_workexperience_ids as $key => $value) 
+					foreach ($difference_relative_ids as $key => $value) 
 					{
 						$relative_data				= \App\ThunderID\PersonSystemV1\Models\Relative::find($value);
 
 						if(!$relative_data->delete())
 						{
-							$errors->add('workexperience', $relative_data->getError());
+							$errors->add('relative', $relative_data->getError());
 						}
 					}
 				}
@@ -667,8 +692,13 @@ class EmployeeController extends Controller
 		//End of validate employee relatives
 
 		//6. Validate Employee ms Parameter
-		if(!$errors->count() && isset($employee['maritalstatuses']) && is_array($employee['maritalstatuses']))
+		if(!$errors->count() && isset($employee['maritalstatuses']))
 		{
+			if(!is_array($employee['maritalstatuses']))
+			{
+				$employee['maritalstatuses']		= [];
+			}
+
 			$ms_current_ids			= [];
 			foreach ($employee['maritalstatuses'] as $key => $value) 
 			{

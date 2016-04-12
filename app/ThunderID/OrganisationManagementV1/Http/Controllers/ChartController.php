@@ -22,19 +22,14 @@ class ChartController extends Controller
 	 * @param search, skip, take
 	 * @return JSend Response
 	 */
-	public function index($org_id = null, $branch_id = null)
+	public function index($org_id = null, $branch_id = 0)
 	{
-		//check branch
-		$branch 					= \App\ThunderID\OrganisationManagementV1\Models\Branch::id($branch_id)->organisationid($org_id)->first();
+		$result						= \App\ThunderID\OrganisationManagementV1\Models\Chart::branchorganisationid($org_id);
 
-		if(!$branch)
+		if($branch_id!=0)
 		{
-			\App::abort(404);
+			$result 				= $result->branchid($branch_id);
 		}
-
-		$result						= new \App\ThunderID\OrganisationManagementV1\Models\Chart;
-
-		$result 					= $result->branchid($branch_id);
 
 		if(Input::has('search'))
 		{
@@ -49,6 +44,9 @@ class ChartController extends Controller
 						break;
 					case 'department' :
 						$result 	= $result->department($value);
+						break;
+					case 'branch' :
+						$result 	= $result->with(['branch']);
 						break;
 					default:
 						# code...
@@ -255,7 +253,6 @@ class ChartController extends Controller
 
 		return new JSend('success', (array)$result->toArray());
 	}
-
 
 	/**
 	 * Display distinct position
