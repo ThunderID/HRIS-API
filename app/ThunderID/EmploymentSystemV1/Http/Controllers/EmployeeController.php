@@ -168,7 +168,7 @@ class EmployeeController extends Controller
 			
 			$result 				= $result->toArray();
 			
-			if($endwork['end']->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00')
+			if(!is_null($endwork['end']) && $endwork['end']->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00')
 			{
 				$result['work_period'] 	= [$startwork['start']->format('Y-m-d H:i:s'), $endwork['end']->format('Y-m-d H:i:s')];
 			}
@@ -250,6 +250,11 @@ class EmployeeController extends Controller
 		}
 		else
 		{
+			if(!strtotime($employee['last_password_updated_at']))
+			{
+				unset($employee['last_password_updated_at']);
+			}
+
 			//if validator passed, save Employee
 			$employee_data			= $employee_data->fill($employee);
 
@@ -469,11 +474,11 @@ class EmployeeController extends Controller
 						{
 							$errors->add('Work', $work_data->getError());
 						}
-						elseif(isset($value['grade']))
+						elseif(isset($value['grade']) && !empty($value['grade']))
 						{
 							$grade_data			= \App\ThunderID\EmploymentSystemV1\Models\GradeLog::workid($value['id'])->orderby('updated_at', 'asc')->first();
 							
-							if(!$grade_data || $grade_data==$value['grade'])
+							if(!$grade_data || $grade_data!=$value['grade'])
 							{
 								$grade_data 	= new \App\ThunderID\EmploymentSystemV1\Models\GradeLog;
 
@@ -634,6 +639,11 @@ class EmployeeController extends Controller
 						}
 						else
 						{
+							if(isset($value['relative']['last_password_updated_at']) && !strtotime($value['relative']['last_password_updated_at']))
+							{
+								unset($value['relative']['last_password_updated_at']);
+							}
+
 							//if validator passed, save Employee
 							$employee_relative_data	= $employee_relative_data->fill($value['relative']);
 
