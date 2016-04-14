@@ -17,10 +17,8 @@ class EmployeeObserver
 {
 	/** 
      * observe Employee event creating
-     * 1. check need rehash
-     * 2. auto add last password updated at
-     * 3. unique username
-     * 4. act, accept or refuse
+     * 1. generate activation link
+     * 2. act, accept or refuse
      * 
      * @param $model
      * @return bool

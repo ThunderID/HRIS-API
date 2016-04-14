@@ -56,7 +56,7 @@ $app->get('/organisation/{code}/nik/{id}/{join_year}',
 	]
 );
 
-$app->get('/organisation/{code}/username/{name}',
+$app->get('/organisation/{code}/username/{id}',
 	[
 		'uses'				=> 'EmploymentAttributeController@generateUsername'
 	]

@@ -69,13 +69,29 @@ class EmploymentAttributeController extends Controller
 	/**
 	 * auto generate username
 	 *
-	 * 1. get firstname
+	 * 1. check existance
+	 * 2. get firstname
 	 * @param code and employee name
 	 * @return $username
 	 */			
-	public function generateUsername($code, $name) 
+	public function generateUsername($code, $id = 0) 
 	{
-		//1. get firstname
+		//1. check existance
+		$uname		= Employee::id($id)->first();
+
+		if($uname && !empty($uname['username']))
+		{
+			return new JSend('success', ['username' => $uname['username']]);
+		}
+			
+		//2. get firstname
+		if(!Input::has('name'))
+		{
+			return new JSend('error', (array)Input::all(), 'No Name');
+		}
+		
+		$name 			= Input::get('name');
+
 		$original		= explode(' ', strtolower($name));
 		$modify			= $original[0];
 		$countog		= count($original)-1;

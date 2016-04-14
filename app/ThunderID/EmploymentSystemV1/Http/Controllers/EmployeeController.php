@@ -228,7 +228,7 @@ class EmployeeController extends Controller
 		}
 
 		$employee_rules				=   [
-											'username'					=> 'max:255|unique:hrps_persons,username,'.(!is_null($employee['id']) ? $employee['id'] : ''),
+											'username'					=> 'max:255',
 											'name'						=> 'required|max:255',
 											'prefix_title'				=> 'max:255',
 											'suffix_title'				=> 'max:255',
@@ -250,7 +250,7 @@ class EmployeeController extends Controller
 		}
 		else
 		{
-			if(!strtotime($employee['last_password_updated_at']))
+			if(isset($employee['last_password_updated_at']) && !strtotime($employee['last_password_updated_at']))
 			{
 				unset($employee['last_password_updated_at']);
 			}
