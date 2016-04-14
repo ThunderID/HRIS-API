@@ -117,3 +117,18 @@ $app->get('/document/templates',
 		'uses'				=> 'EmploymentAttributeController@getDocumentTemplate'
 	]
 );
+
+// ------------------------------------------------------------------------------------
+// TOOLS
+// ------------------------------------------------------------------------------------
+$app->get('/import/employee',
+	[
+		'uses'				=> 'ImportEmployeeController@get'
+	]
+);
+
+$app->post('/import/employee',
+	[
+		'uses'				=> 'ImportEmployeeController@post'
+	]
+);

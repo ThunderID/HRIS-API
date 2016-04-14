@@ -61,6 +61,11 @@ class EmploymentAccountController extends Controller
 		}
 
 		$employee 		= $employee->toArray();
+
+		if(empty($employee['email']))
+		{
+			return new JSend('error', Input::all(), ['Belum ada alamat email karyawan']);
+		}
 		
 		Event::fire(new EmployeeCreated($employee));
 
