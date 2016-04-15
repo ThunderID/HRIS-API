@@ -79,7 +79,7 @@ class Chart extends BaseModel
 	 * @var array
 	 */
 	protected $rules				=	[
-											'branch_id'						=> 'exists:branches,id',
+											'branch_id'						=> 'exists:hrom_branches,id',
 											// 'chart_id'						=> 'exists:charts,id',
 											'name'							=> 'max:255',
 											'path'							=> 'max:255',

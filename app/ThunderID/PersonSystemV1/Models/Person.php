@@ -82,6 +82,31 @@ class Person extends BaseModel implements AuthenticatableContract, CanResetPassw
 	 */
 	protected $hidden 				= ['password'];
 
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array
+	 */
+	protected $fillable				=	[
+											'name' 							,
+											'place_of_birth' 				,
+											'date_of_birth' 				,
+											'gender' 						,
+											'avatar'						,
+										];
+
+	/**
+	 * Basic rule of database
+	 *
+	 * @var array
+	 */
+	protected $rules				=	[
+											'name' 							=> 'required|max:255',
+											'place_of_birth' 				=> 'max:255',
+											'date_of_birth' 				=> 'date_format:"Y-m-d H:i:s"',
+											'gender' 						=> 'in:female,male',
+										];
+										
 	/* ---------------------------------------------------------------------------- RELATIONSHIP ----------------------------------------------------------------------------*/
 	
 	/* ---------------------------------------------------------------------------- QUERY BUILDER ----------------------------------------------------------------------------*/

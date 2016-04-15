@@ -172,7 +172,9 @@ class ImportEmployeeController extends Controller
 				$row['profile']['username'] 	= $username;
 
 				//3. save profile
-				$person							= new Person;
+				$person								= new Employee;
+				$row['profile']['date_of_birth'] 	= Carbon::parse($row['profile']['date_of_birth'])->format('Y-m-d H:i:s');
+
 				$person->fill($row['profile']);
 
 				if(!$person->save())
@@ -315,9 +317,20 @@ class ImportEmployeeController extends Controller
 					{
 						$join_year 			= Carbon::parse($row['work']['tanggal_mulai_status'])->format('y');
 
-						$nik 				= NIKGenerator::generate($code, $person['id'], $join_year);
+						$nik 				= NIKGenerator::generate($organisation['code'], $person['id'], $join_year);
 
-						$row['work']['nik']	= $nik;
+						$row['work']['chart_id']		= $chart['id'];
+						$row['work']['person_id']		= $person['id'];
+						$row['work']['nik']				= $nik;
+						$row['work']['status']			= $row['work']['status_kerja'];
+						$row['work']['start']			= Carbon::parse($row['work']['tanggal_mulai_status'])->format('Y-m-d H:i:s');
+						
+						if(strtotime($row['work']['tanggal_akhir_status']))
+						{
+							$row['work']['end']			= Carbon::parse($row['work']['tanggal_akhir_status'])->format('Y-m-d H:i:s');
+						}
+						
+						$row['work']['reason_end_job']	= $row['work']['alasan_akhir_status'];
 
 						$work 				= new Work;
 
@@ -331,17 +344,18 @@ class ImportEmployeeController extends Controller
 				}
 
 				//7. save relative
-				foreach ($row['relative'] as $key => $value) 
+				foreach ($row['relatives'] as $key => $value) 
 				{
-					if(!$errors->count())
+					if(!$errors->count() && empty($value))
 					{
 						$relative 				= new Person;
+						$value['date_of_birth']	= Carbon::parse($value['date_of_birth'])->format('Y-m-d H:i:s');
 
 						$relative->fill($value);
 
 						if(!$relative->save())
 						{
-							$errors->add('relative', $relative->getError());
+							$errors->add('relatives', $relative->getError());
 						}
 						else
 						{
@@ -365,7 +379,7 @@ class ImportEmployeeController extends Controller
 						$document 				= new PersonDocument;
 
 						$doc['person_id']		= $person['id'];
-						$doc['documents']		= array_merge(['code' => $key], $value);
+						$doc['documents']		= array_merge(['code' => $key], ['document' => $value]);
 
 						$validating_document 	= new VOD;
 
@@ -375,6 +389,7 @@ class ImportEmployeeController extends Controller
 						}
 						else
 						{
+							$doc['documents']	=json_encode($doc['documents']);
 							$document			= $document->fill($doc);
 
 							if(!$document->save())
@@ -400,7 +415,7 @@ class ImportEmployeeController extends Controller
 				{
 					DB::rollback();
 
-					$globalnotify[$col] 		= json_encode(['status' => 'error', 'data' => $col, 'message' => $errors->error()]);
+					$globalnotify[$col] 		= json_encode(['status' => 'error', 'data' => $col, 'message' => $errors]);
 				}
 			}
 			else
