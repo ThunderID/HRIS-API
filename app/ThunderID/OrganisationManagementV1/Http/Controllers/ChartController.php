@@ -113,7 +113,7 @@ class ChartController extends Controller
 	 */
 	public function detail($org_id = null, $branch_id = null, $id = null)
 	{
-		$result						= \App\ThunderID\OrganisationManagementV1\Models\Chart::id($id)->branchid($branch_id)->with(['branch'])->first();
+		$result						= \App\ThunderID\OrganisationManagementV1\Models\Chart::id($id)->branchid($branch_id)->with(['chart', 'branch'])->first();
 
 		if($result)
 		{
