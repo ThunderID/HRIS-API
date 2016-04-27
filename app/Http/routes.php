@@ -11,10 +11,16 @@
 |
 */
 
-
 $app->post('/authorized/client', function () use ($app) 
 {
 	$authorized 		= new ThunderID\ThunderOauthSQL\Authorizer(app('request'));
 
 	return $authorized->issueAccessToken();
+});
+
+$app->get('/close/session', function () use ($app) 
+{
+	$authorized 		= new ThunderID\ThunderOauthSQL\Authorizer(app('request'));
+
+	return $authorized->destroySession();
 });
