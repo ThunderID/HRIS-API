@@ -24,3 +24,8 @@ $app->get('/close/session', function () use ($app)
 
 	return $authorized->destroySession();
 });
+
+$app->get('/logged/in', function () use ($app) 
+{
+	return view('thunder-oauth-sql::content.login.form');
+});
