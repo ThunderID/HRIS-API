@@ -19,9 +19,11 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-$app->withFacades();
+// class_alias('Illuminate\Support\Facades\App', 'App');
 
 $app->withEloquent();
+
+$app->withFacades();
 
 /*
 |--------------------------------------------------------------------------
@@ -63,9 +65,10 @@ $app->singleton(
 //     // Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
 // ]);
 
-// $app->routeMiddleware([
-
-// ]);
+$app->routeMiddleware([
+    'oauth' 		=> ThunderID\ThunderOauthSQL\Middleware\OAuthMiddleware::class,
+    'oauth-scope' 	=> ThunderID\ThunderOauthSQL\Middleware\OAuthScopeMiddleware::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +83,7 @@ $app->singleton(
 
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
+$app->register(ThunderID\ThunderOauthSQL\ThunderOauthSQLServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +96,7 @@ $app->register(App\Providers\EventServiceProvider::class);
 |
 */
 
-$app->group(['namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
+$app->group(['middleware' => 'oauth', 'namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
 {
     require __DIR__.'/../app/ThunderID/OrganisationManagementV1/Http/routes.php';
 });
@@ -102,8 +106,8 @@ $app->group(['namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers']
 	require __DIR__.'/../app/ThunderID/EmploymentSystemV1/Http/routes.php';
 });
 
-// $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
-//     require __DIR__.'/../app/Http/routes.php';
-// });
+$app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
+    require __DIR__.'/../app/Http/routes.php';
+});
 
 return $app;
