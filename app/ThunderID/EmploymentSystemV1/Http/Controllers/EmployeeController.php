@@ -172,9 +172,13 @@ class EmployeeController extends Controller
 			{
 				$result['work_period'] 	= [$startwork['start']->format('Y-m-d H:i:s'), $endwork['end']->format('Y-m-d H:i:s')];
 			}
-			else
+			elseif($startwork)
 			{
 				$result['work_period'] 	= [$startwork['start']->format('Y-m-d H:i:s'), Carbon::now()->format('Y-m-d H:i:s')];
+			}
+			else
+			{
+				$result['work_period'] 	= [Carbon::now()->format('Y-m-d H:i:s'), Carbon::now()->format('Y-m-d H:i:s')];
 			}
 
 			if($gradework)
