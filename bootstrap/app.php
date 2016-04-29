@@ -66,8 +66,8 @@ $app->singleton(
 // ]);
 
 $app->routeMiddleware([
-    'oauth' 		=> ThunderID\ThunderOauthSQL\Middleware\OAuthMiddleware::class,
-    'oauth-scope' 	=> ThunderID\ThunderOauthSQL\Middleware\OAuthScopeMiddleware::class,
+    'oauth' 		=> App\Http\Middleware\OAuthMiddleware::class,
+    'oauth-scope' 	=> App\Http\Middleware\OAuthScopeMiddleware::class,
 ]);
 
 /*
@@ -83,7 +83,6 @@ $app->routeMiddleware([
 
 // $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-$app->register(ThunderID\ThunderOauthSQL\ThunderOauthSQLServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -96,12 +95,12 @@ $app->register(ThunderID\ThunderOauthSQL\ThunderOauthSQLServiceProvider::class);
 |
 */
 
-$app->group(['middleware' => 'oauth', 'namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
+$app->group(['middleware' => 'oauth-scope:employee', 'namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
 {
     require __DIR__.'/../app/ThunderID/OrganisationManagementV1/Http/routes.php';
 });
 
-$app->group(['namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers'], function ($app) 
+$app->group(['middleware' => 'oauth-scope:employee', 'namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers'], function ($app) 
 {   
 	require __DIR__.'/../app/ThunderID/EmploymentSystemV1/Http/routes.php';
 });

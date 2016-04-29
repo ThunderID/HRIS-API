@@ -14,15 +14,9 @@
 $app->post('/authorized/client', function () use ($app) 
 {
 	$host['HTTP_HOST'] 		= $app->request->server('HTTP_HOST');
-	$client 				= new GuzzleHttp\Client([
-										'base_uri' 	=> 'http://apimanager',
-									    'timeout'  	=> 2,
-									]);
+	$body 					= new App\Libraries\API();
 
-	$response 				= $client->post('http://apimanager/authorized/client', ['body' => array_merge($app->request->input(), $host)] , ['timeout' => 2] );
-	$response->addHeader('Content-Type','application/json');
-
-	$body 					= $response->getBody();
+	$body 					= $body->authorized(array_merge($app->request->input(), $host) );
 
 	$check_body 			= json_decode($body, true);
 
@@ -48,19 +42,13 @@ $app->post('/authorized/client', function () use ($app)
 $app->get('/close/session', function () use ($app) 
 {
 	$host['HTTP_HOST'] 		= $app->request->server('HTTP_HOST');
-	$client 				= new GuzzleHttp\Client([
-										'base_uri' 	=> 'http://apimanager',
-									    'timeout'  	=> 2,
-									]);
-
 	$queryString 			= $app->request->server('QUERY_STRING');
-	\Log::info($queryString);
-	$url 					= "http://apimanager/close/session?" . $queryString.'&HTTP_HOST='.$host['HTTP_HOST'];
+	$queryString 			= $queryString.'&HTTP_HOST='.$host['HTTP_HOST'];
 
-	$response 				= $client->get($url , ['timeout' => 2] );
-	$response->addHeader('Content-Type','application/json');
-
-	$body 					= $response->getBody();
+	$body 					= new App\Libraries\API();
+	
+	$body 					= $body->closeSession($queryString);
 
 	return $body;
 });
+

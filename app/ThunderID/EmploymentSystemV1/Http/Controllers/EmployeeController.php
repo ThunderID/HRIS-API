@@ -842,7 +842,7 @@ class EmployeeController extends Controller
 	 */
 	public function maritalstatuses($org_id = null)
 	{
-		$result						= \App\ThunderID\PersonSystemV1\Models\MaritalStatus::wherehas('person.works', function($q)use($org_id){$q->chartorganisationid($org_id);})->groupby('status')->distinct()->get(['status']);
+		$result						= \App\ThunderID\PersonSystemV1\Models\MaritalStatus::/*wherehas('person.works', function($q)use($org_id){$q->chartorganisationid($org_id);})->*/groupby('status')->distinct()->get(['status']);
 
 		return new JSend('success', (array)$result->toArray());
 	}
