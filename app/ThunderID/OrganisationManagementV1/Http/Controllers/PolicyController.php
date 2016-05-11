@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\OrganisationManagementV1\Http\Controllers;
 
-use App\Libraries\JSend;
+use ThunderID\APIHelper\Data\Jsend;
 use App\Libraries\PolicyOfOrganisation as POO;
 use App\Http\Controllers\Controller;
 

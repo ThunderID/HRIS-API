@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\OrganisationManagementV1\Http\Controllers;
 
-use App\Libraries\JSend;
+use ThunderID\APIHelper\Data\Jsend;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\MessageBag;
