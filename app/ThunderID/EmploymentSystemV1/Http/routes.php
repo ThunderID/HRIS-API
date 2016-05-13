@@ -12,11 +12,14 @@
 // EMPLOYEES
 // ------------------------------------------------------------------------------------
 
-$app->get('/organisation/{org_id}/employees',
-	[
-		'uses'				=> 'EmployeeController@index'
-	]
-);
+$app->group(['middleware' => 'oauth-su:employee', 'namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers'], function ($app) 
+{   
+	$app->get('/organisation/{org_id}/employees',
+		[
+			'uses'				=> 'EmployeeController@index'
+		]
+	);
+});
 
 $app->get('/organisation/{org_id}/employee/{id}',
 	[

@@ -25,7 +25,11 @@ class EmployeeController extends Controller
 
 		$result						= new \App\ThunderID\EmploymentSystemV1\Models\Employee;
 
-		$result						= $result->organisationid($org_id);
+		if($org_id!=0)
+		{
+			$result					= $result->organisationid($org_id);
+		}
+
 		
 		if(Input::has('search'))
 		{

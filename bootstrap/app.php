@@ -67,7 +67,8 @@ $app->singleton(
 
 $app->routeMiddleware([
     'oauth' 		=> ThunderID\APIHelper\Middleware\OAuthMiddleware::class,
-    'oauth-scope' 	=> ThunderID\APIHelper\Middleware\OAuthScopeMiddleware::class,
+    'oauth-scope'   => ThunderID\APIHelper\Middleware\OAuthScopeMiddleware::class,
+    'oauth-su' 	    => ThunderID\APIHelper\Middleware\OAuthSuperUserMiddleware::class,
 ]);
 
 /*
