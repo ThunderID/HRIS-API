@@ -66,8 +66,8 @@ $app->singleton(
 // ]);
 
 $app->routeMiddleware([
-    'oauth' 		=> App\Http\Middleware\OAuthMiddleware::class,
-    'oauth-scope' 	=> App\Http\Middleware\OAuthScopeMiddleware::class,
+    'oauth' 		=> ThunderID\APIHelper\Middleware\OAuthMiddleware::class,
+    'oauth-scope' 	=> ThunderID\APIHelper\Middleware\OAuthScopeMiddleware::class,
 ]);
 
 /*
@@ -95,12 +95,12 @@ $app->register(App\Providers\EventServiceProvider::class);
 |
 */
 
-$app->group(['middleware' => 'oauth-scope:employee', 'namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
+$app->group(['middleware' => 'oauth', 'namespace' => 'App\ThunderID\OrganisationManagementV1\Http\Controllers'], function ($app) 
 {
     require __DIR__.'/../app/ThunderID/OrganisationManagementV1/Http/routes.php';
 });
 
-$app->group(['middleware' => 'oauth-scope:employee', 'namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers'], function ($app) 
+$app->group(['middleware' => 'oauth', 'namespace' => 'App\ThunderID\EmploymentSystemV1\Http\Controllers'], function ($app) 
 {   
 	require __DIR__.'/../app/ThunderID/EmploymentSystemV1/Http/routes.php';
 });

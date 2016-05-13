@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\EmploymentSystemV1\Http\Controllers;
 
-use ThunderID\APIHelper\Data\Jsend;
+use ThunderID\APIHelper\Data\JSend;
 use App\Libraries\ValidatorOfDocument as VOD;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;

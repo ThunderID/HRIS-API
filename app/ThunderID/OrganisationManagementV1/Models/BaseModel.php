@@ -22,7 +22,7 @@ abstract class BaseModel extends Eloquent
 	 */
 	use SoftDeletes;
 
-	protected $connection 			= 'mysql_hr_organisations';
+	protected $connection 			= 'mysql';
 	
 	protected $errors;
 

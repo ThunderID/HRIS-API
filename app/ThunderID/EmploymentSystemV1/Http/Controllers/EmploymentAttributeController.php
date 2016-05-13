@@ -2,7 +2,7 @@
 
 namespace App\ThunderID\EmploymentSystemV1\Http\Controllers;
 
-use ThunderID\APIHelper\Data\Jsend;
+use ThunderID\APIHelper\Data\JSend;
 use App\Libraries\UsernameGenerator;
 use App\Libraries\NIKGenerator;
 use App\Http\Controllers\Controller;
