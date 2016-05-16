@@ -27,6 +27,7 @@ class Calendar extends BaseModel
 	 * Global traits used as scope (plugged scope).
 	 *
 	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
 	
 	/**
 	 * The database table used by the model.

@@ -106,6 +106,11 @@ $app->group(['middleware' => 'oauth', 'namespace' => 'App\ThunderID\EmploymentSy
 	require __DIR__.'/../app/ThunderID/EmploymentSystemV1/Http/routes.php';
 });
 
+$app->group(['middleware' => 'oauth', 'namespace' => 'App\ThunderID\WorkforceManagementV1\Http\Controllers'], function ($app) 
+{   
+    require __DIR__.'/../app/ThunderID/WorkforceManagementV1/Http/routes.php';
+});
+
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../app/Http/routes.php';
 });
