@@ -15,6 +15,8 @@ class Calendar extends BaseModel
 	 * Relationship Traits.
 	 *
 	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\BelongsTo\OrganisationTrait;
+	use \App\ThunderID\WorkforceManagementV1\Models\Traits\HasMany\SchedulesTrait;
 
 	/**
 	 * Global traits used as query builder (global scope).
