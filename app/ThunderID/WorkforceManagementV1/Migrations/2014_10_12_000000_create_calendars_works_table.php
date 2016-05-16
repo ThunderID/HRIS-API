@@ -21,8 +21,7 @@ class CreateCalendarsWorksTable extends Migration
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(['deleted_at', 'calendar_id', 'ondate']);
-			$table->index(['deleted_at', 'ondate']);
+			$table->index(['deleted_at', 'calendar_id', 'work_id']);
 		});
 	}
 

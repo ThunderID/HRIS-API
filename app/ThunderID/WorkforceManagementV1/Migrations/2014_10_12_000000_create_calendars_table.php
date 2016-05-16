@@ -19,15 +19,13 @@ class CreateCalendarsTable extends Migration
 			$table->integer('organisation_id')->unsigned()->index();
 			$table->string('name', 255);
 			$table->text('workdays');
-			$table->date('ondate');
 			$table->time('start');
 			$table->time('end');
 			$table->text('break_idle');
 			$table->timestamps();
 			$table->softDeletes();
 
-			$table->index(['deleted_at', 'organisation_id', 'ondate']);
-			$table->index(['deleted_at', 'ondate']);
+			$table->index(['deleted_at', 'organisation_id', 'name']);
 		});
 	}
 

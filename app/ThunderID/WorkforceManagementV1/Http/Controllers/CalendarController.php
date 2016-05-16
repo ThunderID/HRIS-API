@@ -4,6 +4,7 @@ namespace App\ThunderID\WorkforceManagementV1\Http\Controllers;
 
 use ThunderID\APIHelper\Data\JSend;
 use App\Http\Controllers\Controller;
+use App\Libraries\ValidatorOfCalendar as VOC;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\MessageBag;
@@ -99,7 +100,7 @@ class CalendarController extends Controller
 	 */
 	public function detail($org_id = null, $id = null)
 	{
-		$result						= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($id)->organisationid($org_id)->with(['organisation', 'charts'])->first();
+		$result						= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($id)->organisationid($org_id)->with(['organisation'])->first();
 
 		if($result)
 		{
@@ -124,7 +125,6 @@ class CalendarController extends Controller
 		}
 
 		$errors						= new MessageBag();
-		$contact					= [];
 
 		DB::beginTransaction();
 
@@ -142,9 +142,9 @@ class CalendarController extends Controller
 
 		$calendar_rules				=	[
 											'organisation_id'	=> 'exists:hrom_organisations,id|'.($is_new ? '' : 'in:'.$org_id),
-											'name'				=> 'required|max:255',
-											'phone'				=> 'max:20',
-											'email'				=> 'max:255',
+											'name'				=> 'max:255',
+											'start'				=> 'date_format:"H:i:s"',
+											'end'				=> 'date_format:"H:i:s"',
 										];
 
 		//1a. Get original data
@@ -159,133 +159,26 @@ class CalendarController extends Controller
 		}
 		else
 		{
-			//if validator passed, save calendar
-			$calendar_data['organisation_id']	= $org_id;
-			$calendar_data					= $calendar_data->fill($calendar);
+			$validating_day 		= new VOC;
 
-			if(!$calendar_data->save())
+			if(!$validating_day->validate(['workdays' => explode(',', $calendar['workdays']), 'breaks' => explode(',', $calendar['break_idle'])]))
 			{
-				$errors->add('calendar', $calendar_data->getError());
+				$errors->add('calendar', $validating_day->getError());
+			}
+			else
+			{
+				//if validator passed, save calendar
+				$calendar_data['organisation_id']	= $org_id;
+				$calendar_data						= $calendar_data->fill($calendar);
+
+				if(!$calendar_data->save())
+				{
+					$errors->add('calendar', $calendar_data->getError());
+				}
 			}
 		}
 		//End of validate calendar
 
-		//2. Validate calendar contact Parameter
-		if(!$errors->count())
-		{
-			if(isset($calendar['address']))
-			{
-				$prev_contact		= \App\ThunderID\WorkforceManagementV1\Models\Contact::contactableid($calendar_data['id'])->contactabletype(get_class($calendar_data))->type('address')->default(true)->first();
-				
-				if($prev_contact['value']!=$calendar['address'])
-				{
-					$contact			= new \App\ThunderID\WorkforceManagementV1\Models\Contact;
-
-					$contact->fill([
-							'contactable_id'	=> $calendar_data['id'],
-							'contactable_type'	=> get_class($calendar_data),
-							'type'				=> 'address',
-							'value'				=> $calendar['address'],
-							'is_default'		=> true,
-						]);
-					
-					if(!$contact->save())
-					{
-						$errors->add('Contact', $contact->getError());
-					}
-				}
-			}
-			else
-			{
-				$contact					= \App\ThunderID\WorkforceManagementV1\Models\Contact::contactableid($calendar_data['id'])->contactabletype(get_class($calendar_data))->type('address')->default(true)->first();
-
-				if($contact)
-				{
-					$contact->is_default	= false;
-
-					if(!$contact->save())
-					{
-						$errors->add('Contact', $contact->getError());
-					}
-				}
-			}
-
-			if(isset($calendar['phone']))
-			{
-				$prev_contact		= \App\ThunderID\WorkforceManagementV1\Models\Contact::contactableid($calendar_data['id'])->contactabletype(get_class($calendar_data))->type('phone')->default(true)->first();
-				
-				if($prev_contact['value']!=$calendar['phone'])
-				{
-					$contact			= new \App\ThunderID\WorkforceManagementV1\Models\Contact;
-
-					$contact->fill([
-							'contactable_id'	=> $calendar_data['id'],
-							'contactable_type'	=> get_class($calendar_data),
-							'type'				=> 'phone',
-							'value'				=> $calendar['phone'],
-							'is_default'		=> true,
-						]);
-					
-					if(!$contact->save())
-					{
-						$errors->add('Contact', $contact->getError());
-					}
-				}
-			}
-			else
-			{
-				$contact					= \App\ThunderID\WorkforceManagementV1\Models\Contact::contactableid($calendar_data['id'])->contactabletype(get_class($calendar_data))->type('phone')->default(true)->first();
-
-				if($contact)
-				{
-					$contact->is_default	= false;
-
-					if(!$contact->save())
-					{
-						$errors->add('Contact', $contact->getError());
-					}
-				}
-			}
-
-			if(isset($calendar['email']))
-			{
-				$prev_contact		= \App\ThunderID\WorkforceManagementV1\Models\Contact::contactableid($calendar_data['id'])->contactabletype(get_class($calendar_data))->type('email')->default(true)->first();
-				
-				if($prev_contact['value']!=$calendar['email'])
-				{
-					$contact			= new \App\ThunderID\WorkforceManagementV1\Models\Contact;
-
-					$contact->fill([
-							'contactable_id'	=> $calendar_data['id'],
-							'contactable_type'	=> get_class($calendar_data),
-							'type'				=> 'email',
-							'value'				=> $calendar['email'],
-							'is_default'		=> true,
-						]);
-					
-					if(!$contact->save())
-					{
-						$errors->add('Contact', $contact->getError());
-					}
-				}
-			}
-			else
-			{
-				$contact					= \App\ThunderID\WorkforceManagementV1\Models\Contact::contactableid($calendar_data['id'])->contactabletype(get_class($calendar_data))->type('email')->default(true)->first();
-
-				if($contact)
-				{
-					$contact->is_default	= false;
-
-					if(!$contact->save())
-					{
-						$errors->add('Contact', $contact->getError());
-					}
-				}
-			}
-		}
-		//End of validate calendar contact
-		
 		if($errors->count())
 		{
 			DB::rollback();
@@ -295,7 +188,7 @@ class CalendarController extends Controller
 
 		DB::commit();
 		
-		$final_calendar			= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($calendar_data['id'])->organisationid($org_id)->with(['charts'])->first()->toArray();
+		$final_calendar			= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($calendar_data['id'])->organisationid($org_id)->with(['organisation'])->first()->toArray();
 
 		return new JSend('success', (array)$final_calendar);
 	}
@@ -309,7 +202,7 @@ class CalendarController extends Controller
 	public function delete($org_id = null, $id = null)
 	{
 		//
-		$calendar					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($id)->organisationid($org_id)->with(['charts'])->first();
+		$calendar					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($id)->organisationid($org_id)->with(['organisation'])->first();
 
 		if(!$calendar)
 		{

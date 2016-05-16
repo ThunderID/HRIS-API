@@ -73,7 +73,6 @@ class Calendar extends BaseModel
 											'organisation_id'				,
 											'name'							,
 											'workdays'						,
-											'ondate'						,
 											'start'							,
 											'end'							,
 											'break_idle'					,
@@ -87,7 +86,6 @@ class Calendar extends BaseModel
 	protected $rules				=	[
 											'organisation_id'				=> 'exists:hrom_organisations,id',
 											'name'							=> 'max:255',
-											'ondate'						=> 'date_format:"Y-m-d"',
 											'start'							=> 'date_format:"H:i:s"',
 											'end'							=> 'date_format:"H:i:s"',
 										];
