@@ -26,6 +26,8 @@ class Schedule extends BaseModel
 	 * Global traits used as scope (plugged scope).
 	 *
 	 */
+	use \App\ThunderID\OrganisationManagementV1\Models\Traits\GlobalTrait\HasNameTrait;
+	use \App\ThunderID\WorkforceManagementV1\Models\Traits\GlobalTrait\HasOnDateTrait;
 	
 	/**
 	 * The database table used by the model.
