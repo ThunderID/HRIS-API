@@ -36,7 +36,6 @@ $app->delete('/organisation/{org_id}/calendar/delete/{id}',
 	]
 );
 
-
 // ------------------------------------------------------------------------------------
 // SCHEDULES
 // ------------------------------------------------------------------------------------
@@ -61,6 +60,34 @@ $app->post('/organisation/{org_id}/calendar/{cal_id}/schedule/store',
 $app->delete('/organisation/{org_id}/calendar/{cal_id}/schedule/delete/{id}',
 	[
 		'uses'				=> 'ScheduleController@delete'
+	]
+);
+
+
+// ------------------------------------------------------------------------------------
+// PERSONSCHEDULES
+// ------------------------------------------------------------------------------------
+$app->get('/organisation/{org_id}/employee/{emp_id}/schedules',
+	[
+		'uses'				=> 'EmployeeScheduleController@index'
+	]
+);
+
+$app->get('/organisation/{org_id}/employee/{emp_id}/schedule/{id}',
+	[
+		'uses'				=> 'EmployeeScheduleController@detail'
+	]
+);
+
+$app->post('/organisation/{org_id}/employee/{emp_id}/schedule/store',
+	[
+		'uses'				=> 'EmployeeScheduleController@store'
+	]
+);
+
+$app->delete('/organisation/{org_id}/employee/{emp_id}/schedule/delete/{id}',
+	[
+		'uses'				=> 'EmployeeScheduleController@delete'
 	]
 );
 

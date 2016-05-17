@@ -2,7 +2,6 @@
 
 namespace App\ThunderID\WorkforceManagementV1\Models;
 
-// use App\Models\Observers\PersonScheduleObserver;
 
 /**
  * Used for Schedule Models
@@ -110,8 +109,6 @@ class PersonSchedule extends BaseModel
 	public static function boot() 
 	{
         parent::boot();
- 
-        // PersonSchedule::observe(new PersonScheduleObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/

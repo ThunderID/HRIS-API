@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  * 
  * @author cmooy
  */
-class ScheduleController extends Controller
+class EmployeeScheduleController extends Controller
 {
 	/**
 	 * Display all Schdules
@@ -22,21 +22,16 @@ class ScheduleController extends Controller
 	 * @param search, skip, take
 	 * @return JSend Response
 	 */
-	public function index($org_id = null, $cal_id = 0)
+	public function index($org_id = null, $emp_id = 0)
 	{
-		$calendar 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
+		$employee 					= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($emp_id)->organisationid($org_id)->first();
 
-		if(!$calendar)
+		if(!$employee)
 		{
 			\App::abort(404);
 		}
 
-		$result						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::calendarid($cal_id);
-
-		if($cal_id!=0)
-		{
-			$result 				= $result->calendarid($cal_id);
-		}
+		$result						= \App\ThunderID\WorkforceManagementV1\Models\PersonSchedule::personid($emp_id);
 
 		if(Input::has('search'))
 		{
@@ -101,7 +96,7 @@ class ScheduleController extends Controller
 
 		$result						= $result->get()->toArray();
 
-		return new JSend('success', (array)['count' => $count, 'data' => $result, 'calendar' => $calendar->toArray()]);
+		return new JSend('success', (array)['count' => $count, 'data' => $result, 'employee' => $employee->toArray()]);
 	}
 
 	/**
@@ -109,9 +104,9 @@ class ScheduleController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function detail($org_id = null, $cal_id = null, $id = null)
+	public function detail($org_id = null, $emp_id = null, $id = null)
 	{
-		$result						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::id($id)->calendarid($cal_id)->with(['calendar'])->first();
+		$result						= \App\ThunderID\WorkforceManagementV1\Models\PersonSchedule::id($id)->personid($emp_id)->with(['person'])->first();
 
 		if($result)
 		{
@@ -128,10 +123,10 @@ class ScheduleController extends Controller
 	 * @param Schdule
 	 * @return Response
 	 */
-	public function store($org_id = null, $cal_id = null)
+	public function store($org_id = null, $emp_id = null)
 	{
 		//check branch
-		$schedule 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
+		$schedule 					= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($emp_id)->organisationid($org_id)->first();
 
 		if(!$schedule)
 		{
@@ -160,7 +155,7 @@ class ScheduleController extends Controller
 		}
 
 		$schedule_rules				=	[
-											'calendar_id'					=> 'exists:hrwm_calendars,id|'.($is_new ? '' : 'in:'.$cal_id),
+											'person_id'						=> 'exists:hrps_persons,id|'.($is_new ? '' : 'in:'.$emp_id),
 											'name'							=> 'max:255',
 											'status'						=> 'in:DN,CB,UL,HB,L',
 											'ondate'						=> 'date_format:"Y-m-d"',
@@ -170,7 +165,7 @@ class ScheduleController extends Controller
 										];
 
 		//1a. Get original data
-		$schedule_data				= \App\ThunderID\WorkforceManagementV1\Models\Schedule::findornew($schedule['id']);
+		$schedule_data				= \App\ThunderID\WorkforceManagementV1\Models\PersonSchedule::findornew($schedule['id']);
 
 		//1b. Validate Basic Schdule Parameter
 		$validator					= Validator::make($schedule, $schedule_rules);
@@ -182,7 +177,7 @@ class ScheduleController extends Controller
 		else
 		{
 			//if validator passed, save Schdule
-			$schedule['calendar_id']= $cal_id;
+			$schedule['person_id']	= $emp_id;
 
 			$schedule_data			= $schedule_data->fill($schedule);
 
@@ -202,7 +197,7 @@ class ScheduleController extends Controller
 
 		DB::commit();
 		
-		$final_schedule			= \App\ThunderID\WorkforceManagementV1\Models\Schedule::id($schedule_data['id'])->first()->toArray();
+		$final_schedule				= \App\ThunderID\WorkforceManagementV1\Models\PersonSchedule::id($schedule_data['id'])->first()->toArray();
 
 		return new JSend('success', (array)$final_schedule);
 	}
@@ -212,17 +207,17 @@ class ScheduleController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function delete($org_id = null, $cal_id = null, $id = null)
+	public function delete($org_id = null, $emp_id = null, $id = null)
 	{
 		//check branch
-		$schedule 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
+		$schedule 					= \App\ThunderID\EmploymentSystemV1\Models\Employee::id($emp_id)->organisationid($org_id)->first();
 
 		if(!$schedule)
 		{
 			\App::abort(404);
 		}
 
-		$schedule						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::calendarid($cal_id)->id($id)->first();
+		$schedule					= \App\ThunderID\WorkforceManagementV1\Models\PersonSchedule::personid($emp_id)->id($id)->first();
 
 		if(!$schedule)
 		{
