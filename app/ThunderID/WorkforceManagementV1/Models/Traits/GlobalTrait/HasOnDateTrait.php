@@ -2,6 +2,8 @@
 
 namespace App\ThunderID\WorkforceManagementV1\Models\Traits\GlobalTrait;
 
+use Carbon\Carbon;
+
 /**
  * available function to get OnDate of records
  *
