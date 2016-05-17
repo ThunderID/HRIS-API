@@ -2,8 +2,6 @@
 
 namespace App\ThunderID\WorkforceManagementV1\Models;
 
-// use App\Models\Observers\ScheduleObserver;
-
 /**
  * Used for Schedule Models
  * 
@@ -112,8 +110,6 @@ class Schedule extends BaseModel
 	public static function boot() 
 	{
         parent::boot();
- 
-        // Schedule::observe(new ScheduleObserver());
     }
 
 	/* ---------------------------------------------------------------------------- SCOPES ----------------------------------------------------------------------------*/
