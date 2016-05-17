@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Handle Protected Resource of Chart
+ * Handle Protected Resource of Schdule
  * 
  * @author cmooy
  */
 class ScheduleController extends Controller
 {
 	/**
-	 * Display all Charts
+	 * Display all Schdules
 	 *
 	 * @param search, skip, take
 	 * @return JSend Response
@@ -101,7 +101,7 @@ class ScheduleController extends Controller
 
 		$result						= $result->get()->toArray();
 
-		return new JSend('success', (array)['count' => $count, 'data' => $result, 'calendar' => $calendar->toArray()]);
+		return new JSend('success', (array)['count' => $count, 'data' => $result, 'calendar' => $schedule->toArray()]);
 	}
 
 	/**
@@ -111,7 +111,7 @@ class ScheduleController extends Controller
 	 */
 	public function detail($org_id = null, $cal_id = null, $id = null)
 	{
-		$result						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::id($id)->calendarid($cal_id)->with(['schedule', 'branch'])->first();
+		$result						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::id($id)->calendarid($cal_id)->with(['calendar'])->first();
 
 		if($result)
 		{
@@ -122,35 +122,35 @@ class ScheduleController extends Controller
 	}
 
 	/**
-	 * Store a Chart
-	 * 1. store Chart
+	 * Store a Schdule
+	 * 1. store Schdule
 	 *
-	 * @param Chart
+	 * @param Schdule
 	 * @return Response
 	 */
 	public function store($org_id = null, $cal_id = null)
 	{
 		//check branch
-		$calendar 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
+		$schedule 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
 
-		if(!$calendar)
+		if(!$schedule)
 		{
 			\App::abort(404);
 		}
 
 		if(!Input::has('schedule'))
 		{
-			return new JSend('error', (array)Input::all(), 'Tidak ada data Chart.');
+			return new JSend('error', (array)Input::all(), 'Tidak ada data Schdule.');
 		}
 
 		$errors						= new MessageBag();
 
 		DB::beginTransaction();
 
-		//1. Validate Chart Parameter
-		$calendar						= Input::get('schedule');
+		//1. Validate Schdule Parameter
+		$schedule						= Input::get('schedule');
 
-		if(is_null($calendar['id']))
+		if(is_null($schedule['id']))
 		{
 			$is_new					= true;
 		}
@@ -159,7 +159,7 @@ class ScheduleController extends Controller
 			$is_new					= false;
 		}
 
-		$calendar_rules				=	[
+		$schedule_rules				=	[
 											'calendar_id'					=> 'exists:hrwm_calendars,id|'.($is_new ? '' : 'in:'.$cal_id),
 											'name'							=> 'max:255',
 											'status'						=> 'in:DN,CB,UL,HB,L',
@@ -170,10 +170,10 @@ class ScheduleController extends Controller
 										];
 
 		//1a. Get original data
-		$calendar_data					= \App\ThunderID\WorkforceManagementV1\Models\Schedule::findornew($calendar['id']);
+		$schedule_data				= \App\ThunderID\WorkforceManagementV1\Models\Schedule::findornew($schedule['id']);
 
-		//1b. Validate Basic Chart Parameter
-		$validator					= Validator::make($calendar, $calendar_rules);
+		//1b. Validate Basic Schdule Parameter
+		$validator					= Validator::make($schedule, $schedule_rules);
 
 		if (!$validator->passes())
 		{
@@ -181,17 +181,17 @@ class ScheduleController extends Controller
 		}
 		else
 		{
-			//if validator passed, save Chart
-			$calendar['calendar_id']		= $cal_id;
+			//if validator passed, save Schdule
+			$schedule['calendar_id']= $cal_id;
 
-			$calendar_data				= $calendar_data->fill($calendar);
+			$schedule_data			= $schedule_data->fill($schedule);
 
-			if(!$calendar_data->save())
+			if(!$schedule_data->save())
 			{
-				$errors->add('schedule', $calendar_data->getError());
+				$errors->add('schedule', $schedule_data->getError());
 			}
 		}
-		//End of validate Chart
+		//End of validate Schdule
 
 		if($errors->count())
 		{
@@ -202,40 +202,40 @@ class ScheduleController extends Controller
 
 		DB::commit();
 		
-		$final_Chart				= \App\ThunderID\WorkforceManagementV1\Models\Schedule::id($calendar_data['id'])->first()->toArray();
+		$final_schedule			= \App\ThunderID\WorkforceManagementV1\Models\Schedule::id($schedule_data['id'])->first()->toArray();
 
-		return new JSend('success', (array)$final_Chart);
+		return new JSend('success', (array)$final_schedule);
 	}
 
 	/**
-	 * Delete an Chart
+	 * Delete an Schdule
 	 *
 	 * @return Response
 	 */
 	public function delete($org_id = null, $cal_id = null, $id = null)
 	{
 		//check branch
-		$calendar 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
+		$schedule 					= \App\ThunderID\WorkforceManagementV1\Models\Calendar::id($cal_id)->organisationid($org_id)->first();
 
-		if(!$calendar)
+		if(!$schedule)
 		{
 			\App::abort(404);
 		}
 
-		$calendar						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::calendarid($cal_id)->id($id)->first();
+		$schedule						= \App\ThunderID\WorkforceManagementV1\Models\Schedule::calendarid($cal_id)->id($id)->first();
 
-		if(!$calendar)
+		if(!$schedule)
 		{
-			return new JSend('error', (array)Input::all(), 'Chart tidak ditemukan.');
+			return new JSend('error', (array)Input::all(), 'Schdule tidak ditemukan.');
 		}
 
-		$result						= $calendar->toArray();
+		$result						= $schedule->toArray();
 
-		if($calendar->delete())
+		if($schedule->delete())
 		{
 			return new JSend('success', (array)$result);
 		}
 
-		return new JSend('error', (array)$result, $calendar->getError());
+		return new JSend('error', (array)$result, $schedule->getError());
 	}
 }
